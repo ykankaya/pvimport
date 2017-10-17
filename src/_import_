@@ -20,7 +20,7 @@ _output_err="${logdir}/output.err"
 #   rCheckConn "host" "port"
 #
 # Examples:
-#   rCheckConn "$ldb_host" "$ldb_port"
+#   rCheckConn "$l_host" "$l_port"
 #
 
 function rCheckConn() {
