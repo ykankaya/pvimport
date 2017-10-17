@@ -41,7 +41,7 @@
 ################################################################################
 
 # Bash 'Strict Mode'.
-set -o errexit
+# set -o errexit
 set -o pipefail
 # set -o nounset
 # set -o xtrace
@@ -134,8 +134,8 @@ if [[ -z "${missing_hash[@]}" ]] ; then
   # Stop the script if you do not find at least one command.
   if [[ "$missing_counter" -gt "0" ]] ; then
 
-    _sprintf "stop" "ERROR -> not found in PATH: ${missing_hash[@]}"
-    _exit_ 1
+    printf "not found in PATH: %s\n" "${missing_hash[*]}" >&2
+    exit 1
 
   fi
 
