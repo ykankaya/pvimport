@@ -1,0 +1,617 @@
+#!/usr/bin/env bash
+
+### BEG SCRIPT INFO
+#
+# Header:
+#
+#         fname : "proxmox_importer"
+#         cdate : "12.10.2017"
+#         mdate : "17.10.2017"
+#       version : "v1.0"
+#        author : "Michał Żurawski <contact@nslab.at>"
+#      tab_size : "2"
+#     soft_tabs : "YES"
+#
+# Description:
+#
+#   See README.md file for more information.
+#
+# License:
+#
+#   proxmox_importer, Copyright (C) 2017  Michał Żurawski
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+### END SCRIPT INFO
+
+
+################################################################################
+################## The configuration parameters of the script ##################
+################################################################################
+
+# Bash 'Strict Mode'.
+set -o errexit
+set -o pipefail
+# set -o nounset
+# set -o xtrace
+
+# Internal field separator (more flexible).
+#   IFS_ORIG="$IFS"
+#   IFS_HACK=$'\n\t'
+#   IFS="$IFS_HACK"
+
+# PATH env variable setup.
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# Setting permissions in the script environment:
+#   0022 - less restrictive settings (default value)
+#   0027 - for better security
+#   0077 - only for root access (more restrictive)
+umask 0027
+
+
+################################################################################
+############################### Global variables ###############################
+################################################################################
+
+# The tables that store call parameters.
+__init_params=()
+__script_params=("$@")
+
+# Store the name of the script and directory call.
+readonly _init_name="$(basename "$0")"
+readonly _init_directory="$(dirname "$(readlink -f "$0")")"
+
+# Directory structure.
+readonly _src="${_init_directory}/src"
+
+# File with external (user) functions and variables.
+readonly _import_="${_src}/_import_"
+
+# Stores the current date.
+readonly cdate=$(date +%Y%m%d)
+
+# Variables related to the log file. Divided into three parts due
+# to the better possibility of manipulation for the user.
+readonly logfile="${_init_name}.${cdate}.log"
+readonly logdir="${_init_directory}/log"
+readonly logpath="${logdir}/${logfile}"
+
+# Script version.
+readonly version="v1.0"
+
+# External configuration file.
+config=""
+load_state=0
+
+# Declaration of output variables.
+stdout=""
+
+
+################################################################################
+############################## External commands ###############################
+################################################################################
+
+# We place here used commands at script runtime, as strings to anything
+# unnecessarily run.
+readonly commands=(basename dirname stat date grep egrep cut sed gzip tar)
+
+# Stores the names of the missing commands.
+missing_hash=
+missing_counter=0
+
+if [[ -n "${missing_hash[@]}" ]] ; then
+
+  for i in "${commands[@]}" ; do
+
+    # If the command was not found put it in the array.
+    if [[ $(hash "$i" >/dev/null 2>&1) ]] ; then
+
+      missing_hash+=("$i")
+
+      ((missing_counter++))
+
+    fi
+
+  done
+
+  # Stop the script if you do not find at least one command.
+  if [[ "$missing_counter" -gt "0" ]] ; then
+
+    printf "ERROR -> not found in PATH: %s\n" "${missing_hash[@]}" >&2
+    exit 1
+
+  fi
+
+fi
+
+# If you intend to specify the full path to the command we do it like:
+#   readonly exec_gzip="/bin/gzip"
+
+
+################################################################################
+####################### Definitions of global functions ########################
+################################################################################
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: _logger()
+#
+# Description:
+#   Saving the states of operation to a log file.
+#
+#   Three states of message type:
+#     INFO - normal information
+#     WARN - warning information
+#     STOP - interrupts script execution
+#     EXIT - interrupts script execution
+#
+# Usage:
+#   _logger "type" "message"
+#
+# Examples:
+#   _logger "info" "load config file properly"
+#   _logger "stop" "not connected"
+#
+
+function _logger() {
+
+  local _FUNCTION_ID="_logger"
+  local _STATE=0
+
+  ### Block of declarations
+  local info_type=""
+  local info_to_log=""
+  local converts_type=""
+
+  ### Block of definitions
+  info_type="$1"
+  info_to_log=$(shift ; echo "$@")
+  converts_type=$(echo "$info_type" | tr '[:lower:]' '[:upper:]')
+
+  if [[ ! -d "$logdir" && ! -L "$logdir" ]] ; then
+    mkdir "$logdir" ; fi
+
+  # Normal debug mode (output the same as the contents of the log file).
+  if [[ "$stdout" == "debug" ]] ; then
+
+    printf "%s  %s:  [%s] %s\n" \
+           "$(date +"%d/%m/%y %X")" \
+           "$_init_name" \
+           "$converts_type" \
+           "$info_to_log" \
+           | tee -a "$logpath"   
+
+  # The decision whether an INFO is to be only log to a file
+  # or to a file and to standard output.
+  else
+  # if [[ "$stdout" == "" ]] ; then
+
+    printf "%s  %s:  [%s] %s\n" \
+           "$(date +"%d/%m/%y %X")" \
+           "$_init_name" \
+           "$converts_type" \
+           "$info_to_log" \
+           >>"$logpath"
+
+  fi
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: _exit_()
+#
+# Description:
+#   Covers the default exit command.
+#
+# Usage:
+#   _exit_ value
+#
+# Examples:
+#   _exit_ 0
+#
+
+function _exit_() { _STATUS="$1" ; exit "$_STATUS" ; }
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: _get_trap_SIG()
+#
+# Description:
+#   Ensuring they always perform necessary cleanup operations,
+#   even when something unexpected goes wrong.
+#
+# Usage:
+#   trap _get_trap_SIG SIGNAL
+#
+# Examples:
+#   trap _get_trap_SIG EXIT
+#
+
+function _get_trap_SIG() {
+
+  local _FUNCTION_ID="_get_trap_SIG"
+  local _STATE="${_STATUS:-}"
+
+  # Unset variables (e.g. global).
+  # local __vars=("$IFS_ORIG" "$IFS_HACK" "$IFS" "$PATH")
+  local __vars=("$PATH")
+
+  for i in "${__vars[@]}" ; do unset i ; done
+
+  if [ -z "$_STATE" ] ; then _STATE=255 ; fi
+
+  # Running tasks before the end of the script.
+  _after_init
+
+  _logger "exit" \
+    "${_FUNCTION_ID} exit > signal ${_STATE}"
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: _sprintf()
+#
+# Description:
+#   Function designed to output to the screen in a clear format.
+#
+# Usage:
+#   _sprintf "type" "message"
+#
+# Examples:
+#   _sprintf "head" "correct certificate: $_ssl_delivered_certificates_file"
+#
+
+function _sprintf() {
+
+  local _FUNCTION_ID="_sprintf"
+  local _STATE=0
+
+  ### Block of declarations
+  local s_type=""
+  local s_info=""
+  local s_char=""
+  local s_trgb=""
+
+  ### Block of definitions
+  s_type="$1"
+  s_info="$2"
+
+  # Determine the type of character and color for each type
+  # of output information.
+  if [[ "$s_type" == "info" ]] ; then
+
+    s_char="-"
+    s_trgb="0;33"
+
+  elif [[ "$s_type" == "head" ]] ; then
+
+    s_char="+"
+    s_trgb="1;32"
+
+  elif [[ "$s_type" == "stop" ]] ; then
+
+    s_char="!"
+    s_trgb="1;31"
+
+  else
+
+    s_char="-"
+    s_trgb="0;37"
+
+  fi
+
+  # If you run the tool in verbose mode do not display output using _sprintf.
+  if [[ "$stdout" != "debug" ]] ; then
+
+    if [[ "$s_type" == "spin" ]] && [[ ! -z "$s_info" ]] ; then
+
+      # Process id of the previous running command.
+      local _pid="$s_info"
+
+      local _sc='-\|/'
+
+      # Verify that the process is still running.
+      local n=0
+
+      while [[ $(kill -0 "$_pid" 2>/dev/null) ]] ; do
+
+        n=$(( ( n + 1 ) % 4 ))
+        printf "\r[%s]" "${_sc:n:1}"
+        sleep 0.1
+
+      done
+
+      # If the end, we clean.
+      printf "\r"
+
+    else
+
+      # Normal execution if:
+      # - spinner has not been called
+      # - spinner completed
+      printf '[\e['$s_trgb'm%s\e[m] %s\n' "$s_char" "$s_info"
+
+    fi
+
+  fi
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: _load()
+#
+# Description:
+#   Responsible for loading the configuration file, $config variable
+#   parameter is defined in the script call.
+#
+# Usage:
+#   _load "type" "path_to_config_file"
+#
+# Examples:
+#   _load "info" "$config"
+#   _load "info" "/tmp/file.cfg"
+#
+
+function _load() {
+
+  local _FUNCTION_ID="_load"
+  local _STATE=0
+
+  local _type="$1"
+  local _filename="$2"
+
+  if [[ ! -z "$_filename" ]] && [[ -e "$_filename" ]] ; then
+
+    # If the file exists is loaded.
+    . "$_filename" && \
+    _logger "info" \
+      "$_FUNCTION_ID()" \
+      "load $_filename properly"
+
+    if [[ "$_type" == "info" ]] ; then
+
+      _sprintf "head" "load $_filename properly"
+
+    fi
+
+  elif [ -z "$_filename" ] ; then
+
+    _sprintf "stop" "load file error (incorrect filename)"
+
+    _logger "stop" \
+      "$_FUNCTION_ID()" \
+      "load file error (incorrect filename)"
+
+  else
+
+    _sprintf "stop" "load $_filename file error (does not exist?)"
+
+    _logger "stop" \
+      "$_FUNCTION_ID()" \
+      "load $_filename file error (does not exist?)"
+
+  fi
+
+  return $_STATE
+
+}
+
+
+################################################################################
+################# Definitions of user variables and functions ##################
+################################################################################
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: _before_init()
+#
+# Description:
+#   INFOs performed before calling the __main__ function, e.g.
+#   attaching files, cleaning logs (if you need a function that will deal
+#   with it, put it here).
+#
+# Usage:
+#   _before_init
+#
+# Examples:
+#   _before_init
+#
+
+function _before_init() {
+
+  local _FUNCTION_ID="_before_init"
+  local _STATE=0
+
+  cd "$_init_directory"
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: _after_init()
+#
+# Description:
+#   INFOs performed after calling the __main__ function, e.g.
+#   cleaning logs (if you need a function that will deal with it,
+#   put it here).
+#
+# Usage:
+#   _after_init
+#
+# Examples:
+#   _after_init
+#
+
+function _after_init() {
+
+  local _FUNCTION_ID="_after_init"
+  local _STATE=0
+
+  cd "$_init_directory"
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: _help_()
+#
+# Description:
+#   Help message. Should be consistent with the contents of the file README.md.
+#
+# Usage:
+#   _help_
+#
+# Examples:
+#   _help_
+#
+
+function _help_() {
+
+  local _FUNCTION_ID="_help_"
+  local _STATE=0
+
+  printf "%s" "\
+
+  Usage:
+    $_init_name [option|long-option]
+
+  Examples:
+    $_init_name --help
+    $_init_name --version
+    $_init_name --debug
+    $_init_name --attach file.cfg
+
+  Options:
+    -h, --help                  show this message
+    -v, --version               show script version
+    -d, --debug                 display information on the screen (debug mode)
+    -a, --attach [file]         attach an external file to the script
+
+
+  proxmox_importer, Copyright (C) 2017  Michał Żurawski <git@bxlab.pl>
+
+  This program comes with ABSOLUTELY NO WARRANTY.
+  This is free software, and you are welcome to redistribute it
+  under certain conditions; for more details please see
+  <http://www.gnu.org/licenses/>.
+
+"
+
+  return $_STATE
+
+}
+
+
+################################################################################
+######################### Main function (script init) ##########################
+################################################################################
+
+function __main__() {
+
+  local _FUNCTION_ID="__main__"
+  local _STATE=0
+
+  _logger "init" \
+    "init '${_init_name}' in ${_init_directory}" && \
+  _logger "info" \
+    "__init_params[] = (${__init_params[*]})," \
+    "__script_params[] = (${__script_params[*]})"
+
+  # Include src/_import_ file.
+  _load "null" "$_import_"
+
+  # Specifies the call parameters of the script, the exact description
+  # can be found in _help_ and file README.md.
+  local _short_opt="hvda:"
+  local _long_opt="help,version,debug,attach:"
+
+  _GETOPT_PARAMS=$(getopt -o "$_short_opt" --long "$_long_opt" \
+                  -n "${_init_name}" -- "${__script_params[@]}")
+
+  if [[ -z "${__script_params[@]}" ]] ; then _exit_ 0 ; fi
+
+  eval set -- "$_GETOPT_PARAMS"
+  while true ; do
+
+    case $1 in
+
+      -h|--help)
+
+        _help_
+
+        shift ; _exit_ 0 ;;
+
+      -v|--version)
+
+        printf "%s, %s\n" "$_init_name" "$version"
+
+        shift ; _exit_ 0 ;;
+
+      -d|--debug)
+
+        stdout="debug"
+
+        shift ;;
+
+      -a|--attach)
+
+        load_state="1"
+
+        config=${2:-"$config"}
+
+        shift 2 ;;
+
+      '') shift ; break ;;
+      --) shift ; break ;;
+      *) _exit_ 0 ;;
+
+    esac
+
+  done
+
+  # Running tasks before start user functions.
+  _before_init
+
+  ################################# USER SPACE #################################
+  # ````````````````````````````````````````````````````````````````````````````
+  # Put here all your variable declarations, function calls
+  # and all the other code blocks.
+
+  # In this section we add all external files (for -a|--attach script param).
+  if [[ "$load_state" == "1" ]] ; then
+  
+    # _load "info" "/tmp/file.cfg"
+    _load "info" "$config"
+    
+  fi
+
+  # ````````````````````````````````````````````````````````````````````````````
+
+  return $_STATE
+
+}
+
+trap _get_trap_SIG EXIT
+
+# An array as an argument to a function call __main__,
+# is required if we want to operate on arguments of type $1, $2, ...
+__main__ "${__script_params[@]}"
+
+_exit_ 0
