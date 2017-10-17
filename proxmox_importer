@@ -603,6 +603,9 @@ function __main__() {
     
   fi
 
+  # Arrays responsible for keeping all options from a configuration file.
+  conn_params=("$l_host" "$l_port")
+
   # ````````````````````````````````````````````````````````````````````````````
 
   return $_STATE
