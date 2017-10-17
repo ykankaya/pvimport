@@ -1,0 +1,72 @@
+################################################################################
+######################## Definitions of user variables #########################
+################################################################################
+
+# Output logfile from pg commands.
+_output_err="${logdir}/output.err"
+
+
+################################################################################
+######################## Definitions of user functions #########################
+################################################################################
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: rCheckConn()
+#
+# Description:
+#   Validates the connection to the remote server.
+#
+# Usage:
+#   rCheckConn "host" "port"
+#
+# Examples:
+#   rCheckConn "$ldb_host" "$ldb_port"
+#
+
+function rCheckConn() {
+
+  local _FUNCTION_ID="rCheckConn"
+  local _STATE=0
+
+  local _params=("${!1}")
+
+  local _socket="${_params[2]}:${_params[3]}"
+
+  _sprintf "head" "connection to ${_socket}"
+
+  _logger "info" \
+    "$_FUNCTION_ID()" \
+    "connection to ${_socket}"
+
+  (sleep 1 | nc "${_socket%%:*}" "${_socket##*:}" 2>>"$_output_err") &
+  # We keep pid of the last command.
+  _pid=$!
+
+  # When the '(sleep 1 | nc ...) command is performed.
+  _sprintf "spin" "$_pid"
+
+  # Very important line:
+  # We define the state of the output job from the background.
+  wait $_pid &>/dev/null && _state="0" || _state="1"
+
+  if [[ "$_state" -eq "0" ]] ; then
+
+    _sprintf "info" "state: established"
+
+    _logger "info" \
+      "$_FUNCTION_ID()" \
+      "state: established"
+
+  else
+
+    _sprintf "stop" "state: not established"
+
+    _logger "stop" \
+      "$_FUNCTION_ID()" \
+      "state: not established"
+
+  fi
+
+  return $_STATE
+
+}
