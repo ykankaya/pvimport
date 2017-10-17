@@ -108,19 +108,23 @@ stdout=""
 readonly commands=(basename dirname stat date grep egrep cut sed gzip tar \
                    nc)
 
+# If you intend to specify the full path to the command we do it like:
+# readonly exec_gzip="/bin/gzip"
+
 # Stores the names of the missing commands.
 missing_hash=
 missing_counter=0
 
-if [[ -n "${missing_hash[@]}" ]] ; then
+if [[ -z "${missing_hash[@]}" ]] ; then
 
   for i in "${commands[@]}" ; do
 
-    # If the command was not found put it in the array.
-    if [[ $(hash "$i" >/dev/null 2>&1) ]] ; then
+    hash "$i" >/dev/null 2>&1 ; state="$?"
+
+    # If the command was not found put it in the array
+    if [[ "${state}" -ne 0 ]] ; then
 
       missing_hash+=("$i")
-
       ((missing_counter++))
 
     fi
@@ -130,15 +134,12 @@ if [[ -n "${missing_hash[@]}" ]] ; then
   # Stop the script if you do not find at least one command.
   if [[ "$missing_counter" -gt "0" ]] ; then
 
-    printf "ERROR -> not found in PATH: %s\n" "${missing_hash[@]}" >&2
-    exit 1
+    _sprintf "stop" "ERROR -> not found in PATH: ${missing_hash[@]}"
+    _exit_ 1
 
   fi
 
 fi
-
-# If you intend to specify the full path to the command we do it like:
-#   readonly exec_gzip="/bin/gzip"
 
 
 ################################################################################
