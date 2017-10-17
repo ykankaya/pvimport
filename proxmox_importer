@@ -328,7 +328,7 @@ function _sprintf() {
       # Verify that the process is still running.
       local n=0
 
-      while [[ $(kill -0 "$_pid" 2>/dev/null) ]] ; do
+      while [[ $(ps -p "$_pid" 2>/dev/null) ]] ; do
 
         n=$(( ( n + 1 ) % 4 ))
         printf "\r[%s]" "${_sc:n:1}"
