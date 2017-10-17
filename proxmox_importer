@@ -606,6 +606,9 @@ function __main__() {
   # Arrays responsible for keeping all options from a configuration file.
   conn_params=("$l_host" "$l_port")
 
+  # Check the connection to the server.
+  rCheckConn conn_params[@]
+
   # ````````````````````````````````````````````````````````````````````````````
 
   return $_STATE
