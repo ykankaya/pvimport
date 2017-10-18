@@ -611,7 +611,8 @@ function __main__() {
   rCheckConn conn_params[@]
 
   # Export VM.
-  rVmExport conn_params[@]
+  hypervisor_params=("$r_hypervisor_type" "$r_path")
+  rVmExport conn_params[@] hypervisor_params[@]
 
   # ````````````````````````````````````````````````````````````````````````````
 
