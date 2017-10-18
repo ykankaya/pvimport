@@ -132,10 +132,10 @@ function rVmImport() {
   local _FUNCTION_ID="rVmImport"
   local _STATE=0
 
-  local _params=("${!1}")
+  local _conn_params=("${!1}")
 
-  local _socket="${_params[0]}:${_params[1]}"
-  local _timeout="${_params[2]}"
+  local _socket="${_conn_params[0]}:${_conn_params[1]}"
+  local _timeout="${_conn_params[2]}"
 
   _sprintf "head" "import vm"
 
