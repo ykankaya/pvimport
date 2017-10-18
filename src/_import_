@@ -73,6 +73,43 @@ function rCheckConn() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
+# Function name: rVmExportXen()
+#
+# Description:
+#   Exports the virtual machine - XEN hypervisor.
+#
+# Usage:
+#   rVmExportXen
+#
+# Examples:
+#   rVmExportXen
+#
+
+function rVmExportXen() {
+
+  local _FUNCTION_ID="rVmExportXen"
+  local _STATE=0
+
+  local _params=("${!1}")
+
+  local _socket="${_params[0]}@${_params[1]}"
+  local _port="${_params[2]}"
+
+  local _vm_type="${_params[4]}"
+
+  _sprintf "info" "vm type: $_vm_type"
+
+  ssh ${_socket} -p ${_port} "touch /tmp/file.prox01"
+
+  _logger "info" \
+    "$_FUNCTION_ID()" \
+    "export vm"
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
 # Function name: rVmExport()
 #
 # Description:
@@ -95,7 +132,7 @@ function rVmExport() {
   local _socket="${_params[0]}@${_params[1]}"
   local _port="${_params[2]}"
 
-  _sprintf "head" "Export VM"
+  _sprintf "head" "export virtual machine"
 
   ssh ${_socket} -p ${_port} "touch /tmp/file.prox01"
 
