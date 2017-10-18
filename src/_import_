@@ -114,6 +114,8 @@ function rVmExport() {
 
     done
 
+  fi
+
   return $_STATE
 
 }
