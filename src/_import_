@@ -39,7 +39,7 @@ function rCheckConn() {
     "$_FUNCTION_ID()" \
     "connection to ${_socket}"
 
-  (timeout "$_timeout" bash -c "cat < /dev/null > /dev/tcp/${_socket%%:*}/${_socket##*:}") &
+  (timeout "$_timeout" bash -c "cat < /dev/null > /dev/tcp/${_socket%%:*}/${_socket##*:} 2> $_output_err") &
   # We keep pid of the last command.
   _pid=$!
 
@@ -67,6 +67,72 @@ function rCheckConn() {
       "state: not established"
 
   fi
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: rVmExport()
+#
+# Description:
+#   Exports the virtual machine.
+#
+# Usage:
+#   rVmExport
+#
+# Examples:
+#   rVmExport
+#
+
+function rVmExport() {
+
+  local _FUNCTION_ID="rVmExport"
+  local _STATE=0
+
+  local _params=("${!1}")
+
+  local _socket="${_params[0]}:${_params[1]}"
+  local _timeout="${_params[2]}"
+
+  _sprintf "head" "export vm"
+
+  _logger "info" \
+    "$_FUNCTION_ID()" \
+    "export vm"
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: rVmImport()
+#
+# Description:
+#   Imports the virtual machine.
+#
+# Usage:
+#   rVmImport
+#
+# Examples:
+#   rVmImport
+#
+
+function rVmImport() {
+
+  local _FUNCTION_ID="rVmImport"
+  local _STATE=0
+
+  local _params=("${!1}")
+
+  local _socket="${_params[0]}:${_params[1]}"
+  local _timeout="${_params[2]}"
+
+  _sprintf "head" "import vm"
+
+  _logger "info" \
+    "$_FUNCTION_ID()" \
+    "import vm"
 
   return $_STATE
 
