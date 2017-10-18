@@ -329,7 +329,7 @@ function _sprintf() {
       # Verify that the process is still running.
       local n=0
 
-      while [[ $(ps -p "$_pid" 2>/dev/null) ]] ; do
+      while [[ "$(ps a | awk '{print $1}' | grep -w $_pid)" ]] ; do
 
         n=$(( ( n + 1 ) % 4 ))
         printf "\r[%s]" "${_sc:n:1}"
