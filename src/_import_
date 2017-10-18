@@ -115,11 +115,9 @@ function rVmExport() {
 
   elif [[ "$_vm_type" == "xen" ]] ; then
 
-    _snap_id="null"
-
     for i in \
-    "ssh ${_socket} -p ${_port} _id=\$(xe vm-snapshot vm=${_vm_id} new-name-label=${_vm_dump}-snap) ; _snap_id=\${_id}" \
-    "ssh ${_socket} -p ${_port} xe vm-export vm=${_snap_id} filename=${_vm_storage}/${_vm_dump}.ova" ; do
+    "ssh ${_socket} -p ${_port} export _id=\$(xe vm-snapshot vm=${_vm_id} new-name-label=${_vm_dump}-snap)" \
+    "ssh ${_socket} -p ${_port} xe vm-export vm=\${_id} filename=${_vm_storage}/${_vm_dump}.ova" ; do
 
       _full_command="$i"
 
