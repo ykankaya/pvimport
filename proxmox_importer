@@ -106,7 +106,7 @@ stdout=""
 # We place here used commands at script runtime, as strings to anything
 # unnecessarily run.
 readonly commands=(basename dirname stat date grep egrep cut sed gzip tar \
-                   scp)
+                   ssh scp)
 
 # If you intend to specify the full path to the command we do it like:
 # readonly exec_gzip="/bin/gzip"
@@ -147,12 +147,27 @@ fi
 ################################################################################
 
 # ``````````````````````````````````````````````````````````````````````````````
+# Function name: _exit_()
+#
+# Description:
+#   Covers the default exit command.
+#
+# Usage:
+#   _exit_ value
+#
+# Examples:
+#   _exit_ 0
+#
+
+function _exit_() { _STATUS="$1" ; exit "$_STATUS" ; }
+
+# ``````````````````````````````````````````````````````````````````````````````
 # Function name: _logger()
 #
 # Description:
 #   Saving the states of operation to a log file.
 #
-#   Three states of message type:
+#   Four states of message type:
 #     INFO - normal information
 #     WARN - warning information
 #     STOP - interrupts script execution
@@ -208,24 +223,11 @@ function _logger() {
 
   fi
 
+  if [[ "$info_type" == "stop" ]] ; then _exit_ 255 ; fi
+
   return $_STATE
 
 }
-
-# ``````````````````````````````````````````````````````````````````````````````
-# Function name: _exit_()
-#
-# Description:
-#   Covers the default exit command.
-#
-# Usage:
-#   _exit_ value
-#
-# Examples:
-#   _exit_ 0
-#
-
-function _exit_() { _STATUS="$1" ; exit "$_STATUS" ; }
 
 # ``````````````````````````````````````````````````````````````````````````````
 # Function name: _get_trap_SIG()
@@ -294,15 +296,20 @@ function _sprintf() {
 
   # Determine the type of character and color for each type
   # of output information.
-  if [[ "$s_type" == "info" ]] ; then
+  if [[ "$s_type" == "head" ]] ; then
+
+    s_char="+"
+    s_trgb="1;32"
+
+  elif [[ "$s_type" == "info" ]] ; then
 
     s_char="-"
     s_trgb="0;33"
 
-  elif [[ "$s_type" == "head" ]] ; then
+  elif [[ "$s_type" == "warn" ]] ; then
 
-    s_char="+"
-    s_trgb="1;32"
+    s_char="!"
+    s_trgb="1;37"
 
   elif [[ "$s_type" == "stop" ]] ; then
 
@@ -375,6 +382,10 @@ function _init_cmd() {
 
   local _cmd="$1"
 
+  _logger "info" \
+    "$_FUNCTION_ID()" \
+    "init: ${_cmd}"
+
   ${_cmd} &
 
   # We keep pid of the last command.
@@ -386,6 +397,24 @@ function _init_cmd() {
   # Very important line:
   # We define the state of the output job from the background.
   wait $_pid &>/dev/null && _state="0" || _state="1"
+
+  if [[ "$_state" -eq "0" ]] ; then
+
+    _sprintf "info" "state: true"
+
+    _logger "info" \
+      "$_FUNCTION_ID()" \
+      "state: true"
+
+  else
+
+    _sprintf "stop" "state: false"
+
+    _logger "stop" \
+      "$_FUNCTION_ID()" \
+      "state: false"
+
+  fi
 
   _STATE=$_state
 
@@ -452,6 +481,55 @@ function _load() {
 
 }
 
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: _help_()
+#
+# Description:
+#   Help message. Should be consistent with the contents of the file README.md.
+#
+# Usage:
+#   _help_
+#
+# Examples:
+#   _help_
+#
+
+function _help_() {
+
+  local _FUNCTION_ID="_help_"
+  local _STATE=0
+
+  printf "%s" "\
+
+  Usage:
+    $_init_name [option|long-option]
+
+  Examples:
+    $_init_name --help
+    $_init_name --version
+    $_init_name --debug
+    $_init_name --attach file.cfg
+
+  Options:
+    -h, --help                  show this message
+    -v, --version               show script version
+    -d, --debug                 display information on the screen (debug mode)
+    -a, --attach [file]         attach an external file to the script
+
+
+  proxmox_importer, Copyright (C) 2017  Michał Żurawski <contact@nslab.at>
+
+  This program comes with ABSOLUTELY NO WARRANTY.
+  This is free software, and you are welcome to redistribute it
+  under certain conditions; for more details please see
+  <http://www.gnu.org/licenses/>.
+
+"
+
+  return $_STATE
+
+}
+
 
 ################################################################################
 ################# Definitions of user variables and functions ##################
@@ -504,55 +582,6 @@ function _after_init() {
   local _STATE=0
 
   cd "$_init_directory"
-
-  return $_STATE
-
-}
-
-# ``````````````````````````````````````````````````````````````````````````````
-# Function name: _help_()
-#
-# Description:
-#   Help message. Should be consistent with the contents of the file README.md.
-#
-# Usage:
-#   _help_
-#
-# Examples:
-#   _help_
-#
-
-function _help_() {
-
-  local _FUNCTION_ID="_help_"
-  local _STATE=0
-
-  printf "%s" "\
-
-  Usage:
-    $_init_name [option|long-option]
-
-  Examples:
-    $_init_name --help
-    $_init_name --version
-    $_init_name --debug
-    $_init_name --attach file.cfg
-
-  Options:
-    -h, --help                  show this message
-    -v, --version               show script version
-    -d, --debug                 display information on the screen (debug mode)
-    -a, --attach [file]         attach an external file to the script
-
-
-  proxmox_importer, Copyright (C) 2017  Michał Żurawski <git@bxlab.pl>
-
-  This program comes with ABSOLUTELY NO WARRANTY.
-  This is free software, and you are welcome to redistribute it
-  under certain conditions; for more details please see
-  <http://www.gnu.org/licenses/>.
-
-"
 
   return $_STATE
 
@@ -647,12 +676,14 @@ function __main__() {
 
   # Check the connection to the server.
   rCheckConn conn_params[@]
+  if [ $? ] ; then _exit_ 255 ; fi
 
   # Arrays responsible for keeping all options from a configuration file.
   hypervisor_params=("$r_hypervisor_type" "$r_storage" "$r_vm_id" "$r_vm_dump")
 
   # Export Virtual Machine.
   rVmExport conn_params[@] hypervisor_params[@]
+  if [ $? ] ; then _exit_ 255 ; fi
 
   # ````````````````````````````````````````````````````````````````````````````
 

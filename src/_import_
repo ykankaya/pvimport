@@ -39,34 +39,20 @@ function rCheckConn() {
     "$_FUNCTION_ID()" \
     "connection to ${_socket}"
 
-  (timeout "$_timeout" bash -c "cat < /dev/null > /dev/tcp/${_socket%%:*}/${_socket##*:} 2> $_output_err") &
-  # We keep pid of the last command.
-  _pid=$!
+  for i in \
+  "timeout $_timeout bash -c cat < /dev/null > /dev/tcp/${_socket%%:*}/${_socket##*:} 2> $_output_err" ; do
 
-  # When the '(command) &' command is performed.
-  _sprintf "spin" "$_pid"
+    _full_command="$i"
 
-  # Very important line:
-  # We define the state of the output job from the background.
-  wait $_pid &>/dev/null && _state="0" || _state="1"
-
-  if [[ "$_state" -eq "0" ]] ; then
-
-    _sprintf "info" "state: established"
+    _sprintf "info" "run a command: \"$_full_command\""
 
     _logger "info" \
       "$_FUNCTION_ID()" \
-      "state: established"
+      "run a command: ${_full_command}"
+  
+    _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
 
-  else
-
-    _sprintf "stop" "state: not established"
-
-    _logger "stop" \
-      "$_FUNCTION_ID()" \
-      "state: not established"
-
-  fi
+  done
 
   return $_STATE
 
@@ -118,35 +104,15 @@ function rVmExport() {
 
       _full_command="$i"
 
-      _sprintf "info" "run command: \"$_full_command\""
+      _sprintf "info" "run a command: \"$_full_command\""
+
+      _logger "info" \
+        "$_FUNCTION_ID()" \
+        "run a command: ${_full_command}"
   
-      _init_cmd "$_full_command"
-
-      if [[ "$_state" -eq "0" ]] ; then
-
-        _sprintf "info" "state: true"
-
-        _logger "info" \
-          "$_FUNCTION_ID()" \
-          "state: true"
-
-      else
-
-        _sprintf "stop" "state: false"
-
-        _logger "stop" \
-          "$_FUNCTION_ID()" \
-          "state: false"
-
-      fi
+      _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
 
     done
-
-  fi
-
-  _logger "info" \
-    "$_FUNCTION_ID()" \
-    "export vm"
 
   return $_STATE
 
@@ -180,6 +146,8 @@ function rVmImport() {
   _logger "info" \
     "$_FUNCTION_ID()" \
     "import vm"
+
+  _STATE=$_state
 
   return $_STATE
 
