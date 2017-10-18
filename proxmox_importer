@@ -87,6 +87,7 @@ readonly cdate=$(date +%Y%m%d)
 readonly logfile="${_init_name}.${cdate}.log"
 readonly logdir="${_init_directory}/log"
 readonly logpath="${logdir}/${logfile}"
+readonly logstdout="${logdir}/stdout.log"
 
 # Script version.
 readonly version="v1.0"
@@ -106,7 +107,7 @@ stdout=""
 # We place here used commands at script runtime, as strings to anything
 # unnecessarily run.
 readonly commands=(basename dirname stat date grep egrep cut sed gzip tar \
-                   ssh scp)
+                   ssh scp wait-port)
 
 # If you intend to specify the full path to the command we do it like:
 # readonly exec_gzip="/bin/gzip"
@@ -386,7 +387,7 @@ function _init_cmd() {
     "$_FUNCTION_ID()" \
     "init: ${_cmd}"
 
-  ${_cmd} &
+  ${_cmd} >${logstdout} 2>&1 &
 
   # We keep pid of the last command.
   _pid=$!
