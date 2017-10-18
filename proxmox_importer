@@ -356,6 +356,44 @@ function _sprintf() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
+# Function name: _init_cmd()
+#
+# Description:
+#   Function designed to output to the screen in a clear format.
+#
+# Usage:
+#   _init_cmd "type" "message"
+#
+# Examples:
+#   _init_cmd "head" "correct certificate: $_ssl_delivered_certificates_file"
+#
+
+function _init_cmd() {
+
+  local _FUNCTION_ID="_init_cmd"
+  local _STATE=0
+
+  local _cmd="$1"
+
+  (_cmd) &
+
+  # We keep pid of the last command.
+  _pid=$!
+
+  # When the '(command) &' command is performed.
+  _sprintf "spin" "$_pid"
+
+  # Very important line:
+  # We define the state of the output job from the background.
+  wait $_pid &>/dev/null && _state="0" || _state="1"
+
+  _STATE=$_state
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
 # Function name: _load()
 #
 # Description:
