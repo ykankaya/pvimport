@@ -101,6 +101,8 @@ function rVmExport() {
   local _vm_id="${_hypervisor_params[2]}"
   local _vm_dump="${_hypervisor_params[3]}"
 
+  local _pv_vars="/tmp/.pvvars"
+
   _sprintf "head" "export virtual machine"
 
   _sprintf "info" "hv type: $_vm_type"
@@ -116,8 +118,8 @@ function rVmExport() {
   elif [[ "$_vm_type" == "xen" ]] ; then
 
     for i in \
-    "ssh ${_socket} -p ${_port} export _id=\$(xe vm-snapshot vm=${_vm_id} new-name-label=${_vm_dump}-snap)" \
-    "ssh ${_socket} -p ${_port} xe vm-export vm=\${_id} filename=${_vm_storage}/${_vm_dump}.ova" ; do
+    "ssh ${_socket} -p ${_port} _id=\$(xe vm-snapshot vm=${_vm_id} new-name-label=${_vm_dump}-snap) ; echo \$_id > ${_pv_vars}" \
+    "ssh ${_socket} -p ${_port} _id=\$(cat ${_pv_vars}) ; xe vm-export vm=\${_id} filename=${_vm_storage}/${_vm_dump}.ova ; >${_pv_vars}" ; do
 
       _full_command="$i"
 
