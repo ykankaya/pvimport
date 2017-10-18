@@ -38,11 +38,11 @@ function rCheckConn() {
     "$_FUNCTION_ID()" \
     "connection to ${_socket}"
 
-  timeout 5 bash -c "cat < /dev/null > /dev/tcp/${_socket%%:*}/${_socket##*:}"
+  (timeout 5 bash -c "cat < /dev/null > /dev/tcp/${_socket%%:*}/${_socket##*:}") &
   # We keep pid of the last command.
   _pid=$!
 
-  # When the '(sleep 1 | nc ...) command is performed.
+  # When the '(command) &' command is performed.
   _sprintf "spin" "$_pid"
 
   # Very important line:
