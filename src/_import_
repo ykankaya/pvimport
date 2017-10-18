@@ -117,7 +117,7 @@ function rVmExport() {
 
     _full_command="ssh ${_socket} -p ${_port} touch /tmp/file.prox01"
 
-    _sprintf "head" "init command: $_full_command"
+    _sprintf "info" "run command: $_full_command"
   
     _init_cmd "$_full_command"
 
