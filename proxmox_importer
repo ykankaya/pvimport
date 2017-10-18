@@ -605,11 +605,12 @@ function __main__() {
   fi
 
   # Arrays responsible for keeping all options from a configuration file.
-  conn_params=("$r_host" "$r_port" "$r_timeout")
+  conn_params=("$r_user" "$r_host" "$r_port" "$r_timeout")
 
   # Check the connection to the server.
   rCheckConn conn_params[@]
 
+  #
   # ````````````````````````````````````````````````````````````````````````````
 
   return $_STATE
