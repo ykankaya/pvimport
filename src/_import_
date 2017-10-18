@@ -115,29 +115,35 @@ function rVmExport() {
 
   elif [[ "$_vm_type" == "xen" ]] ; then
 
-    _full_command="ssh ${_socket} -p ${_port} touch /tmp/file.prox01"
+    for i in \
+    "ssh ${_socket} -p ${_port} touch /tmp/file.prox01" \
+    "ssh ${_socket} -p ${_port} touch /tmp/file.prox02" ; do
 
-    _sprintf "info" "run command: $_full_command"
+      _full_command="$i"
+
+      _sprintf "info" "run command: \"$_full_command\""
   
-    _init_cmd "$_full_command"
+      _init_cmd "$_full_command"
 
-    if [[ "$_state" -eq "0" ]] ; then
+      if [[ "$_state" -eq "0" ]] ; then
 
-      _sprintf "info" "state: true"
+        _sprintf "info" "state: true"
 
-      _logger "info" \
-        "$_FUNCTION_ID()" \
-        "state: true"
+        _logger "info" \
+          "$_FUNCTION_ID()" \
+          "state: true"
 
-    else
+      else
 
-      _sprintf "stop" "state: false"
+        _sprintf "stop" "state: false"
 
-      _logger "stop" \
-        "$_FUNCTION_ID()" \
-        "state: false"
+        _logger "stop" \
+          "$_FUNCTION_ID()" \
+          "state: false"
 
-    fi
+      fi
+
+    done
 
   fi
 
