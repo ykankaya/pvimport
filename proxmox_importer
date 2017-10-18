@@ -610,7 +610,9 @@ function __main__() {
   # Check the connection to the server.
   rCheckConn conn_params[@]
 
-  #
+  # Export VM.
+  rVmExport conn_params[@]
+
   # ````````````````````````````````````````````````````````````````````````````
 
   return $_STATE

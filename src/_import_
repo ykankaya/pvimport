@@ -30,8 +30,8 @@ function rCheckConn() {
 
   local _params=("${!1}")
 
-  local _socket="${_params[0]}:${_params[1]}"
-  local _timeout="${_params[2]}"
+  local _socket="${_params[1]}:${_params[2]}"
+  local _timeout="${_params[3]}"
 
   _sprintf "head" "connection to ${_socket}"
 
