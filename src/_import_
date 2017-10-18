@@ -38,7 +38,7 @@ function rCheckConn() {
     "$_FUNCTION_ID()" \
     "connection to ${_socket}"
 
-  timeout 5 bash -c 'cat < /dev/null > /dev/tcp/"${_socket%%:*}"/"${_socket##*:}"'
+  timeout 5 bash -c "cat < /dev/null > /dev/tcp/${_socket%%:*}/${_socket##*:}"
   # We keep pid of the last command.
   _pid=$!
 
