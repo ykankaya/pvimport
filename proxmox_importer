@@ -605,7 +605,7 @@ function __main__() {
   fi
 
   # Arrays responsible for keeping all options from a configuration file.
-  conn_params=("$l_host" "$l_port")
+  conn_params=("$l_host" "$l_port" "$l_timeout")
 
   # Check the connection to the server.
   rCheckConn conn_params[@]

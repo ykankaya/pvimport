@@ -31,6 +31,7 @@ function rCheckConn() {
   local _params=("${!1}")
 
   local _socket="${_params[0]}:${_params[1]}"
+  local _timeout="${_params[2]}"
 
   _sprintf "head" "connection to ${_socket}"
 
@@ -38,7 +39,7 @@ function rCheckConn() {
     "$_FUNCTION_ID()" \
     "connection to ${_socket}"
 
-  (timeout 5 bash -c "cat < /dev/null > /dev/tcp/${_socket%%:*}/${_socket##*:}") &
+  (timeout "$_timeout" bash -c "cat < /dev/null > /dev/tcp/${_socket%%:*}/${_socket##*:}") &
   # We keep pid of the last command.
   _pid=$!
 
