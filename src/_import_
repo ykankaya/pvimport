@@ -92,14 +92,12 @@ function rVmExport() {
 
   local _params=("${!1}")
 
-  local _user="${_params[0]}"
-  local _host="${_params[1]}"
+  local _socket="${_params[0]}@${_params[1]}"
+  local _port="${_params[2]}"
 
   _sprintf "head" "Export VM"
 
-  ssh $_user@$_host << __EOF__
-    touch /tmp/file.prox01
-  __EOF__
+  ssh ${_socket} -p ${_port} "touch /tmp/file.prox01"
 
   _logger "info" \
     "$_FUNCTION_ID()" \
