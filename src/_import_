@@ -28,10 +28,10 @@ function rCheckConn() {
   local _FUNCTION_ID="rCheckConn"
   local _STATE=0
 
-  local _params=("${!1}")
+  local _conn_params=("${!1}")
 
-  local _socket="${_params[1]}:${_params[2]}"
-  local _timeout="${_params[3]}"
+  local _socket="${_conn_params[1]}:${_conn_params[2]}"
+  local _timeout="${_conn_params[3]}"
 
   _sprintf "head" "connection to ${_socket}"
 
@@ -90,13 +90,14 @@ function rVmExport() {
   local _FUNCTION_ID="rVmExport"
   local _STATE=0
 
-  local _params=("${!1}")
+  local _conn_params=("${!1}")
+  local _hypervisor_params=("${!2}")
 
-  local _socket="${_params[0]}@${_params[1]}"
-  local _port="${_params[2]}"
+  local _socket="${_conn_params[0]}@${_conn_params[1]}"
+  local _port="${_conn_params[2]}"
 
-  local _vm_type="${_params[4]}"
-  local _vm_storage="${_params[5]}"
+  local _vm_type="${_hypervisor_params[0]}"
+  local _vm_storage="${_hypervisor_params[1]}"
 
   _sprintf "head" "export virtual machine"
 
