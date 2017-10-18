@@ -115,17 +115,7 @@ function rVmExport() {
 
   elif [[ "$_vm_type" == "xen" ]] ; then
 
-    (bash -c "ssh ${_socket} -p ${_port} \"touch /tmp/file.prox01\"") &
-
-    # We keep pid of the last command.
-    _pid=$!
-
-    # When the '(command) &' command is performed.
-    _sprintf "spin" "$_pid"
-
-    # Very important line:
-    # We define the state of the output job from the background.
-    wait $_pid &>/dev/null && _state="0" || _state="1"
+    init_cmd "bash -c \"ssh ${_socket} -p ${_port} \"touch /tmp/file.prox01\"\""
 
     if [[ "$_state" -eq "0" ]] ; then
 
