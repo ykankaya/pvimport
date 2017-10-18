@@ -375,7 +375,7 @@ function _init_cmd() {
 
   local _cmd="$1"
 
-  $_cmd &
+  ${_cmd} &
 
   # We keep pid of the last command.
   _pid=$!

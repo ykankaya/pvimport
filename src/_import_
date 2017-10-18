@@ -115,7 +115,8 @@ function rVmExport() {
 
   elif [[ "$_vm_type" == "xen" ]] ; then
 
-    _init_cmd "bash -c \"ssh ${_socket} -p ${_port} \"touch /tmp/file.prox01\"\""
+    _full_command="ssh ${_socket} -p ${_port} touch /tmp/file.prox01"
+    _init_cmd "$_full_command"
 
     if [[ "$_state" -eq "0" ]] ; then
 
