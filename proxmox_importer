@@ -171,12 +171,12 @@ function _logger() {
   local _FUNCTION_ID="_logger"
   local _STATE=0
 
-  ### Block of declarations
+  ### Block of declarations.
   local info_type=""
   local info_to_log=""
   local converts_type=""
 
-  ### Block of definitions
+  ### Block of definitions.
   info_type="$1"
   info_to_log=$(shift ; echo "$@")
   converts_type=$(echo "$info_type" | tr '[:lower:]' '[:upper:]')
@@ -282,13 +282,13 @@ function _sprintf() {
   local _FUNCTION_ID="_sprintf"
   local _STATE=0
 
-  ### Block of declarations
+  ### Block of declarations.
   local s_type=""
   local s_info=""
   local s_char=""
   local s_trgb=""
 
-  ### Block of definitions
+  ### Block of definitions.
   s_type="$1"
   s_info="$2"
 
@@ -648,8 +648,10 @@ function __main__() {
   # Check the connection to the server.
   rCheckConn conn_params[@]
 
-  # Export VM.
+  # Arrays responsible for keeping all options from a configuration file.
   hypervisor_params=("$r_hypervisor_type" "$r_storage" "$r_vm_id" "$r_vm_dump")
+
+  # Export Virtual Machine.
   rVmExport conn_params[@] hypervisor_params[@]
 
   # ````````````````````````````````````````````````````````````````````````````
