@@ -40,7 +40,7 @@ function rCheckConn() {
     "connection to ${_socket}"
 
   for i in \
-  "timeout $_timeout echo -n > /dev/tcp/${_socket%%:*}/${_socket##*:} 2> $_output_err" ; do
+  "timeout $_timeout </dev/tcp/${_socket%%:*}/${_socket##*:} > $_output_err 2>&1" ; do
 
     _full_command="$i"
 
