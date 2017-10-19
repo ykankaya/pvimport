@@ -118,9 +118,9 @@ function rVmExport() {
 #   rVmImport
 #
 
-function rVmImport() {
+function lVmImport() {
 
-  local _FUNCTION_ID="rVmImport"
+  local _FUNCTION_ID="lVmImport"
   local _STATE=0
 
   local _conn_params=("${!1}")

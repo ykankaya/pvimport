@@ -675,17 +675,22 @@ function __main__() {
   fi
 
   # Arrays responsible for keeping all options from a configuration file.
-  conn_params=("$r_user" "$r_host" "$r_port" "$r_timeout")
+  r_conn_params=("$r_user" "$r_host" "$r_port")
+  l_conn_params=("$l_user" "$l_host" "$l_port")
+
+  r_hypervisor_params=("$r_hypervisor_type" "$r_storage" "$r_vm_id" "$r_vm_dump")
+  l_hypervisor_params=("$l_hypervisor_type" "$l_storage" "$l_vm_id" "$l_vm_dump")
 
   # Check the connection to the server.
-  rCheckConn conn_params[@]
+  rCheckConn r_conn_params[@]
   if [ ! $? ] ; then _exit_ 255 ; fi
 
-  # Arrays responsible for keeping all options from a configuration file.
-  hypervisor_params=("$r_hypervisor_type" "$r_storage" "$r_vm_id" "$r_vm_dump")
-
   # Export Virtual Machine.
-  rVmExport conn_params[@] hypervisor_params[@]
+  rVmExport r_conn_params[@] r_hypervisor_params[@]
+  if [ ! $? ] ; then _exit_ 255 ; fi
+
+  # Import Virtual Machine.
+  lVmImport l_conn_params[@] l_hypervisor_params[@]
   if [ ! $? ] ; then _exit_ 255 ; fi
 
   # ````````````````````````````````````````````````````````````````````````````
