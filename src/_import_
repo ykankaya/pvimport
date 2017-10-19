@@ -30,17 +30,20 @@ function CheckConn() {
   local _socket="${_conn_params[1]}:${_conn_params[2]}"
   local _timeout="${_conn_params[3]}"
 
-  _sprintf "head" "testing connection to ${_socket}"
+  _sprintf "head" "testing connection"
 
   _logger "info" \
     "$_FUNCTION_ID()" \
-    "testing connection to ${_socket}"
+    "testing connection"
 
-  for i in \
-  "wait-for-it -h ${_socket%%:*} -p ${_socket##*:} -t 5 -q" ; do
+  local _arg=("check ${_socket}":"wait-for-it -h ${_socket%%:*} -p ${_socket##*:} -t 5 -q")
+  for i in "${_arg[@]}" ; do
 
-    _full_command="$i"
+    _msg="${i%%:*}"
+    _full_command="${i##*:}"
   
+    _sprintf "info" "$_msg"
+
     _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
 
   done
