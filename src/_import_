@@ -8,21 +8,21 @@
 ################################################################################
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: rCheckConn()
+# Function name: CheckConn()
 #
 # Description:
 #   Validates the connection to the remote server.
 #
 # Usage:
-#   rCheckConn "host" "port"
+#   CheckConn "host" "port"
 #
 # Examples:
-#   rCheckConn "$l_host" "$l_port"
+#   CheckConn "$l_host" "$l_port"
 #
 
-function rCheckConn() {
+function CheckConn() {
 
-  local _FUNCTION_ID="rCheckConn"
+  local _FUNCTION_ID="CheckConn"
   local _STATE=0
 
   local _conn_params=("${!1}")
@@ -50,21 +50,21 @@ function rCheckConn() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: rVmExport()
+# Function name: VmExport()
 #
 # Description:
 #   Exports the virtual machine.
 #
 # Usage:
-#   rVmExport
+#   VmExport
 #
 # Examples:
-#   rVmExport
+#   VmExport
 #
 
-function rVmExport() {
+function VmExport() {
 
-  local _FUNCTION_ID="rVmExport"
+  local _FUNCTION_ID="VmExport"
   local _STATE=0
 
   local _conn_params=("${!1}")
@@ -104,21 +104,21 @@ function rVmExport() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: rVmImport()
+# Function name: VmImport()
 #
 # Description:
 #   Imports the virtual machine.
 #
 # Usage:
-#   rVmImport
+#   VmImport
 #
 # Examples:
-#   rVmImport
+#   VmImport
 #
 
-function lVmImport() {
+function VmImport() {
 
-  local _FUNCTION_ID="lVmImport"
+  local _FUNCTION_ID="VmImport"
   local _STATE=0
 
   local _conn_params=("${!1}")
