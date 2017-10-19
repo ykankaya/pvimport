@@ -681,6 +681,9 @@ function __main__() {
   r_hypervisor_params=("$r_hypervisor_type" "$r_storage" "$r_vm_id" "$r_vm_dump")
   l_hypervisor_params=("$l_hypervisor_type" "$l_storage" "$l_vm_id" "$l_vm_dump")
 
+  # Store remote variables.
+  local _pv_vars="/tmp/.pvvars"
+
   # Check the connection to the server.
   rCheckConn r_conn_params[@]
   if [ ! $? ] ; then _exit_ 255 ; fi
