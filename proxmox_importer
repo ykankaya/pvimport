@@ -407,7 +407,7 @@ function _init_cmd() {
 
     _logger "info" \
       "$_FUNCTION_ID()" \
-      "state: true"
+      "result: pass"
 
   else
 
@@ -415,7 +415,7 @@ function _init_cmd() {
 
     _logger "stop" \
       "$_FUNCTION_ID()" \
-      "state: false"
+      "result: stop"
 
   fi
 
