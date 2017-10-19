@@ -39,8 +39,6 @@ function CheckConn() {
   for i in \
   "wait-for-it -h ${_socket%%:*} -p ${_socket##*:} -t 5 -q" ; do
 
-    _sprintf "info" "state: true"
-
     _full_command="$i"
   
     _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi

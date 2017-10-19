@@ -415,7 +415,7 @@ function _init_cmd() {
 
     _logger "stop" \
       "$_FUNCTION_ID()" \
-      "result: stop"
+      "result: fail"
 
   fi
 
