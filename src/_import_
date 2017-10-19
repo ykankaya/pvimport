@@ -37,12 +37,17 @@ function CheckConn() {
     "testing connection"
 
   local _arg=("check ${_socket}":"wait-for-it -h ${_socket%%:*} -p ${_socket##*:} -t 5 -q")
+
   for i in "${_arg[@]}" ; do
 
     _msg="${i%%:*}"
     _full_command="${i##*:}"
   
     _sprintf "info" "$_msg"
+
+    _logger "info" \
+      "$_FUNCTION_ID()" \
+      "_msg"
 
     _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
 
@@ -88,13 +93,21 @@ function VmExport() {
   _sprintf "info" "vm id: $_vm_id"
   _sprintf "info" "output file: $_vm_dump"
 
+  local _arg=("create snapshot":"ssh ${_socket} -p ${_port} _id=\$(xe vm-snapshot vm=${_vm_id} new-name-label=${_vm_dump}-snap) ; echo \$_id > ${_pv_vars}" \
+              "export virtual machine":"ssh ${_socket} -p ${_port} _id=\$(cat ${_pv_vars}) ; xe vm-export vm=\${_id} filename=${_vm_storage_r}/${_vm_dump}.ova")
+
   if [[ "$_vm_type" == "xen" ]] ; then
 
-    for i in \
-    "ssh ${_socket} -p ${_port} _id=\$(xe vm-snapshot vm=${_vm_id} new-name-label=${_vm_dump}-snap) ; echo \$_id > ${_pv_vars}" \
-    "ssh ${_socket} -p ${_port} _id=\$(cat ${_pv_vars}) ; xe vm-export vm=\${_id} filename=${_vm_storage_r}/${_vm_dump}.ova" ; do
+    for i in "${_arg[@]}" ; do
 
-      _full_command="$i"
+      _msg="${i%%:*}"
+      _full_command="${i##*:}"
+
+      _sprintf "info" "$_msg"
+
+      _logger "info" \
+        "$_FUNCTION_ID()" \
+        "_msg"
   
       _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
 
@@ -157,13 +170,21 @@ function VmImport() {
 
     mkdir ${_vm_storage_l}/${_vm_dump}
 
-    for i in \
-    "scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_dump}.ova ${_vm_storage_l}/${_vm_dump}" \
-    "tar xf ${_vm_storage_l}/${_vm_dump}/${_vm_dump}.ova -C ${_vm_storage_l}/${_vm_dump}" \
-    "cd ${_vm_storage_l}/${_vm_dump} ; for i in $(find . -name \"Ref:*\") ; do _name=$(echo $i | tr \":\" \"_\") ; xenmigrate --convert=\"${i}\" \"${_name}.img\" ; done" ; do
+    local _arg=("copy from dst to src":"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_dump}.ova ${_vm_storage_l}/${_vm_dump}" \
+                "extract ova file":"tar xf ${_vm_storage_l}/${_vm_dump}/${_vm_dump}.ova -C ${_vm_storage_l}/${_vm_dump}" \
+                "init xenmigrate":"cd ${_vm_storage_l}/${_vm_dump} ; for i in $(find . -name \"Ref:*\") ; do _name=$(echo $i | tr \":\" \"_\") ; xenmigrate --convert=\"${i}\" \"${_name}.img\" ; done")
 
-      _full_command="$i"
-  
+    for i in "${_arg[@]}" ; do
+
+      _msg="${i%%:*}"
+      _full_command="${i##*:}"
+
+      _sprintf "info" "$_msg"
+
+      _logger "info" \
+        "$_FUNCTION_ID()" \
+        "_msg"
+
       _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
 
     done
