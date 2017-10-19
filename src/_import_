@@ -148,6 +148,16 @@ function lVmImport() {
 
   if [[ "$_vm_type" == "xen" ]] ; then
 
+    if [[ ! -d "${_vm_storage_l}" ]] ; then
+
+      _sprintf "stop" "local directory is not exist ($_vm_storage_l}"
+
+      _logger "stop" \
+        "$_FUNCTION_ID()" \
+        "local directory is not exist ($_vm_storage_l}"
+
+    fi
+
     mkdir ${_vm_storage_l}/${_vm_dump}
 
     for i in \
