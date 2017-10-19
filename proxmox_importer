@@ -677,14 +677,14 @@ function __main__() {
 
   # Check the connection to the server.
   rCheckConn conn_params[@]
-  if [ $? ] ; then _exit_ 255 ; fi
+  if [ ! $? ] ; then _exit_ 255 ; fi
 
   # Arrays responsible for keeping all options from a configuration file.
   hypervisor_params=("$r_hypervisor_type" "$r_storage" "$r_vm_id" "$r_vm_dump")
 
   # Export Virtual Machine.
   rVmExport conn_params[@] hypervisor_params[@]
-  if [ $? ] ; then _exit_ 255 ; fi
+  if [ ! $? ] ; then _exit_ 255 ; fi
 
   # ````````````````````````````````````````````````````````````````````````````
 
