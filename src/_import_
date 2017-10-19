@@ -142,8 +142,9 @@ function lVmImport() {
 
   if [[ "$_vm_type" == "xen" ]] ; then
 
+    mkdir ${_vm_storage_l}/${_vm_dump}
+
     for i in \
-    "ssh ${_socket} -p ${_port} mkdir ${_vm_storage_l}/${_vm_dump}" \
     "scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_dump}.ova ${_vm_storage_l}/${_vm_dump}" ; do
 
       _full_command="$i"
