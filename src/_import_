@@ -88,14 +88,8 @@ function rVmExport() {
   if [[ "$_vm_type" == "xen" ]] ; then
 
     for i in \
-    "_msg='make a snapshot' ; ssh ${_socket} -p ${_port} _id=\$(xe vm-snapshot vm=${_vm_id} new-name-label=${_vm_dump}-snap) ; echo \$_id > ${_pv_vars}" \
-    "_msg='make a dump' ; ssh ${_socket} -p ${_port} _id=\$(cat ${_pv_vars}) ; xe vm-export vm=\${_id} filename=${_vm_storage_r}/${_vm_dump}.ova ; >${_pv_vars}" ; do
-
-      _sprintf "info" "${_msg}"
-
-      _logger "info" \
-        "$_FUNCTION_ID()" \
-        "${_msg}"
+    "ssh ${_socket} -p ${_port} _id=\$(xe vm-snapshot vm=${_vm_id} new-name-label=${_vm_dump}-snap) ; echo \$_id > ${_pv_vars}" \
+    "ssh ${_socket} -p ${_port} _id=\$(cat ${_pv_vars}) ; xe vm-export vm=\${_id} filename=${_vm_storage_r}/${_vm_dump}.ova ; >${_pv_vars}" ; do
 
       _full_command="$i"
   
@@ -161,13 +155,7 @@ function lVmImport() {
     mkdir ${_vm_storage_l}/${_vm_dump}
 
     for i in \
-    "_msg='copy vm image to local storage' ; scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_dump}.ova ${_vm_storage_l}/${_vm_dump}" ; do
-
-      _sprintf "info" "${_msg}"
-
-      _logger "info" \
-        "$_FUNCTION_ID()" \
-        "${_msg}"
+    "scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_dump}.ova ${_vm_storage_l}/${_vm_dump}" ; do
 
       _full_command="$i"
   
