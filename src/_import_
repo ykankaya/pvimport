@@ -156,7 +156,8 @@ function lVmImport() {
 
     for i in \
     "scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_dump}.ova ${_vm_storage_l}/${_vm_dump}" \
-    "tar xf ${_vm_storage_l}/${_vm_dump}/${_vm_dump}.ova -C ${_vm_storage_l}/${_vm_dump}" ; do
+    "tar xf ${_vm_storage_l}/${_vm_dump}/${_vm_dump}.ova -C ${_vm_storage_l}/${_vm_dump}" \
+    "cd ${_vm_storage_l}/${_vm_dump} ; for i in $(find . -name \"Ref:*\") ; do _name=$(echo $i | tr \":\" \"_\") ; xenmigrate --convert=\"${i}\" \"${_name}.img\" ; done" ; do
 
       _full_command="$i"
   
