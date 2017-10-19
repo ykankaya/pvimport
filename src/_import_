@@ -40,12 +40,6 @@ function rCheckConn() {
   "wait-port -o silent ${_socket%%:*}:${_socket##*:}" ; do
 
     _full_command="$i"
-
-    _sprintf "info" "run a command: \"$_full_command\""
-
-    _logger "info" \
-      "$_FUNCTION_ID()" \
-      "run a command: ${_full_command}"
   
     _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
 
@@ -100,12 +94,6 @@ function rVmExport() {
     "ssh ${_socket} -p ${_port} _id=\$(cat ${_pv_vars}) ; xe vm-export vm=\${_id} filename=${_vm_storage}/${_vm_dump}.ova ; >${_pv_vars}" ; do
 
       _full_command="$i"
-
-      _sprintf "info" "run a command: \"$_full_command\""
-
-      _logger "info" \
-        "$_FUNCTION_ID()" \
-        "run a command: ${_full_command}"
   
       _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
 
