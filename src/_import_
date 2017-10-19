@@ -37,7 +37,7 @@ function rCheckConn() {
     "testing connection to ${_socket}"
 
   for i in \
-  "wait-port -h ${_socket%%:*} -p ${_socket##*:} -t 5 -q" ; do
+  "wait-for-it -h ${_socket%%:*} -p ${_socket##*:} -t 5 -q" ; do
 
     _full_command="$i"
   
