@@ -142,6 +142,7 @@ function VmCopy() {
   local _vm_storage_r="${_hypervisor_params[1]}"
   local _vm_id="${_hypervisor_params[2]}"
   local _vm_name="${_hypervisor_params[3]}"
+  local _vm_storage_l="${_hypervisor_params[4]}"
 
   _sprintf "head" "copying virtual machine"
 
