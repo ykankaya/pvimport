@@ -6,7 +6,7 @@
 #
 #         fname : "proxmox_importer"
 #         cdate : "12.10.2017"
-#         mdate : "19.10.2017"
+#         mdate : "20.10.2017"
 #       version : "v1.0"
 #        author : "Michał Żurawski <contact@nslab.at>"
 #      tab_size : "2"
@@ -512,12 +512,16 @@ function _help_() {
     $_init_name --version
     $_init_name --debug
     $_init_name --attach file.cfg
+    $_init_name --id testing
+    $_init_name --name testing_20
 
   Options:
     -h, --help                  show this message
     -v, --version               show script version
     -d, --debug                 display information on the screen (debug mode)
     -a, --attach [file]         attach an external file to the script
+    -i, --id [vm_id|vm_name]    set vm identificator or name
+    -n, --name [new_vm_name]    set new vm name
 
 
   proxmox_importer, Copyright (C) 2017  Michał Żurawski <contact@nslab.at>
@@ -611,8 +615,8 @@ function __main__() {
 
   # Specifies the call parameters of the script, the exact description
   # can be found in _help_ and file README.md.
-  local _short_opt="hvda:"
-  local _long_opt="help,version,debug,attach:"
+  local _short_opt="hvda:i:n:"
+  local _long_opt="help,version,debug,attach:,id:,name:"
 
   _GETOPT_PARAMS=$(getopt -o "$_short_opt" --long "$_long_opt" \
                   -n "${_init_name}" -- "${__script_params[@]}")
@@ -650,6 +654,18 @@ function __main__() {
 
         shift 2 ;;
 
+      -i|--id)
+
+        r_vm_id=${2}
+
+        shift 2 ;;
+
+      -n|--name)
+
+        r_vm_name=${2}
+
+        shift 2 ;;
+
       '') shift ; break ;;
       --) shift ; break ;;
       *) _exit_ 0 ;;
@@ -676,7 +692,7 @@ function __main__() {
 
   # Arrays responsible for keeping all options from a configuration file.
   _conn_params=("$r_user" "$r_host" "$r_port")
-  _hypervisor_params=("$r_hypervisor_type" "$r_storage" "$r_vm_id" "$r_vm_dump" "$l_storage")
+  _hypervisor_params=("$r_hypervisor_type" "$r_storage" "$r_vm_id" "$r_vm_name" "$l_storage")
 
   # Store remote variables.
   local _pv_vars="/tmp/.pvvars"
