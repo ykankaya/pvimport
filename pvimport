@@ -727,13 +727,17 @@ function __main__() {
   VmCopy _conn_params[@] _hypervisor_params[@]
   if [ ! $? ] ; then _exit_ 255 ; fi
 
-  # Import Virtual Machine.
-  VmImport _conn_params[@] _hypervisor_params[@]
+  # Extract Virtual Machine disks.
+  VmExtract _conn_params[@] _hypervisor_params[@]
   if [ ! $? ] ; then _exit_ 255 ; fi
 
   # Convert Virtual Machine.
   VmConvertDisks _conn_params[@] _hypervisor_params[@]
   if [ ! $? ] ; then _exit_ 255 ; fi
+
+  # Import Virtual Machine.
+  # VmImport _conn_params[@] _hypervisor_params[@]
+  # if [ ! $? ] ; then _exit_ 255 ; fi
 
   # ````````````````````````````````````````````````````````````````````````````
 
