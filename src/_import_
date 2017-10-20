@@ -153,13 +153,13 @@ function VmCopy() {
 
   if [[ "$_vm_type" == "xen" ]] ; then
 
-    if [[ ! -d "${_vm_storage_l}" ]] ; then
+    if [[ ! -d "${_vm_storage_l}/${_vm_name}" ]] ; then
 
-      _sprintf "info" "create local directory: ${_vm_storage_l}"
+      _sprintf "info" "create local directory: ${_vm_storage_l}/${_vm_name}"
 
       _logger "info" \
         "$_FUNCTION_ID()" \
-        "create local directory: ${_vm_storage_l}"
+        "create local directory: ${_vm_storage_l}/${_vm_name}"
 
       mkdir ${_vm_storage_l}/${_vm_name}
 
