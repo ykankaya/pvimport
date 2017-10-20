@@ -37,8 +37,7 @@ function CheckConn() {
     "check connection to remote host"
 
   local _arg=(\
-  "testing ${_socket%%:*}":\
-  "wait-for-it -h ${_socket%%:*} -p ${_socket##*:} -t 5 -q")
+  "testing ${_socket%%:*}":"wait-for-it -h ${_socket%%:*} -p ${_socket##*:} -t 5 -q")
 
   for i in "${_arg[@]}" ; do
 
@@ -93,12 +92,8 @@ function VmExport() {
   _sprintf "head" "exporting a virtual machine"
 
   local _arg=(\
-  "create snapshot for ${_vm_id}":\
-  "ssh ${_socket} -p ${_port} _id=\$(xe vm-snapshot vm=${_vm_id} \
-  new-name-label=${_vm_name}-${_random_value}) ; echo \$_id > ${_pv_vars}" \
-  "export snapshot for ${_vm_id}":\
-  "ssh ${_socket} -p ${_port} _id=\$(cat ${_pv_vars}) ;\
-   xe vm-export vm=\${_id} filename=${_vm_storage_r}/${_vm_name}.ova")
+  "create snapshot for ${_vm_id}":"ssh ${_socket} -p ${_port} _id=\$(xe vm-snapshot vm=${_vm_id} new-name-label=${_vm_name}-${_random_value}) ; echo \$_id > ${_pv_vars}" \
+  "export snapshot for ${_vm_id}":"ssh ${_socket} -p ${_port} _id=\$(cat ${_pv_vars}) ; xe vm-export vm=\${_id} filename=${_vm_storage_r}/${_vm_name}.ova")
 
   if [[ "$_vm_type" == "xen" ]] ; then
 
@@ -157,8 +152,7 @@ function VmCopy() {
   _sprintf "head" "copying a virtual machine"
 
   local _arg=(\
-  "remote - ${_vm_storage_r}, local - ${_vm_storage_l}/${_vm_name}":\
-  "scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}.ova ${_vm_storage_l}/${_vm_name}")
+  "remote - ${_vm_storage_r}, local - ${_vm_storage_l}/${_vm_name}":"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}.ova ${_vm_storage_l}/${_vm_name}")
 
   if [[ "$_vm_type" == "xen" ]] ; then
 
@@ -231,13 +225,8 @@ function VmImport() {
   if [[ "$_vm_type" == "xen" ]] ; then
 
     local _arg=(\
-    "extracting ${_vm_name}.ova":\
-    "tar xf ${_vm_storage_l}/${_vm_name}/${_vm_name}.ova -C ${_vm_storage_l}/${_vm_name}" \
-    "convert 'Ref' files to img format":\
-    "eval cd ${_vm_storage_l}/${_vm_name} ; \
-    for i in \$(find . -name \"Ref:*\") ; \
-    do _name=\$(echo \${i} | tr \":\" \"_\") ; \
-    xenmigrate --convert=\"\${i}\" \"\${_name}.img\" ; done")
+    "extracting ${_vm_name}.ova":"tar xf ${_vm_storage_l}/${_vm_name}/${_vm_name}.ova -C ${_vm_storage_l}/${_vm_name}" \
+    "convert 'Ref' files to img format":"eval cd ${_vm_storage_l}/${_vm_name} ; for i in \$(find . -name \"Ref:*\") ; do _name=\$(echo \${i} | tr \":\" \"_\") ; xenmigrate --convert=\"\${i}\" \"\${_name}.img\" ; done")
 
     for i in "${_arg[@]}" ; do
 
@@ -298,11 +287,7 @@ function VmConvertDisks() {
   if [[ "$_vm_type" == "xen" ]] ; then
 
     local _arg=(\
-    "for all 'img' files":\
-    "eval cd ${_vm_storage_l}/${_vm_name} ; \
-    for _name in \$(find . -name \"Ref_*\") ; \
-    do _nname=\${_name%.*} ; \
-    qemu-img convert -f raw -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
+    "for all 'img' files":"eval cd ${_vm_storage_l}/${_vm_name} ; for _name in \$(find . -name \"Ref_*\") ; do _nname=\${_name%.*} ; qemu-img convert -f raw -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
 
     for i in "${_arg[@]}" ; do
 
