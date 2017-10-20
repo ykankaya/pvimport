@@ -155,15 +155,15 @@ function VmCopy() {
 
     if [[ ! -d "${_vm_storage_l}" ]] ; then
 
-      _sprintf "stop" "local directory is not exist ($_vm_storage_l}"
+      _sprintf "info" "create local directory: ${_vm_storage_l}"
 
-      _logger "stop" \
+      _logger "info" \
         "$_FUNCTION_ID()" \
-        "local directory is not exist ($_vm_storage_l}"
+        "create local directory: ${_vm_storage_l}"
+
+      mkdir ${_vm_storage_l}/${_vm_name}
 
     fi
-
-    mkdir ${_vm_storage_l}/${_vm_name}
 
     for i in "${_arg[@]}" ; do
 
