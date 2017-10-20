@@ -383,7 +383,7 @@ function _init_cmd() {
 
   local _cmd="$1"
 
-  _sprintf "info" "init: \"$_cmd\""
+  # _sprintf "info" "init: \"$_cmd\""
 
   _logger "info" \
     "$_FUNCTION_ID()" \
