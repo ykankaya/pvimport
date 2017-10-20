@@ -245,3 +245,63 @@ function VmImport() {
   return $_STATE
 
 }
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: VmConvert()
+#
+# Description:
+#   Converts the virtual machine.
+#
+# Usage:
+#   VmConvert
+#
+# Examples:
+#   VmConvert
+#
+
+function VmConvert() {
+
+  local _FUNCTION_ID="VmConvert"
+  local _STATE=0
+
+  local _conn_params=("${!1}")
+  local _hypervisor_params=("${!2}")
+
+  local _socket="${_conn_params[0]}@${_conn_params[1]}"
+  local _port="${_conn_params[2]}"
+
+  local _vm_type="${_hypervisor_params[0]}"
+  local _vm_storage_r="${_hypervisor_params[1]}"
+  local _vm_id="${_hypervisor_params[2]}"
+  local _vm_name="${_hypervisor_params[3]}"
+  local _vm_storage_l="${_hypervisor_params[4]}"
+  local _random_value="${_hypervisor_params[4]}"
+
+  _sprintf "head" "converting virtual machine"
+
+  if [[ "$_vm_type" == "xen" ]] ; then
+
+    local _arg=("convert vm disks to qcow2":"cd ${_vm_storage_l}/${_vm_name} ; for _name in $(find . -name \"Ref_*\") ; do qemu-img convert -f raw -O qcow2 \"${_name}\" \"${_name}.qcow2\" ; done")
+
+    for i in "${_arg[@]}" ; do
+
+      _msg="${i%%:*}"
+      _full_command="${i##*:}"
+
+      _sprintf "info" "$_msg"
+
+      _logger "info" \
+        "$_FUNCTION_ID()" \
+        "_msg"
+
+      _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
+
+    done
+
+  fi
+
+  _STATE=$_state
+
+  return $_STATE
+
+}
