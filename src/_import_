@@ -84,17 +84,17 @@ function VmExport() {
   local _vm_type="${_hypervisor_params[0]}"
   local _vm_storage_r="${_hypervisor_params[1]}"
   local _vm_id="${_hypervisor_params[2]}"
-  local _vm_dump="${_hypervisor_params[3]}"
+  local _vm_name="${_hypervisor_params[3]}"
 
   _sprintf "head" "export virtual machine"
 
   _sprintf "info" "hv type: $_vm_type"
   _sprintf "info" "remote storage: $_vm_storage_r"
   _sprintf "info" "vm id: $_vm_id"
-  _sprintf "info" "output file: $_vm_dump"
+  _sprintf "info" "output file: $_vm_name"
 
-  local _arg=("create snapshot":"ssh ${_socket} -p ${_port} _id=\$(xe vm-snapshot vm=${_vm_id} new-name-label=${_vm_dump}-snap) ; echo \$_id > ${_pv_vars}" \
-              "export virtual machine":"ssh ${_socket} -p ${_port} _id=\$(cat ${_pv_vars}) ; xe vm-export vm=\${_id} filename=${_vm_storage_r}/${_vm_dump}.ova")
+  local _arg=("create snapshot":"ssh ${_socket} -p ${_port} _id=\$(xe vm-snapshot vm=${_vm_id} new-name-label=${_vm_name}-snap) ; echo \$_id > ${_pv_vars}" \
+              "export virtual machine":"ssh ${_socket} -p ${_port} _id=\$(cat ${_pv_vars}) ; xe vm-export vm=\${_id} filename=${_vm_storage_r}/${_vm_name}.ova")
 
   if [[ "$_vm_type" == "xen" ]] ; then
 
@@ -146,7 +146,7 @@ function VmImport() {
   local _vm_type="${_hypervisor_params[0]}"
   local _vm_storage_r="${_hypervisor_params[1]}"
   local _vm_id="${_hypervisor_params[2]}"
-  local _vm_dump="${_hypervisor_params[3]}"
+  local _vm_name="${_hypervisor_params[3]}"
   local _vm_storage_l="${_hypervisor_params[4]}"
 
   _sprintf "head" "import virtual machine"
@@ -154,7 +154,7 @@ function VmImport() {
   _sprintf "info" "hv type: $_vm_type"
   _sprintf "info" "local storage: $_vm_storage_l"
   _sprintf "info" "remote storage: $_vm_storage_r"
-  _sprintf "info" "output file: $_vm_dump"
+  _sprintf "info" "output file: $_vm_name"
 
   if [[ "$_vm_type" == "xen" ]] ; then
 
@@ -168,11 +168,11 @@ function VmImport() {
 
     fi
 
-    mkdir ${_vm_storage_l}/${_vm_dump}
+    mkdir ${_vm_storage_l}/${_vm_name}
 
-    local _arg=("copy from dst to src":"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_dump}.ova ${_vm_storage_l}/${_vm_dump}" \
-                "extract ova file":"tar xf ${_vm_storage_l}/${_vm_dump}/${_vm_dump}.ova -C ${_vm_storage_l}/${_vm_dump}" \
-                "init xenmigrate":"cd ${_vm_storage_l}/${_vm_dump} ; for i in $(find . -name \"Ref:*\") ; do _name=$(echo $i | tr \":\" \"_\") ; xenmigrate --convert=\"${i}\" \"${_name}.img\" ; done")
+    local _arg=("copy from dst to src":"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}.ova ${_vm_storage_l}/${_vm_name}" \
+                "extract ova file":"tar xf ${_vm_storage_l}/${_vm_name}/${_vm_name}.ova -C ${_vm_storage_l}/${_vm_name}" \
+                "init xenmigrate":"cd ${_vm_storage_l}/${_vm_name} ; for i in $(find . -name \"Ref:*\") ; do _name=$(echo $i | tr \":\" \"_\") ; xenmigrate --convert=\"${i}\" \"${_name}.img\" ; done")
 
     for i in "${_arg[@]}" ; do
 
