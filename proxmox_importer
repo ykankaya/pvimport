@@ -4,9 +4,9 @@
 #
 # Header:
 #
-#         fname : "proxmox_importer"
+#         fname : "pvimport"
 #         cdate : "12.10.2017"
-#         mdate : "20.10.2017"
+#         mdate : "21.10.2017"
 #       version : "v1.0"
 #        author : "Michał Żurawski <contact@nslab.at>"
 #      tab_size : "2"
@@ -18,7 +18,7 @@
 #
 # License:
 #
-#   proxmox_importer, Copyright (C) 2017  Michał Żurawski
+#   pvimport, Copyright (C) 2017  Michał Żurawski
 #
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -524,7 +524,7 @@ function _help_() {
     -n, --name [new_vm_name]    set new vm name
 
 
-  proxmox_importer, Copyright (C) 2017  Michał Żurawski <contact@nslab.at>
+  pvimport, Copyright (C) 2017  Michał Żurawski <contact@nslab.at>
 
   This program comes with ABSOLUTELY NO WARRANTY.
   This is free software, and you are welcome to redistribute it
