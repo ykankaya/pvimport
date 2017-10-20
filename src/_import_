@@ -190,21 +190,21 @@ function VmCopy() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: VmImport()
+# Function name: VmExtract()
 #
 # Description:
-#   Imports the virtual machine.
+#   Extracts the virtual machine disks.
 #
 # Usage:
-#   VmImport _conn_params[@] _hypervisor_params[@]
+#   VmExtract _conn_params[@] _hypervisor_params[@]
 #
 # Examples:
-#   VmImport _conn_params[@] _hypervisor_params[@]
+#   VmExtract _conn_params[@] _hypervisor_params[@]
 #
 
-function VmImport() {
+function VmExtract() {
 
-  local _FUNCTION_ID="VmImport"
+  local _FUNCTION_ID="VmExtract"
   local _STATE=0
 
   local _conn_params=("${!1}")
@@ -220,13 +220,12 @@ function VmImport() {
   local _vm_storage_l="${_hypervisor_params[4]}"
   local _random_value="${_hypervisor_params[5]}"
 
-  _sprintf "head" "importing a virtual machine (proxmox)"
+  _sprintf "head" "extracting ova disks (only for xen)"
 
   if [[ "$_vm_type" == "xen" ]] ; then
 
     local _arg=(\
-    "extracting ${_vm_name}.ova":"tar xf ${_vm_storage_l}/${_vm_name}/${_vm_name}.ova -C ${_vm_storage_l}/${_vm_name}" \
-    "convert 'Ref' files to img format":"eval cd ${_vm_storage_l}/${_vm_name} ; for i in \$(find . -name \"Ref:*\") ; do _name=\$(echo \${i} | tr \":\" \"_\") ; xenmigrate --convert=\"\${i}\" \"\${_name}.img\" ; done")
+    "for ${_vm_name}.ova":"tar xf ${_vm_storage_l}/${_vm_name}/${_vm_name}.ova -C ${_vm_storage_l}/${_vm_name}")
 
     for i in "${_arg[@]}" ; do
 
@@ -287,7 +286,70 @@ function VmConvertDisks() {
   if [[ "$_vm_type" == "xen" ]] ; then
 
     local _arg=(\
-    "for all 'img' files":"eval cd ${_vm_storage_l}/${_vm_name} ; for _name in \$(find . -name \"Ref_*\") ; do _nname=\${_name%.*} ; qemu-img convert -f raw -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
+    "convert 'Ref' files to img format":"eval cd ${_vm_storage_l}/${_vm_name} ; for i in \$(find . -name \"Ref:*\") ; do _name=\$(echo \${i} | tr \":\" \"_\") ; xenmigrate --convert=\"\${i}\" \"\${_name}.img\" ; done" \
+    "convert 'img' files to qcow2 format":"eval cd ${_vm_storage_l}/${_vm_name} ; for _name in \$(find . -name \"Ref_*\") ; do _nname=\${_name%.*} ; qemu-img convert -f raw -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
+
+    for i in "${_arg[@]}" ; do
+
+      _msg="${i%%:*}"
+      _full_command="${i#*:}"
+
+      _sprintf "info" "$_msg"
+
+      _logger "info" \
+        "$_FUNCTION_ID()" \
+        "$_msg"
+
+      _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
+
+    done
+
+  fi
+
+  _STATE=$_state
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: VmImport()
+#
+# Description:
+#   Imports the virtual machine.
+#
+# Usage:
+#   VmImport _conn_params[@] _hypervisor_params[@]
+#
+# Examples:
+#   VmImport _conn_params[@] _hypervisor_params[@]
+#
+
+function VmImport() {
+
+  local _FUNCTION_ID="VmImport"
+  local _STATE=0
+
+  local _conn_params=("${!1}")
+  local _hypervisor_params=("${!2}")
+
+  local _socket="${_conn_params[0]}@${_conn_params[1]}"
+  local _port="${_conn_params[2]}"
+
+  local _vm_type="${_hypervisor_params[0]}"
+  local _vm_storage_r="${_hypervisor_params[1]}"
+  local _vm_id="${_hypervisor_params[2]}"
+  local _vm_name="${_hypervisor_params[3]}"
+  local _vm_storage_l="${_hypervisor_params[4]}"
+  local _random_value="${_hypervisor_params[5]}"
+
+  _sprintf "head" "importing a virtual machine (proxmox)"
+
+  if [[ "$_vm_type" == "xen" ]] ; then
+
+    local _arg=(\
+    "extracting ${_vm_name}.ova":"tar xf ${_vm_storage_l}/${_vm_name}/${_vm_name}.ova -C ${_vm_storage_l}/${_vm_name}" \
+    "convert 'Ref' files to img format":"eval cd ${_vm_storage_l}/${_vm_name} ; for i in \$(find . -name \"Ref:*\") ; do _name=\$(echo \${i} | tr \":\" \"_\") ; xenmigrate --convert=\"\${i}\" \"\${_name}.img\" ; done")
 
     for i in "${_arg[@]}" ; do
 
