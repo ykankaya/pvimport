@@ -89,7 +89,7 @@ function VmExport() {
   local _vm_storage_l="${_hypervisor_params[4]}"
   local _random_value="${_hypervisor_params[5]}"
 
-  _sprintf "head" "exporting a virtual machine"
+  _sprintf "head" "exporting a virtual machine ($r_hypervisor_type)"
 
   local _arg=(\
   "create snapshot for ${_vm_id}":"ssh ${_socket} -p ${_port} _id=\$(xe vm-snapshot vm=${_vm_id} new-name-label=${_vm_name}-${_random_value}) ; echo \$_id > ${_pv_vars}" \
@@ -152,7 +152,7 @@ function VmCopy() {
   _sprintf "head" "copying a virtual machine"
 
   local _arg=(\
-  "remote - ${_vm_storage_r}, local - ${_vm_storage_l}/${_vm_name}":"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}.ova ${_vm_storage_l}/${_vm_name}")
+  "${_vm_name}.ova to ${_vm_storage_l}/${_vm_name}":"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}.ova ${_vm_storage_l}/${_vm_name}")
 
   if [[ "$_vm_type" == "xen" ]] ; then
 
@@ -220,7 +220,7 @@ function VmImport() {
   local _vm_storage_l="${_hypervisor_params[4]}"
   local _random_value="${_hypervisor_params[5]}"
 
-  _sprintf "head" "importing a virtual machine"
+  _sprintf "head" "importing a virtual machine (proxmox)"
 
   if [[ "$_vm_type" == "xen" ]] ; then
 
