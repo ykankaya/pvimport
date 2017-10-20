@@ -36,7 +36,7 @@ function CheckConn() {
     "$_FUNCTION_ID()" \
     "testing connection"
 
-  local _arg=("check ${_socket}":"wait-for-it -h ${_socket%%:*} -p ${_socket##*:} -t 5 -q")
+  local _arg=("check ${_socket%%:*}":"wait-for-it -h ${_socket%%:*} -p ${_socket##*:} -t 5 -q")
 
   for i in "${_arg[@]}" ; do
 
