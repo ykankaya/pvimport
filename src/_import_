@@ -282,7 +282,7 @@ function VmConvertDisks() {
 
   if [[ "$_vm_type" == "xen" ]] ; then
 
-    local _arg=("to qcow2 format":"cd ${_vm_storage_l}/${_vm_name} ; for _name in $(find . -name \"Ref_*\") ; do _nname=${_name%.*} ; qemu-img convert -f raw -O qcow2 \"${_name}\" \"${_nname}.qcow2\" ; done")
+    local _arg=("to qcow2 format":"cd ${_vm_storage_l}/${_vm_name} ; for _name in \$(find . -name \"Ref_*\") ; do _nname=\${_name%.*} ; qemu-img convert -f raw -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
 
     for i in "${_arg[@]}" ; do
 
