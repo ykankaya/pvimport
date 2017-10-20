@@ -14,10 +14,10 @@
 #   Validates the connection to the remote server.
 #
 # Usage:
-#   CheckConn "host" "port"
+#   CheckConn _conn_params[@]
 #
 # Examples:
-#   CheckConn "$l_host" "$l_port"
+#   CheckConn _conn_params[@]
 #
 
 function CheckConn() {
@@ -36,18 +36,18 @@ function CheckConn() {
     "$_FUNCTION_ID()" \
     "testing connection"
 
-  local _arg=("check ${_socket}":"wait-for-it -h ${_socket%%:*} -p ${_socket##*:} -t 5 -q")
+  local _arg=("check (${_socket})":"wait-for-it -h ${_socket%%:*} -p ${_socket##*:} -t 5 -q")
 
   for i in "${_arg[@]}" ; do
 
     _msg="${i%%:*}"
-    _full_command="${i##*:}"
+    _full_command="${i#*:}"
   
     _sprintf "info" "$_msg"
 
     _logger "info" \
       "$_FUNCTION_ID()" \
-      "_msg"
+      "$_msg"
 
     _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
 
@@ -64,10 +64,10 @@ function CheckConn() {
 #   Exports the virtual machine.
 #
 # Usage:
-#   VmExport
+#   VmExport _conn_params[@] _hypervisor_params[@]
 #
 # Examples:
-#   VmExport
+#   VmExport _conn_params[@] _hypervisor_params[@]
 #
 
 function VmExport() {
@@ -90,21 +90,21 @@ function VmExport() {
 
   _sprintf "head" "exporting a virtual machine"
 
-  local _arg=("create snapshot":"ssh ${_socket} -p ${_port} _id=\$(xe vm-snapshot vm=${_vm_id} new-name-label=${_vm_name}-${_random_value}) ; echo \$_id > ${_pv_vars}" \
-              "export vm":"ssh ${_socket} -p ${_port} _id=\$(cat ${_pv_vars}) ; xe vm-export vm=\${_id} filename=${_vm_storage_r}/${_vm_name}.ova")
+  local _arg=("create snapshot (${_vm_name}-${_random_value})":"ssh ${_socket} -p ${_port} _id=\$(xe vm-snapshot vm=${_vm_id} new-name-label=${_vm_name}-${_random_value}) ; echo \$_id > ${_pv_vars}" \
+              "export snapshot (${_vm_id})":"ssh ${_socket} -p ${_port} _id=\$(cat ${_pv_vars}) ; xe vm-export vm=\${_id} filename=${_vm_storage_r}/${_vm_name}.ova")
 
   if [[ "$_vm_type" == "xen" ]] ; then
 
     for i in "${_arg[@]}" ; do
 
       _msg="${i%%:*}"
-      _full_command="${i##*:}"
+      _full_command="${i#*:}"
 
       _sprintf "info" "$_msg"
 
       _logger "info" \
         "$_FUNCTION_ID()" \
-        "_msg"
+        "$_msg"
   
       _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
 
@@ -123,10 +123,10 @@ function VmExport() {
 #   Copies the virtual machine from remote host to local (target) host.
 #
 # Usage:
-#   VmCopy
+#   VmCopy _conn_params[@] _hypervisor_params[@]
 #
 # Examples:
-#   VmCopy
+#   VmCopy _conn_params[@] _hypervisor_params[@]
 #
 
 function VmCopy() {
@@ -149,7 +149,7 @@ function VmCopy() {
 
   _sprintf "head" "copying virtual machine"
 
-  local _arg=("copy from dst to src":"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}.ova ${_vm_storage_l}/${_vm_name}")
+  local _arg=("from remote (${_vm_storage_r}) to local (${_vm_storage_l}/${_vm_name})":"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}.ova ${_vm_storage_l}/${_vm_name}")
 
   if [[ "$_vm_type" == "xen" ]] ; then
 
@@ -174,7 +174,7 @@ function VmCopy() {
 
       _logger "info" \
         "$_FUNCTION_ID()" \
-        "_msg"
+        "$_msg"
   
       _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
 
@@ -193,10 +193,10 @@ function VmCopy() {
 #   Imports the virtual machine.
 #
 # Usage:
-#   VmImport
+#   VmImport _conn_params[@] _hypervisor_params[@]
 #
 # Examples:
-#   VmImport
+#   VmImport _conn_params[@] _hypervisor_params[@]
 #
 
 function VmImport() {
@@ -221,19 +221,19 @@ function VmImport() {
 
   if [[ "$_vm_type" == "xen" ]] ; then
 
-    local _arg=("extract ova file":"tar xf ${_vm_storage_l}/${_vm_name}/${_vm_name}.ova -C ${_vm_storage_l}/${_vm_name}" \
-                "init xenmigrate":"cd ${_vm_storage_l}/${_vm_name} ; for i in $(find . -name \"Ref:*\") ; do _name=$(echo $i | tr \":\" \"_\") ; xenmigrate --convert=\"${i}\" \"${_name}.img\" ; done")
+    local _arg=("extract ova (${_vm_name}.ova)":"tar xf ${_vm_storage_l}/${_vm_name}/${_vm_name}.ova -C ${_vm_storage_l}/${_vm_name}" \
+                "init xenmigrate for Ref files":"cd ${_vm_storage_l}/${_vm_name} ; for i in $(find . -name \"Ref:*\") ; do _name=$(echo $i | tr \":\" \"_\") ; xenmigrate --convert=\"${i}\" \"${_name}.img\" ; done")
 
     for i in "${_arg[@]}" ; do
 
       _msg="${i%%:*}"
-      _full_command="${i##*:}"
+      _full_command="${i#*:}"
 
       _sprintf "info" "$_msg"
 
       _logger "info" \
         "$_FUNCTION_ID()" \
-        "_msg"
+        "$_msg"
 
       _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
 
@@ -254,10 +254,10 @@ function VmImport() {
 #   Converts the virtual machine.
 #
 # Usage:
-#   VmConvert
+#   VmConvert _conn_params[@] _hypervisor_params[@]
 #
 # Examples:
-#   VmConvert
+#   VmConvert _conn_params[@] _hypervisor_params[@]
 #
 
 function VmConvert() {
@@ -287,13 +287,13 @@ function VmConvert() {
     for i in "${_arg[@]}" ; do
 
       _msg="${i%%:*}"
-      _full_command="${i##*:}"
+      _full_command="${i#*:}"
 
       _sprintf "info" "$_msg"
 
       _logger "info" \
         "$_FUNCTION_ID()" \
-        "_msg"
+        "$_msg"
 
       _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
 
