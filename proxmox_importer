@@ -656,7 +656,7 @@ function __main__() {
 
       -t|--type)
 
-        r_vm_id=${2}
+        r_hypervisor_type=${2}
 
         shift 2 ;;
 
@@ -677,6 +677,21 @@ function __main__() {
       *) _exit_ 0 ;;
 
     esac
+
+  done
+
+  # Checking variable values (if they are set).
+  for i in r_hypervisor_type r_vm_id r_vm_name ; do
+
+    if [[ -z ${i+x} ]] ; then
+
+      _sprintf "stop" "$i is unset"
+
+      _logger "stop" \
+        "$_FUNCTION_ID()" \
+        "var $i is unset"
+
+    fi
 
   done
 
