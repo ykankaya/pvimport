@@ -150,6 +150,18 @@ function VmCopy() {
 
   if [[ "$_vm_type" == "xen" ]] ; then
 
+    if [[ ! -d "${_vm_storage_l}" ]] ; then
+
+      _sprintf "stop" "local directory is not exist ($_vm_storage_l}"
+
+      _logger "stop" \
+        "$_FUNCTION_ID()" \
+        "local directory is not exist ($_vm_storage_l}"
+
+    fi
+
+    mkdir ${_vm_storage_l}/${_vm_name}
+
     for i in "${_arg[@]}" ; do
 
       _msg="${i%%:*}"
@@ -204,18 +216,6 @@ function VmImport() {
   _sprintf "head" "importing virtual machine"
 
   if [[ "$_vm_type" == "xen" ]] ; then
-
-    if [[ ! -d "${_vm_storage_l}" ]] ; then
-
-      _sprintf "stop" "local directory is not exist ($_vm_storage_l}"
-
-      _logger "stop" \
-        "$_FUNCTION_ID()" \
-        "local directory is not exist ($_vm_storage_l}"
-
-    fi
-
-    mkdir ${_vm_storage_l}/${_vm_name}
 
     local _arg=("extract ova file":"tar xf ${_vm_storage_l}/${_vm_name}/${_vm_name}.ova -C ${_vm_storage_l}/${_vm_name}" \
                 "init xenmigrate":"cd ${_vm_storage_l}/${_vm_name} ; for i in $(find . -name \"Ref:*\") ; do _name=$(echo $i | tr \":\" \"_\") ; xenmigrate --convert=\"${i}\" \"${_name}.img\" ; done")
