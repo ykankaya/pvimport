@@ -30,11 +30,11 @@ function CheckConn() {
   local _socket="${_conn_params[1]}:${_conn_params[2]}"
   local _timeout="${_conn_params[3]}"
 
-  _sprintf "head" "check connection to remote host"
+  _sprintf "head" "checking connection to remote host"
 
   _logger "info" \
     "$_FUNCTION_ID()" \
-    "check connection to remote host"
+    "checking connection to remote host"
 
   local _arg=(\
   "testing ${_socket%%:*}":"wait-for-it -h ${_socket%%:*} -p ${_socket##*:} -t 5 -q")
