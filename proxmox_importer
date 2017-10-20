@@ -698,15 +698,19 @@ function __main__() {
   local _pv_vars="/tmp/.pvvars"
 
   # Check the connection to the server.
-  rCheckConn _conn_params[@]
+  CheckConn _conn_params[@]
   if [ ! $? ] ; then _exit_ 255 ; fi
 
   # Export Virtual Machine.
-  rVmExport _conn_params[@] _hypervisor_params[@]
+  VmExport _conn_params[@] _hypervisor_params[@]
+  if [ ! $? ] ; then _exit_ 255 ; fi
+
+  # Copy Virtual Machine.
+  VmCopy _conn_params[@] _hypervisor_params[@]
   if [ ! $? ] ; then _exit_ 255 ; fi
 
   # Import Virtual Machine.
-  lVmImport _conn_params[@] _hypervisor_params[@]
+  VmImport _conn_params[@] _hypervisor_params[@]
   if [ ! $? ] ; then _exit_ 255 ; fi
 
   # ````````````````````````````````````````````````````````````````````````````
