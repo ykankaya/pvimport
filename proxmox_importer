@@ -739,6 +739,10 @@ function __main__() {
   VmImport _conn_params[@] _hypervisor_params[@]
   if [ ! $? ] ; then _exit_ 255 ; fi
 
+  # Convert Virtual Machine.
+  VmConvert _conn_params[@] _hypervisor_params[@]
+  if [ ! $? ] ; then _exit_ 255 ; fi
+
   # ````````````````````````````````````````````````````````````````````````````
 
   return $_STATE
