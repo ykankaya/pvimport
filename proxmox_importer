@@ -512,6 +512,7 @@ function _help_() {
     $_init_name --version
     $_init_name --debug
     $_init_name --attach file.cfg
+    $_init_name --type xen
     $_init_name --id testing
     $_init_name --name testing_20
 
@@ -520,6 +521,7 @@ function _help_() {
     -v, --version               show script version
     -d, --debug                 display information on the screen (debug mode)
     -a, --attach [file]         attach an external file to the script
+    -t, --type [hv_type]        set hypervisor type (xen or vmware)
     -i, --id [vm_id|vm_name]    set vm identificator or name
     -n, --name [new_vm_name]    set new vm name
 
