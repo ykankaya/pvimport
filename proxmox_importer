@@ -403,7 +403,7 @@ function _init_cmd() {
 
   if [[ "$_state" -eq "0" ]] ; then
 
-    _sprintf "info" "state: true"
+    # _sprintf "info" "result: pass"
 
     _logger "info" \
       "$_FUNCTION_ID()" \
@@ -411,7 +411,7 @@ function _init_cmd() {
 
   else
 
-    _sprintf "stop" "state: false"
+    _sprintf "stop" "result: fail"
 
     _logger "stop" \
       "$_FUNCTION_ID()" \
@@ -454,11 +454,11 @@ function _load() {
     . "$_filename" && \
     _logger "info" \
       "$_FUNCTION_ID()" \
-      "load $_filename properly"
+      "load $_filename"
 
     if [[ "$_type" == "info" ]] ; then
 
-      _sprintf "head" "load $_filename properly"
+      _sprintf "head" "load $_filename"
 
     fi
 
