@@ -168,7 +168,7 @@ function VmCopy() {
     for i in "${_arg[@]}" ; do
 
       _msg="${i%%:*}"
-      _full_command="${i##*:}"
+      _full_command="${i#*:}"
 
       _sprintf "info" "$_msg"
 
