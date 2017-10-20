@@ -512,7 +512,6 @@ function _help_() {
     $_init_name --version
     $_init_name --debug
     $_init_name --attach file.cfg
-    $_init_name --type xen
     $_init_name --id testing
     $_init_name --name testing_20
 
@@ -521,7 +520,6 @@ function _help_() {
     -v, --version               show script version
     -d, --debug                 display information on the screen (debug mode)
     -a, --attach [file]         attach an external file to the script
-    -t, --type [hv_type]        set hypervisor type (xen or vmware)
     -i, --id [vm_id|vm_name]    set vm identificator or name
     -n, --name [new_vm_name]    set new vm name
 
@@ -617,8 +615,8 @@ function __main__() {
 
   # Specifies the call parameters of the script, the exact description
   # can be found in _help_ and file README.md.
-  local _short_opt="hvda:t:i:n:"
-  local _long_opt="help,version,debug,attach:,type:,id:,name:"
+  local _short_opt="hvda:i:n:"
+  local _long_opt="help,version,debug,attach:,id:,name:"
 
   _GETOPT_PARAMS=$(getopt -o "$_short_opt" --long "$_long_opt" \
                   -n "${_init_name}" -- "${__script_params[@]}")
@@ -653,12 +651,6 @@ function __main__() {
         load_state="1"
 
         config=${2:-"$config"}
-
-        shift 2 ;;
-
-      -t|--type)
-
-        r_hypervisor_type=${2}
 
         shift 2 ;;
 
