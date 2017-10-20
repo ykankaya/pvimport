@@ -454,29 +454,29 @@ function _load() {
     . "$_filename" && \
     _logger "info" \
       "$_FUNCTION_ID()" \
-      "load $_filename"
+      "loading configuration file: $_filename"
 
     if [[ "$_type" == "info" ]] ; then
 
-      _sprintf "head" "load $_filename"
+      _sprintf "head" "loading configuration file: $_filename"
 
     fi
 
   elif [ -z "$_filename" ] ; then
 
-    _sprintf "stop" "load file error (incorrect filename)"
+    _sprintf "stop" "incorrectly loaded $_filename file (incorrect filename)"
 
     _logger "stop" \
       "$_FUNCTION_ID()" \
-      "load file error (incorrect filename)"
+      "incorrectly loaded $_filename file (incorrect filename)"
 
   else
 
-    _sprintf "stop" "load $_filename file error (does not exist?)"
+    _sprintf "stop" "incorrectly loaded $_filename file (does not exist?)"
 
     _logger "stop" \
       "$_FUNCTION_ID()" \
-      "load $_filename file error (does not exist?)"
+      "incorrectly loaded $_filename file (does not exist?)"
 
   fi
 
