@@ -389,7 +389,7 @@ function _init_cmd() {
     "$_FUNCTION_ID()" \
     "init: ${_cmd}"
 
-  eval "${_cmd} >${logstdout} 2>&1" &
+  $(${_cmd} >${logstdout} 2>&1) &
 
   # We keep pid of the last command.
   _pid=$!
