@@ -85,7 +85,8 @@ function VmExport() {
   local _vm_storage_r="${_hypervisor_params[1]}"
   local _vm_id="${_hypervisor_params[2]}"
   local _vm_name="${_hypervisor_params[3]}"
-  local _random_value="${_hypervisor_params[4]}"
+  local _vm_storage_l="${_hypervisor_params[4]}"
+  local _random_value="${_hypervisor_params[5]}"
 
   _sprintf "head" "exporting a virtual machine"
 
@@ -144,7 +145,7 @@ function VmCopy() {
   local _vm_id="${_hypervisor_params[2]}"
   local _vm_name="${_hypervisor_params[3]}"
   local _vm_storage_l="${_hypervisor_params[4]}"
-  local _random_value="${_hypervisor_params[4]}"
+  local _random_value="${_hypervisor_params[5]}"
 
   _sprintf "head" "copying virtual machine"
 
@@ -214,7 +215,7 @@ function VmImport() {
   local _vm_id="${_hypervisor_params[2]}"
   local _vm_name="${_hypervisor_params[3]}"
   local _vm_storage_l="${_hypervisor_params[4]}"
-  local _random_value="${_hypervisor_params[4]}"
+  local _random_value="${_hypervisor_params[5]}"
 
   _sprintf "head" "importing virtual machine"
 
@@ -275,7 +276,7 @@ function VmConvert() {
   local _vm_id="${_hypervisor_params[2]}"
   local _vm_name="${_hypervisor_params[3]}"
   local _vm_storage_l="${_hypervisor_params[4]}"
-  local _random_value="${_hypervisor_params[4]}"
+  local _random_value="${_hypervisor_params[5]}"
 
   _sprintf "head" "converting virtual machine"
 
