@@ -222,7 +222,7 @@ function VmImport() {
   if [[ "$_vm_type" == "xen" ]] ; then
 
     local _arg=("extract ${_vm_name}.ova":"tar xf ${_vm_storage_l}/${_vm_name}/${_vm_name}.ova -C ${_vm_storage_l}/${_vm_name}" \
-                "init xenmigrate for all Ref files":"cd ${_vm_storage_l}/${_vm_name} ; for i in \$(find . -name \"Ref:*\") ; do _name=\$(echo $i | tr \":\" \"_\") ; xenmigrate --convert=\"${i}\" \"${_name}.img\" ; done")
+                "init xenmigrate for all Ref files":"cd ${_vm_storage_l}/${_vm_name} ; for i in \$(find . -name \"Ref:*\") ; do _name=\$(echo \${i} | tr \":\" \"_\") ; xenmigrate --convert=\"\${i}\" \"\${_name}.img\" ; done")
 
     for i in "${_arg[@]}" ; do
 
