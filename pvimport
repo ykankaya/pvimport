@@ -450,17 +450,19 @@ function _load() {
 
   if [[ ! -z "$_filename" ]] && [[ -e "$_filename" ]] ; then
 
+    _sprintf "head" "loading configuration"
+
+    if [[ "$_type" == "info" ]] ; then
+
+      _sprintf "info" "file: $_filename"
+
+    fi
+
     # If the file exists is loaded.
     . "$_filename" && \
     _logger "info" \
       "$_FUNCTION_ID()" \
       "loading configuration file: $_filename"
-
-    if [[ "$_type" == "info" ]] ; then
-
-      _sprintf "head" "loading configuration file: $_filename"
-
-    fi
 
   elif [ -z "$_filename" ] ; then
 
