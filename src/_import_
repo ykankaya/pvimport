@@ -8,6 +8,51 @@
 ################################################################################
 
 # ``````````````````````````````````````````````````````````````````````````````
+# Function name: InitPv()
+#
+# Description:
+#   Enables the environment for other functions.
+#
+# Usage:
+#   InitPv "param_0" "param_1"
+#
+# Examples:
+#   InitPv _conn_params[@] _hypervisor_params[@]
+#
+
+function InitPv() {
+
+  local _FUNCTION_ID="InitPv"
+  local _STATE=0
+
+  local _conn_params=("${!1}")
+  local _hypervisor_params=("${!2}")
+
+  local _socket="${_conn_params[0]}@${_conn_params[1]}"
+  local _port="${_conn_params[2]}"
+
+  local _vm_type="${_hypervisor_params[0]}"
+  local _vm_storage_r="${_hypervisor_params[1]}"
+  local _vm_id="${_hypervisor_params[2]}"
+  local _vm_name="${_hypervisor_params[3]}"
+  local _vm_storage_l="${_hypervisor_params[4]}"
+  local _random_value="${_hypervisor_params[5]}"
+
+  _sprintf "head" "init env for pvimport"
+
+  _logger "info" \
+    "$_FUNCTION_ID()" \
+    "init env for pvimport"
+
+  local _function_stack=(CheckConn VmExport VmCopy VmExtract VmConvertDisks VmImport)
+
+  for i in "${_function_stack[@]}" ; do ${i} ; if [ ! $? ] ; then _exit_ 255 ; fi ; done
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
 # Function name: CheckConn()
 #
 # Description:
@@ -24,11 +69,6 @@ function CheckConn() {
 
   local _FUNCTION_ID="CheckConn"
   local _STATE=0
-
-  local _conn_params=("${!1}")
-
-  local _socket="${_conn_params[1]}:${_conn_params[2]}"
-  local _timeout="${_conn_params[3]}"
 
   _sprintf "head" "checking connection to remote host"
 
@@ -76,19 +116,6 @@ function VmExport() {
   local _FUNCTION_ID="VmExport"
   local _STATE=0
 
-  local _conn_params=("${!1}")
-  local _hypervisor_params=("${!2}")
-
-  local _socket="${_conn_params[0]}@${_conn_params[1]}"
-  local _port="${_conn_params[2]}"
-
-  local _vm_type="${_hypervisor_params[0]}"
-  local _vm_storage_r="${_hypervisor_params[1]}"
-  local _vm_id="${_hypervisor_params[2]}"
-  local _vm_name="${_hypervisor_params[3]}"
-  local _vm_storage_l="${_hypervisor_params[4]}"
-  local _random_value="${_hypervisor_params[5]}"
-
   _sprintf "head" "exporting a virtual machine ($r_hypervisor_type)"
 
   local _arg=(\
@@ -135,19 +162,6 @@ function VmCopy() {
 
   local _FUNCTION_ID="VmCopy"
   local _STATE=0
-
-  local _conn_params=("${!1}")
-  local _hypervisor_params=("${!2}")
-
-  local _socket="${_conn_params[0]}@${_conn_params[1]}"
-  local _port="${_conn_params[2]}"
-
-  local _vm_type="${_hypervisor_params[0]}"
-  local _vm_storage_r="${_hypervisor_params[1]}"
-  local _vm_id="${_hypervisor_params[2]}"
-  local _vm_name="${_hypervisor_params[3]}"
-  local _vm_storage_l="${_hypervisor_params[4]}"
-  local _random_value="${_hypervisor_params[5]}"
 
   _sprintf "head" "copying a virtual machine"
 
@@ -207,19 +221,6 @@ function VmExtract() {
   local _FUNCTION_ID="VmExtract"
   local _STATE=0
 
-  local _conn_params=("${!1}")
-  local _hypervisor_params=("${!2}")
-
-  local _socket="${_conn_params[0]}@${_conn_params[1]}"
-  local _port="${_conn_params[2]}"
-
-  local _vm_type="${_hypervisor_params[0]}"
-  local _vm_storage_r="${_hypervisor_params[1]}"
-  local _vm_id="${_hypervisor_params[2]}"
-  local _vm_name="${_hypervisor_params[3]}"
-  local _vm_storage_l="${_hypervisor_params[4]}"
-  local _random_value="${_hypervisor_params[5]}"
-
   _sprintf "head" "extracting ova disks (only for xen)"
 
   if [[ "$_vm_type" == "xen" ]] ; then
@@ -267,19 +268,6 @@ function VmConvertDisks() {
 
   local _FUNCTION_ID="VmConvertDisks"
   local _STATE=0
-
-  local _conn_params=("${!1}")
-  local _hypervisor_params=("${!2}")
-
-  local _socket="${_conn_params[0]}@${_conn_params[1]}"
-  local _port="${_conn_params[2]}"
-
-  local _vm_type="${_hypervisor_params[0]}"
-  local _vm_storage_r="${_hypervisor_params[1]}"
-  local _vm_id="${_hypervisor_params[2]}"
-  local _vm_name="${_hypervisor_params[3]}"
-  local _vm_storage_l="${_hypervisor_params[4]}"
-  local _random_value="${_hypervisor_params[5]}"
 
   _sprintf "head" "converting to qcow2 format"
 
@@ -329,19 +317,6 @@ function VmImport() {
 
   local _FUNCTION_ID="VmImport"
   local _STATE=0
-
-  local _conn_params=("${!1}")
-  local _hypervisor_params=("${!2}")
-
-  local _socket="${_conn_params[0]}@${_conn_params[1]}"
-  local _port="${_conn_params[2]}"
-
-  local _vm_type="${_hypervisor_params[0]}"
-  local _vm_storage_r="${_hypervisor_params[1]}"
-  local _vm_id="${_hypervisor_params[2]}"
-  local _vm_name="${_hypervisor_params[3]}"
-  local _vm_storage_l="${_hypervisor_params[4]}"
-  local _random_value="${_hypervisor_params[5]}"
 
   _sprintf "head" "importing a virtual machine (proxmox)"
 
