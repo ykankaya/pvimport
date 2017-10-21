@@ -37,11 +37,11 @@ function InitPv() {
   local _vm_name="${_hypervisor_params[3]}"
   local _vm_storage_l="${_hypervisor_params[4]}"
 
-  _sprintf "head" "creating environment for pvimport"
+  _sprintf "head" "creating environment"
 
   _logger "info" \
     "$_FUNCTION_ID()" \
-    "creating environment for pvimport"
+    "creating environment"
 
   # Functions stack description:
   #   CheckConn       - check the connection to the server (xen/vmware)
@@ -139,15 +139,15 @@ function VmExport() {
   local _FUNCTION_ID="VmExport"
   local _STATE=0
 
-  _sprintf "head" "exporting a virtual machine (xen)"
+  _sprintf "head" "exporting ${_vm_id}"
 
   _logger "info" \
     "$_FUNCTION_ID()" \
-    "exporting a virtual machine (xen)"
+    "exporting ${_vm_id}"
 
   local _arg=(\
-  "create snapshot for: ${_vm_id}"^"ssh ${_socket} -p ${_port} _id=\$(xe vm-snapshot vm=${_vm_id} new-name-label=${_vm_name}-${_random}) ; echo \$_id > ${_pv_vars}" \
-  "export snapshot for: ${_vm_name}-${_random}"^"ssh ${_socket} -p ${_port} _id=\$(cat ${_pv_vars}) ; xe vm-export vm=\${_id} filename=${_vm_storage_r}/${_vm_name}.ova")
+  "create snapshot: ${_vm_name}-${_random}}"^"ssh ${_socket} -p ${_port} _id=\$(xe vm-snapshot vm=${_vm_id} new-name-label=${_vm_name}-${_random}) ; echo \$_id > ${_pv_vars}" \
+  "export snapshot: ${_vm_name}.ova"^"ssh ${_socket} -p ${_port} _id=\$(cat ${_pv_vars}) ; xe vm-export vm=\${_id} filename=${_vm_storage_r}/${_vm_name}.ova")
 
   for i in "${_arg[@]}" ; do
 
@@ -253,11 +253,11 @@ function VmExtract() {
   local _FUNCTION_ID="VmExtract"
   local _STATE=0
 
-  _sprintf "head" "extracting ova disks (xen)"
+  _sprintf "head" "extracting ova disks"
 
   _logger "info" \
     "$_FUNCTION_ID()" \
-    "extracting ova disks (xen)"
+    "extracting ova disks"
 
   local _arg=(\
   "src file: ${_vm_name}.ova, dst path: ${_vm_storage_l}/${_vm_name}"^"tar xf ${_vm_storage_l}/${_vm_name}/${_vm_name}.ova -C ${_vm_storage_l}/${_vm_name}")
