@@ -225,7 +225,7 @@ function VmCopy() {
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
     local _arg=(\
-    "src: '*.vmdk', dst path: '${_local_path}'"^"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}/*.vmdk ${_local_path}")
+    "src: '*.vmdk' (with flat), dst path: '${_local_path}'"^"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}/*.vmdk ${_local_path}")
 
   fi
 
@@ -327,7 +327,7 @@ function VmConvertDisks() {
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
     local _arg=(\
-    "src: '*.vmdk', dst path: '${_local_path}'"^"eval cd ${_local_path} ; for _name in \$(find . -name \"*.vmdk\" | grep -v \"flat\") ; do _nname=\${_name%.*} ; qemu-img convert -f vmdk -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
+    "src: '*.vmdk' (without flat), dst path: '${_local_path}'"^"eval cd ${_local_path} ; for _name in \$(find . -name \"*.vmdk\" | grep -v \"flat\") ; do _nname=\${_name%.*} ; qemu-img convert -f vmdk -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
 
   fi
 
