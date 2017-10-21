@@ -14,7 +14,7 @@
 #   Validates the connection to the remote server.
 #
 # Usage:
-#   CheckConn _conn_params[@]
+#   CheckConn "param"
 #
 # Examples:
 #   CheckConn _conn_params[@]
@@ -65,7 +65,7 @@ function CheckConn() {
 #   Exports the virtual machine.
 #
 # Usage:
-#   VmExport _conn_params[@] _hypervisor_params[@]
+#   VmExport "param_0" "param_1"
 #
 # Examples:
 #   VmExport _conn_params[@] _hypervisor_params[@]
@@ -125,7 +125,7 @@ function VmExport() {
 #   Copies the virtual machine from remote host to local (target) host.
 #
 # Usage:
-#   VmCopy _conn_params[@] _hypervisor_params[@]
+#   VmCopy "param_0" "param_1"
 #
 # Examples:
 #   VmCopy _conn_params[@] _hypervisor_params[@]
@@ -196,7 +196,7 @@ function VmCopy() {
 #   Extracts the virtual machine disks.
 #
 # Usage:
-#   VmExtract _conn_params[@] _hypervisor_params[@]
+#   VmExtract "param_0" "param_1"
 #
 # Examples:
 #   VmExtract _conn_params[@] _hypervisor_params[@]
@@ -257,7 +257,7 @@ function VmExtract() {
 #   Converts the virtual machine.
 #
 # Usage:
-#   VmConvertDisks _conn_params[@] _hypervisor_params[@]
+#   VmConvertDisks "param_0" "param_1"
 #
 # Examples:
 #   VmConvertDisks _conn_params[@] _hypervisor_params[@]
@@ -319,7 +319,7 @@ function VmConvertDisks() {
 #   Imports the virtual machine.
 #
 # Usage:
-#   VmImport _conn_params[@] _hypervisor_params[@]
+#   VmImport "param_0" "param_1"
 #
 # Examples:
 #   VmImport _conn_params[@] _hypervisor_params[@]
