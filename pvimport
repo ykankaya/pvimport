@@ -367,13 +367,13 @@ function _sprintf() {
 # Function name: _init_cmd()
 #
 # Description:
-#   Function designed to output to the screen in a clear format.
+#   Function executing given as a command parameter.
 #
 # Usage:
-#   _init_cmd "type" "message"
+#   _init_cmd param"
 #
 # Examples:
-#   _init_cmd "head" "correct certificate: $_ssl_delivered_certificates_file"
+#   _init_cmd "eval cd /etc/init.d && ls"
 #
 
 function _init_cmd() {
