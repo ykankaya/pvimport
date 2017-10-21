@@ -184,39 +184,44 @@ function VmCopy() {
 
   _sprintf "head" "copying a virtual machine"
 
-  local _arg=(\
-  "${_vm_name}.ova to ${_vm_storage_l}/${_vm_name}":"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}.ova ${_vm_storage_l}/${_vm_name}")
+  if [[ ! -d "${_vm_storage_l}/${_vm_name}" ]] ; then
+
+    _sprintf "info" "create a local directory: ${_vm_storage_l}/${_vm_name}"
+
+    _logger "info" \
+      "$_FUNCTION_ID()" \
+      "create a local directory: ${_vm_storage_l}/${_vm_name}"
+
+    mkdir ${_vm_storage_l}/${_vm_name}
+
+  fi
 
   if [[ "$_vm_type" == "xen" ]] ; then
 
-    if [[ ! -d "${_vm_storage_l}/${_vm_name}" ]] ; then
+    local _arg=(\
+    "${_vm_name}.ova to ${_vm_storage_l}/${_vm_name}":"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}.ova ${_vm_storage_l}/${_vm_name}")
 
-      _sprintf "info" "create a local directory: ${_vm_storage_l}/${_vm_name}"
+  elif [[ "$_vm_type" == "vmware" ]] ; then
 
-      _logger "info" \
-        "$_FUNCTION_ID()" \
-        "create a local directory: ${_vm_storage_l}/${_vm_name}"
-
-      mkdir ${_vm_storage_l}/${_vm_name}
-
-    fi
-
-    for i in "${_arg[@]}" ; do
-
-      _msg="${i%%:*}"
-      _full_command="${i#*:}"
-
-      _sprintf "info" "$_msg"
-
-      _logger "info" \
-        "$_FUNCTION_ID()" \
-        "$_msg"
-
-      _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
-
-    done
+    local _arg=(\
+    "all vmdk file to ${_vm_storage_l}/${_vm_name}":"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}*.vmdk ${_vm_storage_l}/${_vm_name}")
 
   fi
+
+  for i in "${_arg[@]}" ; do
+
+    _msg="${i%%:*}"
+    _full_command="${i#*:}"
+
+    _sprintf "info" "$_msg"
+
+    _logger "info" \
+      "$_FUNCTION_ID()" \
+      "$_msg"
+
+    _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
+
+  done
 
   return $_STATE
 
