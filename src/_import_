@@ -223,7 +223,7 @@ function VmCopy() {
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
     local _arg=(\
-    "src: '${_vm_name}*.vmdk', dst path: '${_vm_storage_l}/${_vm_name}'"^"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}*flat.vmdk ${_vm_storage_l}/${_vm_name}")
+    "src: '${_vm_name}*.vmdk', dst path: '${_vm_storage_l}/${_vm_name}'"^"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}/*flat.vmdk ${_vm_storage_l}/${_vm_name}")
 
   fi
 
