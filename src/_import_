@@ -41,7 +41,7 @@ function InitPv() {
 
   _logger "info" \
     "$_FUNCTION_ID()" \
-    "init env for pvimport"
+    "creating environment for pvimport"
 
   # Functions stack description:
   #   CheckConn       - check the connection to the server (xen/vmware)
@@ -93,11 +93,11 @@ function CheckConn() {
   local _FUNCTION_ID="CheckConn"
   local _STATE=0
 
-  _sprintf "head" "checking connection to remote host"
+  _sprintf "head" "checking connection"
 
   _logger "info" \
     "$_FUNCTION_ID()" \
-    "checking connection to remote host"
+    "checking connection"
 
   local _arg=(\
   "host: ${_socket#*@}"^"wait-for-it -h ${_socket#*@} -p ${_port} -t 5 -q")
@@ -141,9 +141,13 @@ function VmExport() {
 
   _sprintf "head" "exporting a virtual machine (xen)"
 
+  _logger "info" \
+    "$_FUNCTION_ID()" \
+    "exporting a virtual machine (xen)"
+
   local _arg=(\
   "create snapshot for: ${_vm_id}"^"ssh ${_socket} -p ${_port} _id=\$(xe vm-snapshot vm=${_vm_id} new-name-label=${_vm_name}-${_random}) ; echo \$_id > ${_pv_vars}" \
-  "export snapshot for: ${_vm_id}"^"ssh ${_socket} -p ${_port} _id=\$(cat ${_pv_vars}) ; xe vm-export vm=\${_id} filename=${_vm_storage_r}/${_vm_name}.ova")
+  "export snapshot for: ${_vm_name}-${_random}"^"ssh ${_socket} -p ${_port} _id=\$(cat ${_pv_vars}) ; xe vm-export vm=\${_id} filename=${_vm_storage_r}/${_vm_name}.ova")
 
   for i in "${_arg[@]}" ; do
 
@@ -184,6 +188,10 @@ function VmCopy() {
 
   _sprintf "head" "copying a virtual machine"
 
+  _logger "info" \
+    "$_FUNCTION_ID()" \
+    "copying a virtual machine"
+
   if [[ ! -d "${_vm_storage_l}/${_vm_name}" ]] ; then
 
     _sprintf "info" "create a local directory: ${_vm_storage_l}/${_vm_name}"
@@ -199,12 +207,12 @@ function VmCopy() {
   if [[ "$_vm_type" == "xen" ]] ; then
 
     local _arg=(\
-    "src: ${_vm_name}.ova, dst: ${_vm_storage_l}/${_vm_name}"^"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}.ova ${_vm_storage_l}/${_vm_name}")
+    "src file: ${_vm_name}.ova, dst path: ${_vm_storage_l}/${_vm_name}"^"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}.ova ${_vm_storage_l}/${_vm_name}")
 
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
     local _arg=(\
-    "src: all 'vmdk' files, dst: ${_vm_storage_l}/${_vm_name}"^"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}*.vmdk ${_vm_storage_l}/${_vm_name}")
+    "src file: all vmdk, dst path: ${_vm_storage_l}/${_vm_name}"^"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}*.vmdk ${_vm_storage_l}/${_vm_name}")
 
   fi
 
@@ -247,8 +255,12 @@ function VmExtract() {
 
   _sprintf "head" "extracting ova disks (xen)"
 
+  _logger "info" \
+    "$_FUNCTION_ID()" \
+    "extracting ova disks (xen)"
+
   local _arg=(\
-  "src: ${_vm_name}.ova, dst: 'Ref' directories"^"tar xf ${_vm_storage_l}/${_vm_name}/${_vm_name}.ova -C ${_vm_storage_l}/${_vm_name}")
+  "src file: ${_vm_name}.ova, dst path: ${_vm_storage_l}/${_vm_name}"^"tar xf ${_vm_storage_l}/${_vm_name}/${_vm_name}.ova -C ${_vm_storage_l}/${_vm_name}")
 
   for i in "${_arg[@]}" ; do
 
@@ -289,16 +301,20 @@ function VmConvertDisks() {
 
   _sprintf "head" "converting to qcow2 format"
 
+  _logger "info" \
+    "$_FUNCTION_ID()" \
+    "converting to qcow2 format"
+
   if [[ "$_vm_type" == "xen" ]] ; then
 
     local _arg=(\
-    "src: 'Ref' files, dst: 'img' files"^"eval cd ${_vm_storage_l}/${_vm_name} ; for i in \$(find . -name \"Ref:*\") ; do _name=\$(echo \${i} | tr \":\" \"_\") ; xenmigrate --convert=\"\${i}\" \"\${_name}.img\" ; done" \
-    "src: 'img' files, dst: 'qcow2' files"^"eval cd ${_vm_storage_l}/${_vm_name} ; for _name in \$(find . -name \"Ref_*\") ; do _nname=\${_name%.*} ; qemu-img convert -f raw -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
+    "src file: 'Ref' files, dst path: ${_vm_storage_l}/${_vm_name}"^"eval cd ${_vm_storage_l}/${_vm_name} ; for i in \$(find . -name \"Ref:*\") ; do _name=\$(echo \${i} | tr \":\" \"_\") ; xenmigrate --convert=\"\${i}\" \"\${_name}.img\" ; done" \
+    "src file: 'img' files, dst path: ${_vm_storage_l}/${_vm_name}"^"eval cd ${_vm_storage_l}/${_vm_name} ; for _name in \$(find . -name \"Ref_*\") ; do _nname=\${_name%.*} ; qemu-img convert -f raw -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
 
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
     local _arg=(\
-    "src: 'vmdk' files, dst: 'qcow2' files"^"eval cd ${_vm_storage_l}/${_vm_name} ; for _name in \$(find . -name \"vmdk\") ; do _nname=\${_name%.*} ; qemu-img convert -f vmdk -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
+    "src file: 'vmdk' files, dst path: ${_vm_storage_l}/${_vm_name}"^"eval cd ${_vm_storage_l}/${_vm_name} ; for _name in \$(find . -name \"vmdk\") ; do _nname=\${_name%.*} ; qemu-img convert -f vmdk -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
 
   fi
 
@@ -340,6 +356,10 @@ function VmImport() {
   local _STATE=0
 
   _sprintf "head" "importing a virtual machine (proxmox)"
+
+  _logger "info" \
+    "$_FUNCTION_ID()" \
+    "importing a virtual machine (proxmox)"
 
   local _arg=(\
   "msg"^"true")
