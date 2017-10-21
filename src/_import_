@@ -44,7 +44,15 @@ function InitPv() {
     "$_FUNCTION_ID()" \
     "init env for pvimport"
 
-  local _function_stack=(CheckConn VmExport VmCopy VmExtract VmConvertDisks VmImport)
+  # Functions stack description:
+  #   CheckConn       - check the connection to the server
+  #   VmExport        - export Virtual Machine
+  #   VmCopy          - copy Virtual Machine
+  #   VmExtract       - extract Virtual Machine disks
+  #   VmConvertDisks  - convert Virtual Machine
+  #   VmImport        - import Virtual Machine
+
+  local _function_stack=(CheckConn VmExport VmCopy VmExtract VmConvertDisks)
 
   for i in "${_function_stack[@]}" ; do ${i} ; if [ ! $? ] ; then _exit_ 255 ; fi ; done
 
