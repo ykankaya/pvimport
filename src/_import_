@@ -72,7 +72,7 @@ function InitPv() {
   for i in _socket _port _vm_type _vm_storage_r _vm_id _vm_name _vm_storage_l ; do
 
     eval _y='$'${i}
-    _sprintf "info" "${i}: ${_y}"
+    _sprintf "info" "${i}: '${_y}'"
 
     _logger "info" \
       "$_FUNCTION_ID()" \
