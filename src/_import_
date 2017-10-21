@@ -266,14 +266,14 @@ function VmExtract() {
   local _FUNCTION_ID="VmExtract"
   local _STATE=0
 
-  _sprintf "head" "extracting ova disks"
+  _sprintf "head" "extracting ova files"
 
   _logger "info" \
     "$_FUNCTION_ID()" \
-    "extracting ova disks"
+    "extracting ova files"
 
   local _arg=(\
-  "src: '${_vm_name}.ova', dst path: '${_local_path}'"^"tar xf ${_vm_storage_l}/${_vm_name}/${_vm_name}.ova -C ${_local_path}")
+  "src: '${_vm_name}.ova', dst path: '${_local_path}'"^"tar xf ${_local_path}/${_vm_name}.ova -C ${_local_path}")
 
   for i in "${_arg[@]}" ; do
 
