@@ -212,7 +212,7 @@ function VmCopy() {
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
     local _arg=(\
-    "src file: all vmdk, dst path: ${_vm_storage_l}/${_vm_name}"^"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}*.vmdk ${_vm_storage_l}/${_vm_name}")
+    "src file: ${_vm_name}\*.vmdk, dst path: ${_vm_storage_l}/${_vm_name}"^"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}*.vmdk ${_vm_storage_l}/${_vm_name}")
 
   fi
 
@@ -308,13 +308,13 @@ function VmConvertDisks() {
   if [[ "$_vm_type" == "xen" ]] ; then
 
     local _arg=(\
-    "src file: 'Ref' files, dst path: ${_vm_storage_l}/${_vm_name}"^"eval cd ${_vm_storage_l}/${_vm_name} ; for i in \$(find . -name \"Ref:*\") ; do _name=\$(echo \${i} | tr \":\" \"_\") ; xenmigrate --convert=\"\${i}\" \"\${_name}.img\" ; done" \
-    "src file: 'img' files, dst path: ${_vm_storage_l}/${_vm_name}"^"eval cd ${_vm_storage_l}/${_vm_name} ; for _name in \$(find . -name \"Ref_*\") ; do _nname=\${_name%.*} ; qemu-img convert -f raw -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
+    "src directory: Ref\:\*, dst path: ${_vm_storage_l}/${_vm_name}"^"eval cd ${_vm_storage_l}/${_vm_name} ; for i in \$(find . -name \"Ref:*\") ; do _name=\$(echo \${i} | tr \":\" \"_\") ; xenmigrate --convert=\"\${i}\" \"\${_name}.img\" ; done" \
+    "src file: Ref_\*.img, dst path: ${_vm_storage_l}/${_vm_name}"^"eval cd ${_vm_storage_l}/${_vm_name} ; for _name in \$(find . -name \"Ref_*\") ; do _nname=\${_name%.*} ; qemu-img convert -f raw -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
 
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
     local _arg=(\
-    "src file: 'vmdk' files, dst path: ${_vm_storage_l}/${_vm_name}"^"eval cd ${_vm_storage_l}/${_vm_name} ; for _name in \$(find . -name \"vmdk\") ; do _nname=\${_name%.*} ; qemu-img convert -f vmdk -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
+    "src file: ${_vm_name}\*.vmdk, dst path: ${_vm_storage_l}/${_vm_name}"^"eval cd ${_vm_storage_l}/${_vm_name} ; for _name in \$(find . -name \"*.vmdk\") ; do _nname=\${_name%.*} ; qemu-img convert -f vmdk -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
 
   fi
 
@@ -355,11 +355,11 @@ function VmImport() {
   local _FUNCTION_ID="VmImport"
   local _STATE=0
 
-  _sprintf "head" "importing a virtual machine (proxmox)"
+  _sprintf "head" "importing a virtual machine"
 
   _logger "info" \
     "$_FUNCTION_ID()" \
-    "importing a virtual machine (proxmox)"
+    "importing a virtual machine"
 
   local _arg=(\
   "msg"^"true")
