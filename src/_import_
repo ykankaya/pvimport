@@ -37,6 +37,8 @@ function InitPv() {
   local _vm_name="${_hypervisor_params[3]}"
   local _vm_storage_l="${_hypervisor_params[4]}"
 
+  local _local_path="${_vm_storage_l}/${_socket#*@}/${_vm_name}"
+
   _sprintf "head" "creating environment"
 
   _logger "info" \
@@ -69,7 +71,7 @@ function InitPv() {
 
   fi
 
-  for i in _socket _port _vm_type _vm_storage_r _vm_id _vm_name _vm_storage_l ; do
+  for i in _socket _port _vm_type _vm_storage_r _vm_id _vm_name _vm_storage_l _local_path ; do
 
     eval _y='$'${i}
     _sprintf "info" "${i}: '${_y}'"
@@ -203,27 +205,27 @@ function VmCopy() {
     "$_FUNCTION_ID()" \
     "copying a virtual machine"
 
-  if [[ ! -d "${_vm_storage_l}/${_vm_name}" ]] ; then
+  if [[ ! -d "${_local_path}" ]] ; then
 
-    _sprintf "info" "create a local directory: ${_vm_storage_l}/${_vm_name}"
+    _sprintf "info" "create a local directory: '${_local_path}'"
 
     _logger "info" \
       "$_FUNCTION_ID()" \
-      "create a local directory: ${_vm_storage_l}/${_vm_name}"
+      "create a local directory: '${_local_path}'"
 
-    mkdir ${_vm_storage_l}/${_vm_name}
+    mkdir -p "${_local_path}"
 
   fi
 
   if [[ "$_vm_type" == "xen" ]] ; then
 
     local _arg=(\
-    "src: '${_vm_name}.ova', dst path: '${_vm_storage_l}/${_vm_name}'"^"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}.ova ${_vm_storage_l}/${_vm_name}")
+    "src: '${_vm_name}.ova', dst path: '${_local_path}'"^"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}.ova ${_local_path}")
 
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
     local _arg=(\
-    "src: '${_vm_name}*.vmdk', dst path: '${_vm_storage_l}/${_vm_name}'"^"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}/*flat.vmdk ${_vm_storage_l}/${_vm_name}")
+    "src: '*flat.vmdk', dst path: '${_local_path}'"^"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}/*flat.vmdk ${_local_path}")
 
   fi
 
@@ -271,7 +273,7 @@ function VmExtract() {
     "extracting ova disks"
 
   local _arg=(\
-  "src: '${_vm_name}.ova', dst path: '${_vm_storage_l}/${_vm_name}'"^"tar xf ${_vm_storage_l}/${_vm_name}/${_vm_name}.ova -C ${_vm_storage_l}/${_vm_name}")
+  "src: '${_vm_name}.ova', dst path: '${_local_path}'"^"tar xf ${_vm_storage_l}/${_vm_name}/${_vm_name}.ova -C ${_local_path}")
 
   for i in "${_arg[@]}" ; do
 
@@ -319,13 +321,13 @@ function VmConvertDisks() {
   if [[ "$_vm_type" == "xen" ]] ; then
 
     local _arg=(\
-    "src: 'Ref:*', dst path: '${_vm_storage_l}/${_vm_name}'"^"eval cd ${_vm_storage_l}/${_vm_name} ; for i in \$(find . -name \"Ref:*\") ; do _name=\$(echo \${i} | tr \":\" \"_\") ; xenmigrate --convert=\"\${i}\" \"\${_name}.img\" ; done" \
-    "src: 'Ref_*.img', dst path: '${_vm_storage_l}/${_vm_name}'"^"eval cd ${_vm_storage_l}/${_vm_name} ; for _name in \$(find . -name \"Ref_*\") ; do _nname=\${_name%.*} ; qemu-img convert -f raw -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
+    "src: 'Ref:*', dst path: '${_local_path}'"^"eval cd ${_local_path} ; for i in \$(find . -name \"Ref:*\") ; do _name=\$(echo \${i} | tr \":\" \"_\") ; xenmigrate --convert=\"\${i}\" \"\${_name}.img\" ; done" \
+    "src: 'Ref_*.img', dst path: '${_local_path}'"^"eval cd ${_local_path} ; for _name in \$(find . -name \"Ref_*\") ; do _nname=\${_name%.*} ; qemu-img convert -f raw -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
 
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
     local _arg=(\
-    "src: '${_vm_name}*.vmdk', dst path: '${_vm_storage_l}/${_vm_name}'"^"eval cd ${_vm_storage_l}/${_vm_name} ; for _name in \$(find . -name \"*flat.vmdk\") ; do _nname=\${_name%.*} ; qemu-img convert -f vmdk -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
+    "src: '${_vm_name}*.vmdk', dst path: '${_local_path}'"^"eval cd ${_local_path} ; for _name in \$(find . -name \"*flat.vmdk\") ; do _nname=\${_name%.*} ; qemu-img convert -f vmdk -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
 
   fi
 
