@@ -36,7 +36,6 @@ function InitPv() {
   local _vm_id="${_hypervisor_params[2]}"
   local _vm_name="${_hypervisor_params[3]}"
   local _vm_storage_l="${_hypervisor_params[4]}"
-  local _random_value="${_hypervisor_params[5]}"
 
   _sprintf "head" "init env for pvimport"
 
@@ -67,10 +66,10 @@ function InitPv() {
 #   Validates the connection to the remote server.
 #
 # Usage:
-#   CheckConn "param"
+#   CheckConn
 #
 # Examples:
-#   CheckConn _conn_params[@]
+#   CheckConn
 #
 
 function CheckConn() {
@@ -85,7 +84,7 @@ function CheckConn() {
     "checking connection to remote host"
 
   local _arg=(\
-  "testing ${_socket%%:*}":"wait-for-it -h ${_socket%%:*} -p ${_socket##*:} -t 5 -q")
+  "testing ${_socket#*@}":"wait-for-it -h ${_socket#*@} -p ${_port} -t 5 -q")
 
   for i in "${_arg[@]}" ; do
 
@@ -113,10 +112,10 @@ function CheckConn() {
 #   Exports the virtual machine.
 #
 # Usage:
-#   VmExport "param_0" "param_1"
+#   VmExport
 #
 # Examples:
-#   VmExport _conn_params[@] _hypervisor_params[@]
+#   VmExport
 #
 
 function VmExport() {
@@ -127,7 +126,7 @@ function VmExport() {
   _sprintf "head" "exporting a virtual machine ($r_hypervisor_type)"
 
   local _arg=(\
-  "create snapshot for ${_vm_id}":"ssh ${_socket} -p ${_port} _id=\$(xe vm-snapshot vm=${_vm_id} new-name-label=${_vm_name}-${_random_value}) ; echo \$_id > ${_pv_vars}" \
+  "create snapshot for ${_vm_id}":"ssh ${_socket} -p ${_port} _id=\$(xe vm-snapshot vm=${_vm_id} new-name-label=${_vm_name}-${_random}) ; echo \$_id > ${_pv_vars}" \
   "export snapshot for ${_vm_id}":"ssh ${_socket} -p ${_port} _id=\$(cat ${_pv_vars}) ; xe vm-export vm=\${_id} filename=${_vm_storage_r}/${_vm_name}.ova")
 
   if [[ "$_vm_type" == "xen" ]] ; then
@@ -160,10 +159,10 @@ function VmExport() {
 #   Copies the virtual machine from remote host to local (target) host.
 #
 # Usage:
-#   VmCopy "param_0" "param_1"
+#   VmCopy
 #
 # Examples:
-#   VmCopy _conn_params[@] _hypervisor_params[@]
+#   VmCopy
 #
 
 function VmCopy() {
@@ -218,10 +217,10 @@ function VmCopy() {
 #   Extracts the virtual machine disks.
 #
 # Usage:
-#   VmExtract "param_0" "param_1"
+#   VmExtract
 #
 # Examples:
-#   VmExtract _conn_params[@] _hypervisor_params[@]
+#   VmExtract
 #
 
 function VmExtract() {
@@ -266,10 +265,10 @@ function VmExtract() {
 #   Converts the virtual machine.
 #
 # Usage:
-#   VmConvertDisks "param_0" "param_1"
+#   VmConvertDisks
 #
 # Examples:
-#   VmConvertDisks _conn_params[@] _hypervisor_params[@]
+#   VmConvertDisks
 #
 
 function VmConvertDisks() {
@@ -315,10 +314,10 @@ function VmConvertDisks() {
 #   Imports the virtual machine.
 #
 # Usage:
-#   VmImport "param_0" "param_1"
+#   VmImport
 #
 # Examples:
-#   VmImport _conn_params[@] _hypervisor_params[@]
+#   VmImport
 #
 
 function VmImport() {
