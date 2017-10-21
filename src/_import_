@@ -330,8 +330,7 @@ function VmImport() {
   if [[ "$_vm_type" == "xen" ]] ; then
 
     local _arg=(\
-    "extracting ${_vm_name}.ova":"tar xf ${_vm_storage_l}/${_vm_name}/${_vm_name}.ova -C ${_vm_storage_l}/${_vm_name}" \
-    "convert 'Ref' files to img format":"eval cd ${_vm_storage_l}/${_vm_name} ; for i in \$(find . -name \"Ref:*\") ; do _name=\$(echo \${i} | tr \":\" \"_\") ; xenmigrate --convert=\"\${i}\" \"\${_name}.img\" ; done")
+    "msg":"true")
 
     for i in "${_arg[@]}" ; do
 
