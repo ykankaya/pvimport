@@ -265,8 +265,6 @@ function VmExtract() {
 
   done
 
-  _STATE=$_state
-
   return $_STATE
 
 }
@@ -319,8 +317,6 @@ function VmConvertDisks() {
 
   done
 
-  _STATE=$_state
-
   return $_STATE
 
 }
@@ -362,8 +358,6 @@ function VmImport() {
     _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
 
   done
-
-  _STATE=$_state
 
   return $_STATE
 
