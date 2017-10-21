@@ -43,8 +43,11 @@ function InitPv() {
     "$_FUNCTION_ID()" \
     "creating environment"
 
-  for i in "$_socket" "$_port" "$_vm_type" "$_vm_storage_r" "$_vm_id" "$_vm_name" "$_vm_storage_l" ; do
-    _sprintf "info" "$i"
+  for i in _socket _port _vm_type _vm_storage_r _vm_id _vm_name _vm_storage_l ; do
+
+    eval _y='$'${i}
+    _sprintf "info" "${i}: ${_y}"
+
   done
 
   # Functions stack description:
