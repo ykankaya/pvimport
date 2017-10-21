@@ -55,13 +55,13 @@ function InitPv() {
 
     _sprintf "info" "set functions stack for $_vm_type"
 
-    local _function_stack=(CheckConn VmExport VmCopy VmExtract VmConvertDisks VmImport)
+    local _function_stack=(CheckConn VmExport VmCopy VmExtract VmConvertDisks)
 
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
     _sprintf "info" "set functions stack for $_vm_type"
 
-    local _function_stack=(CheckConn VmCopy VmConvertDisks VmImport)
+    local _function_stack=(CheckConn VmCopy VmConvertDisks)
 
   else
 
@@ -377,7 +377,7 @@ function VmImport() {
     "importing a virtual machine"
 
   local _arg=(\
-  "msg"^"true")
+  "importing virtual machine"^"true")
 
   for i in "${_arg[@]}" ; do
 
