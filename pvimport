@@ -450,10 +450,9 @@ function _load() {
 
   if [[ ! -z "$_filename" ]] && [[ -e "$_filename" ]] ; then
 
-    _sprintf "head" "loading configuration"
-
     if [[ "$_type" == "info" ]] ; then
 
+      _sprintf "head" "loading configuration"
       _sprintf "info" "file: $_filename"
 
     fi
