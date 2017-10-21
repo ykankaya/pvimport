@@ -674,21 +674,6 @@ function __main__() {
 
   done
 
-  # Checking variable values (if they are set).
-  for i in r_hypervisor_type r_vm_id r_vm_name ; do
-
-    if [[ -z ${i+x} ]] ; then
-
-      _sprintf "stop" "$i is unset"
-
-      _logger "stop" \
-        "$_FUNCTION_ID()" \
-        "var $i is unset"
-
-    fi
-
-  done
-
   # Running tasks before start user functions.
   _before_init
 
@@ -704,6 +689,21 @@ function __main__() {
     _load "info" "$config"
     
   fi
+
+  # Checking variable values (if they are set).
+  for i in r_hypervisor_type r_vm_id r_vm_name r_user r_host r_port r_storage l_storage ; do
+
+    if [[ -z ${i+x} ]] ; then
+
+      _sprintf "stop" "$i is unset"
+
+      _logger "stop" \
+        "$_FUNCTION_ID()" \
+        "var $i is unset"
+
+    fi
+
+  done
 
   # Generate random value.
   _random=$(date +"%s")
