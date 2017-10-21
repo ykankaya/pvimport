@@ -247,27 +247,23 @@ function VmExtract() {
 
   _sprintf "head" "extracting ova disks (only for xen)"
 
-  if [[ "$_vm_type" == "xen" ]] ; then
+  local _arg=(\
+  "for ${_vm_name}.ova":"tar xf ${_vm_storage_l}/${_vm_name}/${_vm_name}.ova -C ${_vm_storage_l}/${_vm_name}")
 
-    local _arg=(\
-    "for ${_vm_name}.ova":"tar xf ${_vm_storage_l}/${_vm_name}/${_vm_name}.ova -C ${_vm_storage_l}/${_vm_name}")
+  for i in "${_arg[@]}" ; do
 
-    for i in "${_arg[@]}" ; do
+    _msg="${i%%:*}"
+    _full_command="${i#*:}"
 
-      _msg="${i%%:*}"
-      _full_command="${i#*:}"
+    _sprintf "info" "$_msg"
 
-      _sprintf "info" "$_msg"
+    _logger "info" \
+      "$_FUNCTION_ID()" \
+      "$_msg"
 
-      _logger "info" \
-        "$_FUNCTION_ID()" \
-        "$_msg"
+    _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
 
-      _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
-
-    done
-
-  fi
+  done
 
   _STATE=$_state
 
@@ -301,22 +297,27 @@ function VmConvertDisks() {
     "convert 'Ref' files to img format":"eval cd ${_vm_storage_l}/${_vm_name} ; for i in \$(find . -name \"Ref:*\") ; do _name=\$(echo \${i} | tr \":\" \"_\") ; xenmigrate --convert=\"\${i}\" \"\${_name}.img\" ; done" \
     "convert 'img' files to qcow2 format":"eval cd ${_vm_storage_l}/${_vm_name} ; for _name in \$(find . -name \"Ref_*\") ; do _nname=\${_name%.*} ; qemu-img convert -f raw -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
 
-    for i in "${_arg[@]}" ; do
+  elif [[ "$_vm_type" == "vmware" ]] ; then
 
-      _msg="${i%%:*}"
-      _full_command="${i#*:}"
-
-      _sprintf "info" "$_msg"
-
-      _logger "info" \
-        "$_FUNCTION_ID()" \
-        "$_msg"
-
-      _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
-
-    done
+    local _arg=(\
+    "convert 'vmdk' files to qcow2 format":"eval cd ${_vm_storage_l}/${_vm_name} ; for _name in \$(find . -name \"vmdk\") ; do _nname=\${_name%.*} ; qemu-img convert -f vmdk -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
 
   fi
+
+  for i in "${_arg[@]}" ; do
+
+    _msg="${i%%:*}"
+    _full_command="${i#*:}"
+
+    _sprintf "info" "$_msg"
+
+    _logger "info" \
+      "$_FUNCTION_ID()" \
+      "$_msg"
+
+    _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
+
+  done
 
   _STATE=$_state
 
@@ -344,27 +345,23 @@ function VmImport() {
 
   _sprintf "head" "importing a virtual machine (proxmox)"
 
-  if [[ "$_vm_type" == "xen" ]] ; then
+  local _arg=(\
+  "msg":"true")
 
-    local _arg=(\
-    "msg":"true")
+  for i in "${_arg[@]}" ; do
 
-    for i in "${_arg[@]}" ; do
+    _msg="${i%%:*}"
+    _full_command="${i#*:}"
 
-      _msg="${i%%:*}"
-      _full_command="${i#*:}"
+    _sprintf "info" "$_msg"
 
-      _sprintf "info" "$_msg"
+    _logger "info" \
+      "$_FUNCTION_ID()" \
+      "$_msg"
 
-      _logger "info" \
-        "$_FUNCTION_ID()" \
-        "$_msg"
+    _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
 
-      _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
-
-    done
-
-  fi
+  done
 
   _STATE=$_state
 
