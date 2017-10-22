@@ -39,11 +39,11 @@ function InitPv() {
 
   local _local_path="${_vm_storage_l}/${_socket#*@}/${_vm_name}"
 
-  _sprintf "head" "creating environment"
+  _sprintf "head" "creating local environment"
 
   _logger "info" \
     "$_FUNCTION_ID()" \
-    "creating environment"
+    "creating local environment"
 
   # Functions stack description:
   #   CheckConn       - check the connection to the server (xen/vmware)
