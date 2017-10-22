@@ -36,6 +36,8 @@ function InitPv() {
   local _vm_id="${_hypervisor_params[2]}"
   local _vm_name="${_hypervisor_params[3]}"
   local _vm_storage_l="${_hypervisor_params[4]}"
+  local _vm_pv_storage_l="${_hypervisor_params[5]}"
+  local _vm_pv_id_l="${_hypervisor_params[5]}"
 
   local _local_path="${_vm_storage_l}/${_socket#*@}/${_vm_name}"
 
@@ -480,7 +482,7 @@ function VmImport() {
     "importing a virtual machine"
 
   local _arg=(\
-  "importing virtual machine"^"true")
+  "src: '*.qcow2', dst path: '${_vm_pv_storage_l}'"^"true")
 
   for i in "${_arg[@]}" ; do
 
