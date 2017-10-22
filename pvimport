@@ -704,7 +704,7 @@ function __main__() {
   fi
 
   # Checking variable values (if they are set).
-  for i in r_user r_host r_port r_storage l_storage r_hypervisor_type r_vm_id r_vm_name ; do
+  for i in r_user r_host r_port r_storage l_storage r_hypervisor_type r_vm_id r_vm_name l_pv_id ; do
 
     if [[ -z ${i+x} ]] ; then
 
