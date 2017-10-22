@@ -160,7 +160,7 @@ function InitRemoveEnv() {
 
   local _arg=(\
   "resetting '$_pv_vars'"^"ssh ${_socket} -p ${_port} >${_pv_vars}" \
-  "export snapshot: '${_vm_name}.ova'"^"ssh ${_socket} -p ${_port} _id=\$(cat ${_pv_vars}) ; xe vm-export vm=\${_id} filename=${_vm_storage_r}/${_vm_name}.ova")
+  "checking remote directory: '${_vm_storage_r}'"^"ssh ${_socket} -p ${_port} if [[ ! -d \"${_vm_storage_r}\" ; then exit 1 ; fi")
 
   for i in "${_arg[@]}" ; do
 
