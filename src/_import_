@@ -207,7 +207,7 @@ function CheckRemoteEnv() {
     "checking remote variables"
 
   local _arg=(\
-  "checking remote directory: '${_vm_storage_r}'"^"ssh ${_socket} -p ${_port} if [[ ! -d \"${_vm_storage_r}\" ; then exit 1 ; fi")
+  "remote directory: '${_vm_storage_r}'"^"ssh ${_socket} -p ${_port} if [[ ! -d \"${_vm_storage_r}\" ]] ; then exit 1 ; fi")
 
   for i in "${_arg[@]}" ; do
 
