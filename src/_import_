@@ -11,7 +11,7 @@
 # Function name: InitPv()
 #
 # Description:
-#   Enables the environment for other functions.
+#   Initialization of the environment for other functions.
 #
 # Usage:
 #   InitPv "param_0" "param_1"
@@ -140,7 +140,7 @@ function CheckConn() {
 # Function name: InitRemoteEnv()
 #
 # Description:
-#   Validates the connection to the remote server.
+#   Initialization of the remote environment.
 #
 # Usage:
 #   InitRemoteEnv
@@ -186,7 +186,7 @@ function InitRemoteEnv() {
 # Function name: CheckRemoteEnv()
 #
 # Description:
-#   Validates the connection to the remote server.
+#   Checks of the remote environment.
 #
 # Usage:
 #   CheckRemoteEnv
@@ -403,7 +403,7 @@ function VmExtract() {
 # Function name: VmConvertDisks()
 #
 # Description:
-#   Converts the virtual machine.
+#   Converts the virtual machine disks.
 #
 # Usage:
 #   VmConvertDisks
