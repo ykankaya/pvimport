@@ -216,7 +216,7 @@ function CheckRemoteEnv() {
 
     local _arg=(\
     "directory: '${_vm_storage_r}'"^"ssh ${_socket} -p ${_port} if [[ ! -d \"${_vm_storage_r}\" ]] ; then exit 1 ; fi" \
-    "vm: '${_vm_id}'"^"ssh ${_socket} -p ${_port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep | ${_vm_id}) ]] ; then exit 1 ; fi")
+    "vm: '${_vm_id}'"^"ssh ${_socket} -p ${_port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${_vm_id}) ]] ; then exit 1 ; fi")
 
   fi
 
