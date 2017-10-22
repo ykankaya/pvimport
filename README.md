@@ -6,7 +6,7 @@ Allows you to import virtual machines running under Vmware or Xen.
 
 ## Version
 
-Latest stable: **v1.0**  
+Latest stable: **v1.1**  
 Devel branch: **next-release**
 
 ## Project architecture
