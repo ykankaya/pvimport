@@ -529,7 +529,7 @@ function VmImport() {
     elif [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
 
       local _arg=(\
-      "src: '*.${_vm_pv_disk_format}', dst path: '${_local_path_pv}'"^"eval cd ${_local_path} ; _x=1 ; for i in \$(find . -name \"*.${_vm_pv_disk_format}\" | sort) ; do cp \$i ${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.${_vm_pv_disk_format} ; ((_x++)) ; done")
+      "src: '*.${_vm_pv_disk_format}', dst path: '${_local_path_pv}'"^"eval cd ${_local_path} ; _x=1 ; for i in \$(find . -name \"*.${_vm_pv_disk_format}\" | sort) ; do cp \$i ${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.${_vm_pv_disk_format} ; _x=\$((_x + 1)) ; done")
 
     fi
 
@@ -543,7 +543,7 @@ function VmImport() {
     elif [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
 
       local _arg=(\
-      "src: '*.${_vm_pv_disk_format}', dst path: '${_local_path_pv}'"^"eval cd ${_local_path} ; _x=1 ; for i in \$(find . -name \"*.${_vm_pv_disk_format}\" | sort) ; do cp \$i ${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.${_vm_pv_disk_format} ; ((_x++)) ; done")
+      "src: '*.${_vm_pv_disk_format}', dst path: '${_local_path_pv}'"^"eval cd ${_local_path} ; _x=1 ; for i in \$(find . -name \"*.${_vm_pv_disk_format}\" | sort) ; do cp \$i ${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.${_vm_pv_disk_format} ; _x=\$((_x + 1)) ; done")
 
     fi
 
