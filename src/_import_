@@ -38,6 +38,7 @@ function InitPv() {
   local _vm_storage_l="${_hypervisor_params[4]}"
   local _vm_pv_storage_l="${_hypervisor_params[5]}"
   local _vm_pv_id_l="${_hypervisor_params[6]}"
+  local _vm_pv_disk_format="${_hypervisor_params[7]}"
 
   local _local_path="${_vm_storage_l}/${_socket#*@}/${_vm_name}"
   local _local_path_pv="${_vm_pv_storage_l}/${_vm_pv_id_l}"
@@ -76,7 +77,7 @@ function InitPv() {
 
   fi
 
-  for i in _socket _port _vm_type _vm_storage_r _vm_id _vm_name _vm_storage_l _local_path _vm_pv_storage_l _vm_pv_id_l ; do
+  for i in _socket _port _vm_type _vm_storage_r _vm_id _vm_name _vm_storage_l _local_path _vm_pv_storage_l _vm_pv_id_l _vm_pv_disk_format ; do
 
     eval _y='$'${i}
     _sprintf "info" "${i}: '${_y}'"
@@ -420,17 +421,26 @@ function VmConvertDisks() {
   local _FUNCTION_ID="VmConvertDisks"
   local _STATE=0
 
-  _sprintf "head" "converting to qcow2 format"
+  _sprintf "head" "converting to $_vm_pv_disk_format format"
 
   _logger "info" \
     "$_FUNCTION_ID()" \
-    "converting to qcow2 format"
+    "converting to $_vm_pv_disk_format format"
 
   if [[ "$_vm_type" == "xen" ]] ; then
 
-    local _arg=(\
-    "src: 'Ref:*', dst path: '${_local_path}'"^"eval cd ${_local_path} ; for i in \$(find . -name \"Ref:*\") ; do _name=\$(echo \${i} | tr \":\" \"_\") ; xenmigrate --convert=\"\${i}\" \"\${_name}.img\" ; done" \
-    "src: 'Ref_*.img', dst path: '${_local_path}'"^"eval cd ${_local_path} ; for _name in \$(find . -name \"Ref_*\") ; do _nname=\${_name%.*} ; qemu-img convert -f raw -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
+    if [[ "$_vm_pv_disk_format" == "img" ]] ; then
+
+      local _arg=(\
+      "src: 'Ref:*', dst path: '${_local_path}'"^"eval cd ${_local_path} ; for i in \$(find . -name \"Ref:*\") ; do _name=\$(echo \${i} | tr \":\" \"_\") ; xenmigrate --convert=\"\${i}\" \"\${_name}.img\" ; done")
+
+    elif [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
+
+      local _arg=(\
+      "src: 'Ref:*', dst path: '${_local_path}'"^"eval cd ${_local_path} ; for i in \$(find . -name \"Ref:*\") ; do _name=\$(echo \${i} | tr \":\" \"_\") ; xenmigrate --convert=\"\${i}\" \"\${_name}.img\" ; done" \
+      "src: 'Ref_*.img', dst path: '${_local_path}'"^"eval cd ${_local_path} ; for _name in \$(find . -name \"Ref_*\") ; do _nname=\${_name%.*} ; qemu-img convert -f raw -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
+
+    fi
 
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
