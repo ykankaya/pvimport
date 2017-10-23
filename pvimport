@@ -354,7 +354,20 @@ function _sprintf() {
       # Normal execution if:
       # - spinner has not been called
       # - spinner completed
-      printf '[\e['${s_trgb}'m%s\e[m] %s\n' "$s_char" "$s_info"
+
+      if [[ "$sprintf" == "verbose" ]] ; then
+
+        printf '[\e['${s_trgb}'m%s\e[m] %s\n' "$s_char" "$s_info"
+
+      else
+
+        if [[ "$s_type" == "head" ]] ; then
+
+          printf '[\e['${s_trgb}'m%s\e[m] %s\n' "$s_char" "$s_info"
+
+        fi
+
+      fi
 
     fi
 
