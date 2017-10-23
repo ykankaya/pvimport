@@ -541,7 +541,7 @@ function _help_() {
     -s, --sync                  synchronizes the created disks with the current ones
 
 
-  pvimport $version, Copyright (C) 2017  Michał Żurawski <contact@nslab.at>
+  pvimport, Copyright (C) 2017  Michał Żurawski <contact@nslab.at>
 
   This program comes with ABSOLUTELY NO WARRANTY.
   This is free software, and you are welcome to redistribute it
