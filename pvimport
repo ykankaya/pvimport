@@ -355,12 +355,14 @@ function _sprintf() {
       # - spinner has not been called
       # - spinner completed
 
+      # If verbose mode is enabled, display each information.
       if [[ "$sprintf" == "verbose" ]] ; then
 
         printf '[\e['${s_trgb}'m%s\e[m] %s\n' "$s_char" "$s_info"
 
       else
 
+        # If not, just display only the "head" string.
         if [[ "$s_type" == "head" ]] ; then
 
           printf '[\e['${s_trgb}'m%s\e[m] %s\n' "$s_char" "$s_info"
