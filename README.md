@@ -2,7 +2,7 @@
 
 ## Description
 
-Allows you to import virtual machines running under Vmware or Xen.
+Allows you to import virtual machines (disks) running under Vmware or Xen.
 
 Performs:
 
@@ -10,13 +10,13 @@ Performs:
 
 - copying the virtual machine from the source (remote hypervisor) to the destination (local resource), **xen/vmware**
 
-  > At this moment, only the disk resource mounted as a directory is supported.
-
 - extraction of disks with extension ova (resulting directories: Ref:\*), **only for xen**
 
 - convert to the selected format (img/qcow2), **xen/vmware**
 
 - converted img/qcow2 files imports into place created when creating the virtual machine, **xen/vmware**
+
+  > At this moment, only the disk resource mounted as a directory is supported. LVM is not support yet.
 
 ## Version
 
