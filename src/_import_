@@ -444,8 +444,17 @@ function VmConvertDisks() {
 
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
-    local _arg=(\
-    "src: '*.vmdk' (without flat), dst path: '${_local_path}'"^"eval cd ${_local_path} ; for _name in \$(find . -name \"*.vmdk\" | grep -v \"flat\") ; do _nname=\${_name%.*} ; qemu-img convert -f vmdk -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
+    if [[ "$_vm_pv_disk_format" == "img" ]] ; then
+
+      local _arg=(\
+      "src: '*.vmdk' (without flat), dst path: '${_local_path}'"^"eval cd ${_local_path} ; for _name in \$(find . -name \"*.vmdk\" | grep -v \"flat\") ; do _nname=\${_name%.*} ; qemu-img convert -f vmdk -O raw \"\${_name}\" \"\${_nname}.img\" ; done")
+
+    elif [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
+
+      local _arg=(\
+      "src: '*.vmdk' (without flat), dst path: '${_local_path}'"^"eval cd ${_local_path} ; for _name in \$(find . -name \"*.vmdk\" | grep -v \"flat\") ; do _nname=\${_name%.*} ; qemu-img convert -f vmdk -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
+
+    fi
 
   fi
 
