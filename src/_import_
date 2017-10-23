@@ -37,7 +37,7 @@ function InitPv() {
   local _vm_name="${_hypervisor_params[3]}"
   local _vm_storage_l="${_hypervisor_params[4]}"
   local _vm_pv_storage_l="${_hypervisor_params[5]}"
-  local _vm_pv_id_l="${_hypervisor_params[5]}"
+  local _vm_pv_id_l="${_hypervisor_params[6]}"
 
   local _local_path="${_vm_storage_l}/${_socket#*@}/${_vm_name}"
   local _local_path_pv="${_vm_pv_storage_l}/${_vm_pv_id_l}"
