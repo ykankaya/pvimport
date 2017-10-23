@@ -88,7 +88,7 @@ readonly cdate=$(date +%Y%m%d)
 readonly logfile="${_init_name}.${cdate}.log"
 readonly logdir="${_init_directory}/log"
 readonly logpath="${logdir}/${logfile}"
-readonly logstdout="${logdir}/all.log"
+readonly logstdout="${logdir}/stdout.log"
 
 # Script version.
 readonly version="v1.1"
@@ -124,7 +124,7 @@ if [[ -z "${missing_hash[@]}" ]] ; then
     hash "$i" >/dev/null 2>&1 ; state="$?"
 
     # If the command was not found put it in the array
-    if [[ "${state}" -ne 0 ]] ; then
+    if [[ "$state" -ne 0 ]] ; then
 
       missing_hash+=("$i")
       ((missing_counter++))
@@ -134,7 +134,7 @@ if [[ -z "${missing_hash[@]}" ]] ; then
   done
 
   # Stop the script if you do not find at least one command.
-  if [[ "$missing_counter" -gt "0" ]] ; then
+  if [[ "$missing_counter" -gt 0 ]] ; then
 
     printf "not found in PATH: %s\n" "${missing_hash[*]}" >&2
     exit 1
@@ -387,7 +387,7 @@ function _init_cmd() {
   # _sprintf "info" "init: \"$_cmd\""
 
   _logger "info" \
-    "$_FUNCTION_ID()" \
+    "${_FUNCTION_ID}()" \
     "init: $_cmd"
 
   $($_cmd >>$logstdout 2>&1) &
@@ -402,12 +402,12 @@ function _init_cmd() {
   # We define the state of the output job from the background.
   wait $_pid &>/dev/null && _state="0" || _state="1"
 
-  if [[ "$_state" -eq "0" ]] ; then
+  if [[ "$_state" -eq 0 ]] ; then
 
     # _sprintf "info" "result: pass"
 
     _logger "info" \
-      "$_FUNCTION_ID()" \
+      "${_FUNCTION_ID}()" \
       "result: pass"
 
   else
@@ -415,7 +415,7 @@ function _init_cmd() {
     _sprintf "stop" "result: fail"
 
     _logger "stop" \
-      "$_FUNCTION_ID()" \
+      "${_FUNCTION_ID}()" \
       "result: fail"
 
   fi
@@ -460,7 +460,7 @@ function _load() {
     # If the file exists is loaded.
     . "$_filename" && \
     _logger "info" \
-      "$_FUNCTION_ID()" \
+      "${_FUNCTION_ID}()" \
       "loading configuration file: $_filename"
 
   elif [ -z "$_filename" ] ; then
@@ -468,7 +468,7 @@ function _load() {
     _sprintf "stop" "incorrectly loaded $_filename file (incorrect filename)"
 
     _logger "stop" \
-      "$_FUNCTION_ID()" \
+      "${_FUNCTION_ID}()" \
       "incorrectly loaded $_filename file (incorrect filename)"
 
   else
@@ -476,7 +476,7 @@ function _load() {
     _sprintf "stop" "incorrectly loaded $_filename file (does not exist?)"
 
     _logger "stop" \
-      "$_FUNCTION_ID()" \
+      "${_FUNCTION_ID}()" \
       "incorrectly loaded $_filename file (does not exist?)"
 
   fi
@@ -718,10 +718,16 @@ function __main__() {
   fi
 
   # Checking variable values (if they are unset or empty).
-  for i in "$r_user" "$r_host" "$r_port" \
-           "$r_storage" "$l_storage" "$l_pv_storage" \
+  for i in "$r_user" \
+           "$r_host" \
+           "$r_port" \
            "$r_hypervisor_type" \
-           "$r_vm_id" "$r_vm_name" "$l_pv_id" \
+           "$r_storage" \
+           "$r_vm_id" \
+           "$r_vm_name" \
+           "$l_storage" \
+           "$l_pv_storage" \
+           "$l_pv_id" \
            "$l_pv_disk_format" \
            "$pv_disk_move" ; do
 
@@ -730,7 +736,7 @@ function __main__() {
       _sprintf "stop" "$i is unset or empty"
 
       _logger "stop" \
-        "$_FUNCTION_ID()" \
+        "${_FUNCTION_ID}()" \
         "var $i is unset or empty"
 
     fi
