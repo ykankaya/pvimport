@@ -262,7 +262,7 @@ function _get_trap_SIG() {
   if [ -z "$_STATE" ] ; then _STATE=255 ; fi
 
   _logger "exit" \
-    "${_FUNCTION_ID} exit > signal ${_STATE}"
+    "$_FUNCTION_ID exit > signal $_STATE"
 
   return $_STATE
 
@@ -354,7 +354,7 @@ function _sprintf() {
       # Normal execution if:
       # - spinner has not been called
       # - spinner completed
-      printf '[\e['$s_trgb'm%s\e[m] %s\n' "$s_char" "$s_info"
+      printf '[\e['${s_trgb}'m%s\e[m] %s\n' "$s_char" "$s_info"
 
     fi
 
@@ -388,9 +388,9 @@ function _init_cmd() {
 
   _logger "info" \
     "$_FUNCTION_ID()" \
-    "init: ${_cmd}"
+    "init: $_cmd"
 
-  $(${_cmd} >>${logstdout} 2>&1) &
+  $($_cmd >>$logstdout 2>&1) &
 
   # We keep pid of the last command.
   _pid=$!
@@ -525,7 +525,7 @@ function _help_() {
     -m, --move                  specifies whether virtual machine disks are to be moved to a new location
 
 
-  pvimport ${version}, Copyright (C) 2017  Michał Żurawski <contact@nslab.at>
+  pvimport $version, Copyright (C) 2017  Michał Żurawski <contact@nslab.at>
 
   This program comes with ABSOLUTELY NO WARRANTY.
   This is free software, and you are welcome to redistribute it
@@ -565,7 +565,7 @@ function _before_init() {
 
   cd "$_init_directory"
 
-  >${logstdout}
+  >$logstdout
 
   return $_STATE
 
@@ -621,7 +621,7 @@ function __main__() {
   local _short_opt="hvdc:r:i:n:p:f:m"
   local _long_opt="help,version,debug,config:,remote:,id:,name:,pvid:,format:,move"
 
-  _GETOPT_PARAMS=$(getopt -o "$_short_opt" --long "$_long_opt" \
+  _GETOPT_PARAMS=$(getopt -o "${_short_opt}" --long "${_long_opt}" \
                   -n "${_init_name}" -- "${__script_params[@]}")
 
   if [[ -z "${__script_params[@]}" ]] ; then _exit_ 0 ; fi
@@ -651,7 +651,7 @@ function __main__() {
 
       -c|--config)
 
-        load_state="1"
+        load_state=1
 
         config=${2:-"$config"}
 
@@ -689,7 +689,7 @@ function __main__() {
 
       -m|--move)
 
-        pv_disk_move="1"
+        pv_disk_move=1
 
         shift ;;
 
@@ -718,13 +718,14 @@ function __main__() {
   fi
 
   # Checking variable values (if they are unset or empty).
-  for i in "${r_user}" "${r_host}" "${r_port}" \
-           "${r_storage}" "${l_storage}" "${l_pv_storage}" \
-           "${r_hypervisor_type}" \
-           "${r_vm_id}" "${r_vm_name}" "${l_pv_id}" \
-           "${l_pv_disk_format}" ; do
+  for i in "$r_user" "$r_host" "$r_port" \
+           "$r_storage" "$l_storage" "$l_pv_storage" \
+           "$r_hypervisor_type" \
+           "$r_vm_id" "$r_vm_name" "$l_pv_id" \
+           "$l_pv_disk_format" \
+           "$pv_disk_move" ; do
 
-    if [[ -z "${i}" ]] ; then
+    if [[ -z "$i" ]] ; then
 
       _sprintf "stop" "$i is unset or empty"
 
@@ -751,7 +752,8 @@ function __main__() {
                       "$l_storage" \
                       "$l_pv_storage" \
                       "$l_pv_id" \
-                      "$l_pv_disk_format")
+                      "$l_pv_disk_format" \
+                      "$pv_disk_move")
 
   # Store remote variables.
   local _pv_vars="/tmp/.pvvars"
