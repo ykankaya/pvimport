@@ -509,7 +509,7 @@ function _help_() {
     $_init_name [option|long-option]
 
   Examples:
-    $_init_name -c xen.cfg -r 172.20.50.31 -i ac06d737 -n VM_PROD -p 200 -f qcow2
+    $_init_name -c xen.cfg -r 172.20.50.31 -i ac06d737 -n VM_PROD -p 200 -f qcow2 -m
     $_init_name -c vmware.cfg -r 172.20.50.32 -i gitlab_01 -n gitlab_01 -p 300 -f img
 
   Options:
@@ -522,6 +522,7 @@ function _help_() {
     -n, --name <new_vm_name>    sets a new name (xen/vmware) or directory name on the remote disk (vmware)
     -p, --pvid <num>            sets the virtual machine id created in proxmox
     -f, --format <img|qcow2>    sets the disk format (img or qcow2)
+    -m, --move                  specifies whether virtual machine disks are to be moved to a new location
 
 
   pvimport ${version}, Copyright (C) 2017  Michał Żurawski <contact@nslab.at>
@@ -617,8 +618,8 @@ function __main__() {
 
   # Specifies the call parameters of the script, the exact description
   # can be found in _help_ and file README.md.
-  local _short_opt="hvdc:r:i:n:p:f:"
-  local _long_opt="help,version,debug,config:,remote:,id:,name:,pvid:,format:"
+  local _short_opt="hvdc:r:i:n:p:f:m"
+  local _long_opt="help,version,debug,config:,remote:,id:,name:,pvid:,format:,move"
 
   _GETOPT_PARAMS=$(getopt -o "$_short_opt" --long "$_long_opt" \
                   -n "${_init_name}" -- "${__script_params[@]}")
@@ -685,6 +686,12 @@ function __main__() {
         l_pv_disk_format=${2}
 
         shift 2 ;;
+
+      -m|--move)
+
+        pv_disk_move="1"
+
+        shift ;;
 
       '') shift ; break ;;
       --) shift ; break ;;
