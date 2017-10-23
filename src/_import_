@@ -493,7 +493,7 @@ function VmImport() {
     "importing a virtual machine"
 
   local _arg=(\
-  "src: '*.qcow2', dst path: '${_local_path_pv}'"^"eval cd ${_local_path} ; _x=1 ; for i in \$(find . -name \"*.qcow2\" | sort) ; do cp $i ${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.qcow2 ; ((_x++)) ; done")
+  "src: '*.${_vm_pv_disk_format}', dst path: '${_local_path_pv}'"^"eval cd ${_local_path} ; _x=1 ; for i in \$(find . -name \"*.${_vm_pv_disk_format}\" | sort) ; do cp $i ${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.${_vm_pv_disk_format} ; ((_x++)) ; done")
 
   for i in "${_arg[@]}" ; do
 
