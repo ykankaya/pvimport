@@ -40,6 +40,7 @@ function InitPv() {
   local _vm_pv_id_l="${_hypervisor_params[5]}"
 
   local _local_path="${_vm_storage_l}/${_socket#*@}/${_vm_name}"
+  local _local_path_pv="${_vm_pv_storage_l}/${_vm_pv_id_l}"
 
   _sprintf "head" "creating local environment"
 
@@ -482,7 +483,7 @@ function VmImport() {
     "importing a virtual machine"
 
   local _arg=(\
-  "src: '*.qcow2', dst path: '${_vm_pv_storage_l}'"^"true")
+  "src: '*.qcow2', dst path: '${_local_path_pv}'"^"eval cd ${_local_path} ; _x=1 ; for i in \$(find . -name \"*.qcow2\" | sort) ; do cp $i ${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.qcow2 ; ((_x++)) ; done")
 
   for i in "${_arg[@]}" ; do
 
