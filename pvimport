@@ -710,12 +710,7 @@ function __main__() {
   # and all the other code blocks.
 
   # In this section we add all external files (for -c|--config script param).
-  if [[ "$load_state" -eq 1 ]] ; then
-  
-    # _load "info" "/tmp/file.cfg"
-    _load "info" "$config"
-    
-  fi
+  if [[ "$load_state" -eq 1 ]] ; then _load "info" "$config" ; fi
 
   # Checking variable values (if they are unset or empty).
   for i in "$r_user" \
@@ -728,16 +723,15 @@ function __main__() {
            "$l_storage" \
            "$l_pv_storage" \
            "$l_pv_id" \
-           "$l_pv_disk_format" \
-           "$pv_disk_move" ; do
+           "$l_pv_disk_format" ; do
 
     if [[ -z "$i" ]] ; then
 
-      _sprintf "stop" "$i is unset or empty"
+      _sprintf "stop" "\$i is unset or empty"
 
       _logger "stop" \
         "${_FUNCTION_ID}()" \
-        "var $i is unset or empty"
+        "\$i is unset or empty"
 
     fi
 
