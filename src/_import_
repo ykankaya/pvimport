@@ -39,6 +39,7 @@ function InitPv() {
   local _vm_pv_storage_l="${_hypervisor_params[5]}"
   local _vm_pv_id_l="${_hypervisor_params[6]}"
   local _vm_pv_disk_format="${_hypervisor_params[7]}"
+  local _vm_pv_disk_move="${_hypervisor_params[8]}"
 
   local _local_path="${_vm_storage_l}/${_socket#*@}/${_vm_name}"
   local _local_path_pv="${_vm_pv_storage_l}/${_vm_pv_id_l}"
@@ -46,8 +47,30 @@ function InitPv() {
   _sprintf "head" "creating local environment"
 
   _logger "info" \
-    "$_FUNCTION_ID()" \
+    "${_FUNCTION_ID}()" \
     "creating local environment"
+
+  for i in "_socket" \
+           "_port" \
+           "_vm_type" \
+           "_vm_storage_r" \
+           "_vm_id" \
+           "_vm_name" \
+           "_vm_storage_l" \
+           "_local_path" \
+           "_vm_pv_storage_l" \
+           "_vm_pv_id_l" \
+           "_vm_pv_disk_format" \
+           "_vm_pv_disk_move" ; do
+
+    eval _y='$'${i}
+    _sprintf "info" "${i}: '${_y}'"
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "${i}: '$_y'"
+
+  done
 
   # Functions stack description:
   #   CheckConn       - check the connection to the server (xen/vmware)
@@ -61,32 +84,27 @@ function InitPv() {
 
   if [[ "$_vm_type" == "xen" ]] ; then
 
-    local _function_stack=(CheckConn InitRemoteEnv CheckRemoteEnv VmExport VmCopy VmExtract VmConvertDisks VmImport)
+    local _function_stack=(CheckConn InitRemoteEnv CheckRemoteEnv VmExport VmCopy VmExtract VmConvertDisks)
 
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
-    local _function_stack=(CheckConn InitRemoteEnv CheckRemoteEnv VmCopy VmConvertDisks VmImport)
+    local _function_stack=(CheckConn InitRemoteEnv CheckRemoteEnv VmCopy VmConvertDisks)
 
   else
 
     _sprintf "stop" "incorrectly set hypervisor type (properly: xen or vmware)"
 
     _logger "info" \
-      "$_FUNCTION_ID()" \
+      "${_FUNCTION_ID}()" \
       "incorrectly set hypervisor type (properly: xen or vmware)"
 
   fi
 
-  for i in _socket _port _vm_type _vm_storage_r _vm_id _vm_name _vm_storage_l _local_path _vm_pv_storage_l _vm_pv_id_l _vm_pv_disk_format ; do
+  if [[ "$_vm_pv_disk_move" -eq 1 ]] ; then
 
-    eval _y='$'${i}
-    _sprintf "info" "${i}: '${_y}'"
+    _function_stack+=(VmImport)
 
-    _logger "info" \
-      "$_FUNCTION_ID()" \
-      "${i}: ${_y}"
-
-  done
+  fi
 
   for i in "${_function_stack[@]}" ; do ${i} ; if [ ! $? ] ; then _exit_ 255 ; fi ; done
 
@@ -115,7 +133,7 @@ function CheckConn() {
   _sprintf "head" "checking connection"
 
   _logger "info" \
-    "$_FUNCTION_ID()" \
+    "${_FUNCTION_ID}()" \
     "checking connection"
 
   local _arg=(\
@@ -129,7 +147,7 @@ function CheckConn() {
     _sprintf "info" "$_msg"
 
     _logger "info" \
-      "$_FUNCTION_ID()" \
+      "${_FUNCTION_ID}()" \
       "$_msg"
 
     _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
@@ -161,7 +179,7 @@ function InitRemoteEnv() {
   _sprintf "head" "creating remote environment"
 
   _logger "info" \
-    "$_FUNCTION_ID()" \
+    "${_FUNCTION_ID}()" \
     "creating remote environment"
 
   local _arg=(\
@@ -175,7 +193,7 @@ function InitRemoteEnv() {
     _sprintf "info" "$_msg"
 
     _logger "info" \
-      "$_FUNCTION_ID()" \
+      "${_FUNCTION_ID}()" \
       "$_msg"
 
     _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
@@ -207,7 +225,7 @@ function CheckRemoteEnv() {
   _sprintf "head" "checking remote variables"
 
   _logger "info" \
-    "$_FUNCTION_ID()" \
+    "${_FUNCTION_ID}()" \
     "checking remote variables"
 
   if [[ "$_vm_type" == "xen" ]] ; then
@@ -232,7 +250,7 @@ function CheckRemoteEnv() {
     _sprintf "info" "$_msg"
 
     _logger "info" \
-      "$_FUNCTION_ID()" \
+      "${_FUNCTION_ID}()" \
       "$_msg"
 
     _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
@@ -264,7 +282,7 @@ function VmExport() {
   _sprintf "head" "exporting ${_vm_id}"
 
   _logger "info" \
-    "$_FUNCTION_ID()" \
+    "${_FUNCTION_ID}()" \
     "exporting ${_vm_id}"
 
   local _arg=(\
@@ -279,7 +297,7 @@ function VmExport() {
     _sprintf "info" "$_msg"
 
     _logger "info" \
-      "$_FUNCTION_ID()" \
+      "${_FUNCTION_ID}()" \
       "$_msg"
 
     _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
@@ -311,7 +329,7 @@ function VmCopy() {
   _sprintf "head" "copying a virtual machine"
 
   _logger "info" \
-    "$_FUNCTION_ID()" \
+    "${_FUNCTION_ID}()" \
     "copying a virtual machine"
 
   if [[ ! -d "${_local_path}" ]] ; then
@@ -319,7 +337,7 @@ function VmCopy() {
     _sprintf "info" "create a local directory: '${_local_path}'"
 
     _logger "info" \
-      "$_FUNCTION_ID()" \
+      "${_FUNCTION_ID}()" \
       "create a local directory: '${_local_path}'"
 
     mkdir -p "${_local_path}"
@@ -346,7 +364,7 @@ function VmCopy() {
     _sprintf "info" "$_msg"
 
     _logger "info" \
-      "$_FUNCTION_ID()" \
+      "${_FUNCTION_ID}()" \
       "$_msg"
 
     _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
@@ -378,7 +396,7 @@ function VmExtract() {
   _sprintf "head" "extracting ova files"
 
   _logger "info" \
-    "$_FUNCTION_ID()" \
+    "${_FUNCTION_ID}()" \
     "extracting ova files"
 
   local _arg=(\
@@ -392,7 +410,7 @@ function VmExtract() {
     _sprintf "info" "$_msg"
 
     _logger "info" \
-      "$_FUNCTION_ID()" \
+      "${_FUNCTION_ID}()" \
       "$_msg"
 
     _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
@@ -424,7 +442,7 @@ function VmConvertDisks() {
   _sprintf "head" "converting to $_vm_pv_disk_format format"
 
   _logger "info" \
-    "$_FUNCTION_ID()" \
+    "${_FUNCTION_ID}()" \
     "converting to $_vm_pv_disk_format format"
 
   if [[ "$_vm_type" == "xen" ]] ; then
@@ -466,7 +484,7 @@ function VmConvertDisks() {
     _sprintf "info" "$_msg"
 
     _logger "info" \
-      "$_FUNCTION_ID()" \
+      "${_FUNCTION_ID}()" \
       "$_msg"
 
     _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
@@ -498,7 +516,7 @@ function VmImport() {
   _sprintf "head" "importing a virtual machine"
 
   _logger "info" \
-    "$_FUNCTION_ID()" \
+    "${_FUNCTION_ID}()" \
     "importing a virtual machine"
 
   local _arg=(\
@@ -512,7 +530,7 @@ function VmImport() {
     _sprintf "info" "$_msg"
 
     _logger "info" \
-      "$_FUNCTION_ID()" \
+      "${_FUNCTION_ID}()" \
       "$_msg"
 
     _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
