@@ -100,7 +100,7 @@ function InitPv() {
 
   fi
 
-  if [[ "$_vm_pv_disk_sync" -eq 1 ]] ; then
+  if [[ "$_vm_pv_disk_sync" == "true" ]] ; then
 
     _function_stack+=(VmImport)
 

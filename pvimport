@@ -711,7 +711,7 @@ function __main__() {
 
       -s|--sync)
 
-        pv_disk_sync=1
+        pv_disk_sync="true"
 
         shift ;;
 
