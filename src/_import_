@@ -60,11 +60,11 @@ function InitPv() {
 
   if [[ "$_vm_type" == "xen" ]] ; then
 
-    local _function_stack=(CheckConn InitRemoteEnv CheckRemoteEnv VmExport VmCopy VmExtract VmConvertDisks)
+    local _function_stack=(CheckConn InitRemoteEnv CheckRemoteEnv VmExport VmCopy VmExtract VmConvertDisks VmImport)
 
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
-    local _function_stack=(CheckConn InitRemoteEnv CheckRemoteEnv VmCopy VmConvertDisks)
+    local _function_stack=(CheckConn InitRemoteEnv CheckRemoteEnv VmCopy VmConvertDisks VmImport)
 
   else
 
