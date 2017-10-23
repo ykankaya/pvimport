@@ -405,7 +405,7 @@ function _init_cmd() {
     "${_FUNCTION_ID}()" \
     "init: $_cmd"
 
-  $($_cmd >>$logstdout 2>&1) &
+  $($_cmd >>"$logstdout" 2>&1) &
 
   # We keep pid of the last command.
   _pid=$!
@@ -581,7 +581,7 @@ function _before_init() {
 
   cd "$_init_directory"
 
-  >$logstdout
+  >"$logstdout"
 
   return $_STATE
 
