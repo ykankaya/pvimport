@@ -713,15 +713,15 @@ function __main__() {
   fi
 
   # Checking variable values (if they are set).
-  for i in r_user r_host r_port r_storage l_storage l_pv_storage r_hypervisor_type r_vm_id r_vm_name l_pv_id l_pv_disk_format ; do
+  for i in "${r_user}" ${r_host}" ${r_port}" ${r_storage}" ${l_storage}" ${l_pv_storage}" ${r_hypervisor_type}" ${r_vm_id}" ${r_vm_name}" ${l_pv_id}" ${l_pv_disk_format}" ; do
 
-    if [[ -z ${i+x} ]] ; then
+    if [[ -z "${i}" ]] ; then
 
-      _sprintf "stop" "$i is unset"
+      _sprintf "stop" "$i is unset or empty"
 
       _logger "stop" \
         "$_FUNCTION_ID()" \
-        "var $i is unset"
+        "var $i is unset or empty"
 
     fi
 
