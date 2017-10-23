@@ -511,16 +511,17 @@ function _help_() {
     $_init_name --help
     $_init_name --version
     $_init_name --debug
-    $_init_name -a xen.cfg -r 172.20.50.31 -i ac06d737-2cb9-d82a-f003-54d75db23722 -n VM_PROD
+    $_init_name -a xen.cfg -r 172.20.50.31 -i ac06d737-2cb9-d82a-f003-54d75db23722 -n VM_PROD -p 200
 
   Options:
     -h, --help                  show this message
     -v, --version               show script version
     -d, --debug                 display information on the screen (debug mode)
     -a, --attach [file]         attach an external file to the script
-    -r, --remote [ip|hostname]  set vm ip or hostname
+    -r, --remote [ip|hostname]  set hv ip or hostname
     -i, --id [vm_id|vm_name]    set vm id or name
     -n, --name [new_vm_name]    set new vm name
+    -p, --pvid [num]            set proxmox vm id (number)
 
 
   pvimport, Copyright (C) 2017  Michał Żurawski <contact@nslab.at>
