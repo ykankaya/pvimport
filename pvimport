@@ -40,18 +40,19 @@
 ################## The configuration parameters of the script ##################
 ################################################################################
 
-# Bash 'Strict Mode'.
-# set -o errexit
+# Bash 'Strict Mode':
+#   errexit - exit the script if any statement returns a non-true return value
+#   pipefail - exit the script if any command in a pipeline errors
+#   nounset - exit the script if you try to use an uninitialised variable
+#   xtrace - display debugging information
 set -o pipefail
-# set -o nounset
-# set -o xtrace
 
-# Internal field separator (more flexible).
+# Internal field separator (more flexible):
 #   IFS_ORIG="$IFS"
 #   IFS_HACK=$'\n\t'
 #   IFS="$IFS_HACK"
 
-# PATH env variable setup.
+# PATH env variable setup:
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 # Setting permissions in the script environment:
@@ -87,10 +88,10 @@ readonly cdate=$(date +%Y%m%d)
 readonly logfile="${_init_name}.${cdate}.log"
 readonly logdir="${_init_directory}/log"
 readonly logpath="${logdir}/${logfile}"
-readonly logstdout="${logdir}/stdout.log"
+readonly logstdout="${logdir}/all.log"
 
 # Script version.
-readonly version="v1.0"
+readonly version="v1.1"
 
 # External configuration file.
 config=""
@@ -253,12 +254,12 @@ function _get_trap_SIG() {
   # local __vars=("$IFS_ORIG" "$IFS_HACK" "$IFS" "$PATH")
   local __vars=("$PATH")
 
+  # Running tasks before the end of the script.
+  _after_init
+
   for i in "${__vars[@]}" ; do unset i ; done
 
   if [ -z "$_STATE" ] ; then _STATE=255 ; fi
-
-  # Running tasks before the end of the script.
-  _after_init
 
   _logger "exit" \
     "${_FUNCTION_ID} exit > signal ${_STATE}"
@@ -508,25 +509,22 @@ function _help_() {
     $_init_name [option|long-option]
 
   Examples:
-    $_init_name --help
-    $_init_name --version
-    $_init_name --debug
-    $_init_name -a xen.cfg -r 172.20.50.31 -i ac06d737-2cb9-d82a-f003-54d75db23722 -n VM_PROD -p 200 -f qcow2
-    $_init_name -a vmware.cfg -r 172.20.50.32 -i gitlab_01 -n gitlab_01 -p 300 -f img
+    $_init_name -c xen.cfg -r 172.20.50.31 -i ac06d737-2cb9-d82a-f003-54d75db23722 -n VM_PROD -p 200 -f qcow2
+    $_init_name -c vmware.cfg -r 172.20.50.32 -i gitlab_01 -n gitlab_01 -p 300 -f img
 
   Options:
     -h, --help                  show this message
     -v, --version               show script version
     -d, --debug                 display information on the screen (debug mode)
-    -a, --attach [file]         attach an external file to the script
-    -r, --remote [ip|hostname]  sets the ip address or hostname of the remote hypervisor
-    -i, --id [vm_id|vm_name]    sets the id (xen) or name (vmware) of the imported virtual machine
-    -n, --name [new_vm_name]    sets a new name (xen) or directory name on the remote disk (vmware)
-    -p, --pvid [num]            sets the virtual machine id created in proxmox
-    -f, --format [img|qcow2]    sets the disk format (img or qcow2)
+    -c, --config <file>         attach an external config file to the script
+    -r, --remote <ip|hostname>  sets the ip address or hostname of the remote hypervisor
+    -i, --id <vm_id|vm_name>    sets the id (xen) or name (vmware) of the imported virtual machine
+    -n, --name <new_vm_name>    sets a new name (xen/vmware) or directory name on the remote disk (vmware)
+    -p, --pvid <num>            sets the virtual machine id created in proxmox
+    -f, --format <img|qcow2>    sets the disk format (img or qcow2)
 
 
-  pvimport, Copyright (C) 2017  Michał Żurawski <contact@nslab.at>
+  pvimport ${version}, Copyright (C) 2017  Michał Żurawski <contact@nslab.at>
 
   This program comes with ABSOLUTELY NO WARRANTY.
   This is free software, and you are welcome to redistribute it
@@ -704,15 +702,15 @@ function __main__() {
   # Put here all your variable declarations, function calls
   # and all the other code blocks.
 
-  # In this section we add all external files (for -a|--attach script param).
-  if [[ "$load_state" == "1" ]] ; then
+  # In this section we add all external files (for -c|--config script param).
+  if [[ "$load_state" -eq 1 ]] ; then
   
     # _load "info" "/tmp/file.cfg"
     _load "info" "$config"
     
   fi
 
-  # Checking variable values (if they are set).
+  # Checking variable values (if they are unset or empty).
   for i in "${r_user}" ${r_host}" ${r_port}" ${r_storage}" ${l_storage}" ${l_pv_storage}" ${r_hypervisor_type}" ${r_vm_id}" ${r_vm_name}" ${l_pv_id}" ${l_pv_disk_format}" ; do
 
     if [[ -z "${i}" ]] ; then
@@ -731,8 +729,18 @@ function __main__() {
   _random=$(date +"%s")
 
   # Arrays responsible for keeping all options from a configuration file.
-  _conn_params=("$r_user" "$r_host" "$r_port")
-  _hypervisor_params=("$r_hypervisor_type" "$r_storage" "$r_vm_id" "$r_vm_name" "$l_storage" "$l_pv_storage" "$l_pv_id" "$l_pv_disk_format")
+  _conn_params=("$r_user" \
+                "$r_host" \
+                "$r_port")
+
+  _hypervisor_params=("$r_hypervisor_type" \
+                      "$r_storage" \
+                      "$r_vm_id" \
+                      "$r_vm_name" \
+                      "$l_storage" \
+                      "$l_pv_storage" \
+                      "$l_pv_id" \
+                      "$l_pv_disk_format")
 
   # Store remote variables.
   local _pv_vars="/tmp/.pvvars"
