@@ -39,7 +39,7 @@ function InitPv() {
   local _vm_pv_storage_l="${_hypervisor_params[5]}"
   local _vm_pv_id_l="${_hypervisor_params[6]}"
   local _vm_pv_disk_format="${_hypervisor_params[7]}"
-  local _vm_pv_disk_move="${_hypervisor_params[8]}"
+  local _vm_pv_disk_sync="${_hypervisor_params[8]}"
 
   local _local_path="${_vm_storage_l}/${_socket#*@}/${_vm_name}"
   local _local_path_pv="${_vm_pv_storage_l}/${_vm_pv_id_l}"
@@ -61,7 +61,7 @@ function InitPv() {
            "_vm_pv_storage_l" \
            "_vm_pv_id_l" \
            "_vm_pv_disk_format" \
-           "_vm_pv_disk_move" ; do
+           "_vm_pv_disk_sync" ; do
 
     eval _y='$'${i}
     _sprintf "info" "${i}: '${_y}'"
@@ -100,7 +100,7 @@ function InitPv() {
 
   fi
 
-  if [[ "$_vm_pv_disk_move" -eq 1 ]] ; then
+  if [[ "$_vm_pv_disk_sync" -eq 1 ]] ; then
 
     _function_stack+=(VmImport)
 
