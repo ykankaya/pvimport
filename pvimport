@@ -506,23 +506,24 @@ function _help_() {
   printf "%s" "\
 
   Usage:
-    $_init_name [option|long-option]
+    $_init_name <option|long-option>
 
   Examples:
-    $_init_name -c xen.cfg -r 172.20.50.31 -i ac06d737 -n VM_PROD -p 200 -f qcow2 -m
+    $_init_name -c xen.cfg -r 172.20.50.31 -i ac06d737 -n VM_PROD -p 200 -f qcow2 -m --verbose
     $_init_name -c vmware.cfg -r 172.20.50.32 -i gitlab_01 -n gitlab_01 -p 300 -f img
 
   Options:
-    -h, --help                  show this message
-    -v, --version               show script version
-    -d, --debug                 display information on the screen (debug mode)
+        --help                  show this message
+        --version               show script version
+        --debug                 display information on the screen (debug mode)
+        --verbose               display 'info' messages on the screen
     -c, --config <file>         attach an external config file to the script
-    -r, --remote <ip|hostname>  sets the ip address or hostname of the remote hypervisor
+    -h, --host <ip|hostname>    sets the ip address or hostname of the remote hypervisor
     -i, --id <vm_id|vm_name>    sets the id (xen) or name (vmware) of the imported virtual machine
     -n, --name <new_vm_name>    sets a new name (xen/vmware) or directory name on the remote disk (vmware)
     -p, --pvid <num>            sets the virtual machine id created in proxmox
     -f, --format <img|qcow2>    sets the disk format (img or qcow2)
-    -m, --move                  specifies whether virtual machine disks are to be moved to a new location
+    -s, --sync                  synchronizes the created disks with the current ones
 
 
   pvimport $version, Copyright (C) 2017  Michał Żurawski <contact@nslab.at>
@@ -618,8 +619,8 @@ function __main__() {
 
   # Specifies the call parameters of the script, the exact description
   # can be found in _help_ and file README.md.
-  local _short_opt="hvdc:r:i:n:p:f:m"
-  local _long_opt="help,version,debug,config:,remote:,id:,name:,pvid:,format:,move"
+  local _short_opt="c:h:i:n:p:f:s"
+  local _long_opt="help,version,debug,verbose,config:,host:,id:,name:,pvid:,format:,sync"
 
   _GETOPT_PARAMS=$(getopt -o "${_short_opt}" --long "${_long_opt}" \
                   -n "${_init_name}" -- "${__script_params[@]}")
@@ -631,21 +632,27 @@ function __main__() {
 
     case $1 in
 
-      -h|--help)
+      --help)
 
         _help_
 
         shift ; _exit_ 0 ;;
 
-      -v|--version)
+      --version)
 
         printf "%s, %s\n" "$_init_name" "$version"
 
         shift ; _exit_ 0 ;;
 
-      -d|--debug)
+      --debug)
 
         stdout="debug"
+
+        shift ;;
+
+      --verbose)
+
+        sprintf="verbose"
 
         shift ;;
 
@@ -657,7 +664,7 @@ function __main__() {
 
         shift 2 ;;
 
-      -r|--remote)
+      -h|--host)
 
         r_host=${2}
 
@@ -687,9 +694,9 @@ function __main__() {
 
         shift 2 ;;
 
-      -m|--move)
+      -s|--sync)
 
-        pv_disk_move=1
+        pv_disk_sync=1
 
         shift ;;
 
@@ -753,7 +760,7 @@ function __main__() {
                       "$l_pv_storage" \
                       "$l_pv_id" \
                       "$l_pv_disk_format" \
-                      "$pv_disk_move")
+                      "$pv_disk_sync")
 
   # Store remote variables.
   local _pv_vars="/tmp/.pvvars"
