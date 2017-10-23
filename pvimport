@@ -509,7 +509,7 @@ function _help_() {
     $_init_name [option|long-option]
 
   Examples:
-    $_init_name -c xen.cfg -r 172.20.50.31 -i ac06d737-2cb9-d82a-f003-54d75db23722 -n VM_PROD -p 200 -f qcow2
+    $_init_name -c xen.cfg -r 172.20.50.31 -i ac06d737 -n VM_PROD -p 200 -f qcow2
     $_init_name -c vmware.cfg -r 172.20.50.32 -i gitlab_01 -n gitlab_01 -p 300 -f img
 
   Options:
@@ -711,7 +711,11 @@ function __main__() {
   fi
 
   # Checking variable values (if they are unset or empty).
-  for i in "${r_user}" ${r_host}" ${r_port}" ${r_storage}" ${l_storage}" ${l_pv_storage}" ${r_hypervisor_type}" ${r_vm_id}" ${r_vm_name}" ${l_pv_id}" ${l_pv_disk_format}" ; do
+  for i in "${r_user}" "${r_host}" "${r_port}" \
+           "${r_storage}" "${l_storage}" "${l_pv_storage}" \
+           "${r_hypervisor_type}" \
+           "${r_vm_id}" "${r_vm_name}" "${l_pv_id}" \
+           "${l_pv_disk_format}" ; do
 
     if [[ -z "${i}" ]] ; then
 
