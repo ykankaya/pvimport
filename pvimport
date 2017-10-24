@@ -744,6 +744,7 @@ function __main__() {
            "$r_vm_name" \
            "$l_storage" \
            "$l_pv_storage" \
+           "$l_pv_lvm" \
            "$l_pv_id" \
            "$l_pv_disk_format" ; do
 
@@ -773,6 +774,7 @@ function __main__() {
                       "$r_vm_name" \
                       "$l_storage" \
                       "$l_pv_storage" \
+                      "$l_pv_lvm" \
                       "$l_pv_id" \
                       "$l_pv_disk_format" \
                       "$pv_disk_sync")
