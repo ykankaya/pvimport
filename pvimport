@@ -7,7 +7,7 @@
 #         fname : "pvimport"
 #         cdate : "12.10.2017"
 #         mdate : "24.10.2017"
-#       version : "v1.1"
+#       version : "v1.1.48"
 #        author : "Michał Żurawski <contact@nslab.at>"
 #      tab_size : "2"
 #     soft_tabs : "YES"
@@ -91,7 +91,7 @@ readonly logpath="${logdir}/${logfile}"
 readonly logstdout="${logdir}/stdout.log"
 
 # Script version.
-readonly version="v1.1"
+readonly version="v1.1.48"
 
 # External configuration file.
 config=""

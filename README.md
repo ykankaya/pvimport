@@ -116,7 +116,7 @@ Verbose mode - displays more detailed information on the screen:
 
 ## Version
 
-Latest stable: **v1.1**  
+Latest stable: **v1.1.48**  
 Devel branch: **next-release**
 
 ## Project architecture
