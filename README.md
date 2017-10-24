@@ -112,7 +112,7 @@ Verbose mode - displays more detailed information on the screen:
 ## Important
 
 - exporting a virtual machine running under **xen** takes place by taking a **snapshot**, which allows the virtual machine to run continuously (until the final import) - the disadvantage of this solution may be the current content of the disk
-- before exporting the virtual machine running under **vware**, you must remove all snapshots - pvimport recognizes only the appropriate virtual machine (including flat) disks, further shortening the migration time
+- before exporting the virtual machine running under **vmware**, you must remove all snapshots - pvimport recognizes only the appropriate virtual machine (including flat) disks, further shortening the migration time
 
 ## Version
 
