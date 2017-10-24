@@ -6,17 +6,21 @@ Allows you to import virtual machines (disks) running under Vmware or Xen.
 
 Performs:
 
-- execute a snapshot of the virtual machine and export it to an ova file, **only for xen**
+- execute a snapshot of the virtual machine and export it to an ova file - **only for xen**
 
-- copying the virtual machine from the source (remote hypervisor) to the destination (local resource), **xen/vmware**
+- copying the virtual machine from the source (remote hypervisor) to the destination (local resource) - **xen/vmware**
 
-- extraction of disks with extension ova (resulting directories: Ref:\*), **only for xen**
+- extraction of disks with extension ova (resulting directories: Ref:\* -, **only for xen**
 
-- convert to the selected format (img/qcow2), **xen/vmware**
+- convert to the selected format (img/qcow2) - **xen/vmware**
 
-- converted img/qcow2 files imports into place created when creating the virtual machine, **xen/vmware**
+- converted img/qcow2 files imports into place created when creating the virtual machine - **xen/vmware**
 
   > At this moment, only the disk resource mounted as a directory is supported. LVM is not support yet.
+
+Important:
+
+> In this version, pvimport leaves all files/directories (ova file, Ref: directories).
 
 ## Version
 
