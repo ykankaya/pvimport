@@ -538,7 +538,7 @@ function _help_() {
     -n, --name <new_vm_name>    sets a new name (xen/vmware) or directory name on the remote disk (vmware)
     -p, --pvid <num>            sets the virtual machine id created in proxmox
     -f, --format <img|qcow2>    sets the disk format (img or qcow2)
-    -s, --sync                  synchronizes the created disks with the current ones
+    -s, --sync                  synchronizes the created disks with the current ones (only for qcow2 format)
 
 
   pvimport, Copyright (C) 2017  Michał Żurawski <contact@nslab.at>
