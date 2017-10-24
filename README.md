@@ -2,7 +2,7 @@
 
 ## Description
 
-Allows you to import virtual machines (disks) running under Vmware or Xen.
+Allows you to import virtual machines (disks) running under Vmware or Xen to Proxmox.
 
 Performs:
 
