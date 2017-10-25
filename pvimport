@@ -171,6 +171,7 @@ function _exit_() { _STATUS="$1" ; exit "$_STATUS" ; }
 #
 #   Four states of message type:
 #     INFO - normal information
+#     HEAD - normal information (header)
 #     WARN - warning information
 #     STOP - interrupts script execution
 #     EXIT - interrupts script execution
