@@ -45,35 +45,6 @@ function InitPv() {
   local _local_path="${_vm_storage_l}/${_socket#*@}/${_vm_name}"
   local _local_path_pv="${_vm_pv_storage_l}/${_vm_pv_id_l}"
 
-  _sprintf "head" "creating local environment"
-
-  _logger "info" \
-    "${_FUNCTION_ID}()" \
-    "creating local environment"
-
-  for i in "_socket" \
-           "_port" \
-           "_vm_type" \
-           "_vm_id" \
-           "_vm_name" \
-           "_vm_storage_r" \
-           "_vm_storage_l" \
-           "_local_path" \
-           "_vm_pv_storage_l" \
-           "_vm_pv_lvm_l" \
-           "_vm_pv_id_l" \
-           "_vm_pv_disk_format" \
-           "_vm_pv_disk_sync" ; do
-
-    eval _y='$'${i}
-    _sprintf "info" "${i}: '${_y}'"
-
-    _logger "info" \
-      "${_FUNCTION_ID}()" \
-      "${i}: '$_y'"
-
-  done
-
   # Functions stack description:
   #   CheckConn       - check the connection to the server (xen/vmware)
   #   InitRemoteEnv   - creates a remote environment (xen/vmware)
@@ -106,7 +77,40 @@ function InitPv() {
 
     _function_stack+=(VmImport)
 
+  else
+
+    _vm_pv_disk_sync="false"
+
   fi
+
+  _sprintf "head" "creating local environment"
+
+  _logger "info" \
+    "${_FUNCTION_ID}()" \
+    "creating local environment"
+
+  for i in "_socket" \
+           "_port" \
+           "_vm_type" \
+           "_vm_id" \
+           "_vm_name" \
+           "_vm_storage_r" \
+           "_vm_storage_l" \
+           "_local_path" \
+           "_vm_pv_storage_l" \
+           "_vm_pv_lvm_l" \
+           "_vm_pv_id_l" \
+           "_vm_pv_disk_format" \
+           "_vm_pv_disk_sync" ; do
+
+    eval _y='$'${i}
+    _sprintf "info" "${i}: '${_y}'"
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "${i}: '$_y'"
+
+  done
 
   for i in "${_function_stack[@]}" ; do $i ; if [ ! $? ] ; then _exit_ 255 ; fi ; done
 
@@ -521,33 +525,15 @@ function VmImport() {
     "${_FUNCTION_ID}()" \
     "importing a virtual machine disks"
 
-  if [[ "$_vm_type" == "xen" ]] ; then
+  if [[ "$_vm_pv_disk_format" == "img" ]] ; then
 
-    if [[ "$_vm_pv_disk_format" == "img" ]] ; then
+    local _arg=(\
+    "src: '*.${_vm_pv_disk_format}', dst path: '${_vm_pv_lvm_l}'"^"eval cd ${_local_path} ; _x=1 ; for i in \$(find . -name \"*.${_vm_pv_disk_format}\" | sort) ; do dd if=\$i of=${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-\${_x} ; _x=\$((_x + 1)) ; done")
 
-      local _arg=(\
-      "src: '*.${_vm_pv_disk_format}', dst path: '${_vm_pv_lvm_l}'"^"eval cd ${_local_path} ; _x=1 ; for i in \$(find . -name \"*.${_vm_pv_disk_format}\" | sort) ; do dd if=\$i of=${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-\${_x} ; _x=\$((_x + 1)) ; done")
+  elif [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
 
-    elif [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
-
-      local _arg=(\
-      "src: '*.${_vm_pv_disk_format}', dst path: '${_local_path_pv}'"^"eval cd ${_local_path} ; _x=1 ; for i in \$(find . -name \"*.${_vm_pv_disk_format}\" | sort) ; do cp \$i ${_local_path_pv}/vm-${_vm_pv_id_l}-disk-\${_x}.${_vm_pv_disk_format} ; _x=\$((_x + 1)) ; done")
-
-    fi
-
-  elif [[ "$_vm_type" == "vmware" ]] ; then
-
-    if [[ "$_vm_pv_disk_format" == "img" ]] ; then
-
-      local _arg=(\
-      "src: '*.${_vm_pv_disk_format}', dst path: '${_vm_pv_lvm_l}'"^"eval cd ${_local_path} ; _x=1 ; for i in \$(find . -name \"*.${_vm_pv_disk_format}\" | sort) ; do dd if=\$i of=${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-\${_x} ; _x=\$((_x + 1)) ; done")
-
-    elif [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
-
-      local _arg=(\
-      "src: '*.${_vm_pv_disk_format}', dst path: '${_local_path_pv}'"^"eval cd ${_local_path} ; _x=1 ; for i in \$(find . -name \"*.${_vm_pv_disk_format}\" | sort) ; do cp \$i ${_local_path_pv}/vm-${_vm_pv_id_l}-disk-\${_x}.${_vm_pv_disk_format} ; _x=\$((_x + 1)) ; done")
-
-    fi
+    local _arg=(\
+    "src: '*.${_vm_pv_disk_format}', dst path: '${_local_path_pv}'"^"eval cd ${_local_path} ; _x=1 ; for i in \$(find . -name \"*.${_vm_pv_disk_format}\" | sort) ; do cp \$i ${_local_path_pv}/vm-${_vm_pv_id_l}-disk-\${_x}.${_vm_pv_disk_format} ; _x=\$((_x + 1)) ; done")
 
   fi
 
