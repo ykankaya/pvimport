@@ -152,11 +152,11 @@ function CheckConn() {
   local _FUNCTION_ID="CheckConn"
   local _STATE=0
 
-  _sprintf "head" "checking connection"
+  _sprintf "head" "checking connection to remote host"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "checking connection"
+    "checking connection to remote host"
 
   local _arg=(\
   "host: '${_socket#*@}'"^"wait-for-it -h ${_socket#*@} -p ${_port} -t 5 -q")
