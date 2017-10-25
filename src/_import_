@@ -198,11 +198,11 @@ function InitRemoteEnv() {
   local _FUNCTION_ID="InitRemoteEnv"
   local _STATE=0
 
-  _sprintf "head" "preparing the remote environment"
+  _sprintf "head" "preparing remote environment"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "preparing the remote environment"
+    "preparing remote environment"
 
   local _arg=(\
   "resetting '$_pv_vars'"^"ssh ${_socket} -p ${_port} >${_pv_vars}")
