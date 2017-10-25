@@ -85,10 +85,10 @@ readonly cdate=$(date +%Y%m%d)
 
 # Variables related to the log file. Divided into three parts due
 # to the better possibility of manipulation for the user.
-readonly logfile="${_init_name}.${cdate}.log"
 readonly logdir="${_init_directory}/log"
-readonly logpath="${logdir}/${logfile}"
+readonly logfile="${_init_name}.${cdate}.log"
 readonly logstdout="${logdir}/stdout.log"
+readonly logpath="${logdir}/${logfile}"
 
 # Script version.
 readonly version="v1.1.48"
@@ -199,8 +199,7 @@ function _logger() {
   info_to_log=$(shift ; echo "$@")
   converts_type=$(echo "$info_type" | tr '[:lower:]' '[:upper:]')
 
-  if [[ ! -d "$logdir" && ! -L "$logdir" ]] ; then
-    mkdir "$logdir" ; fi
+  if [[ ! -d "$logdir" && ! -L "$logdir" ]] ; then mkdir "$logdir" ; fi
 
   # Normal debug mode (output the same as the contents of the log file).
   if [[ "$stdout" == "debug" ]] ; then
@@ -215,7 +214,6 @@ function _logger() {
   # The decision whether an INFO is to be only log to a file
   # or to a file and to standard output.
   else
-  # if [[ "$stdout" == "" ]] ; then
 
     printf "%s  %s:  [%s] %s\n" \
            "$(date +"%d/%m/%y %X")" \
@@ -252,13 +250,13 @@ function _get_trap_SIG() {
   local _STATE="${_STATUS:-}"
 
   # Unset variables (e.g. global).
-  # local __vars=("$IFS_ORIG" "$IFS_HACK" "$IFS" "$PATH")
-  local __vars=("$PATH")
+  # local _vars=("$IFS_ORIG" "$IFS_HACK" "$IFS" "$PATH")
+  local _vars=("$PATH")
 
   # Running tasks before the end of the script.
   _after_init
 
-  for i in "${__vars[@]}" ; do unset i ; done
+  for i in "${_vars[@]}" ; do unset i ; done
 
   if [ -z "$_STATE" ] ; then _STATE=255 ; fi
 
@@ -737,6 +735,9 @@ function __main__() {
   # In this section we add all external files (for -c|--config script param).
   if [[ "$load_state" -eq 1 ]] ; then _load "info" "$config" ; fi
 
+  # Generate random value.
+  _random=$(date +"%s")
+
   # Checking variable values (if they are unset or empty).
   for i in "r_user" \
            "r_host" \
@@ -764,9 +765,6 @@ function __main__() {
     fi
 
   done
-
-  # Generate random value.
-  _random=$(date +"%s")
 
   # Arrays responsible for keeping all options from a configuration file.
   _conn_params=("$r_user" \
