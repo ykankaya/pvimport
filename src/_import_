@@ -103,12 +103,13 @@ function InitPv() {
            "_vm_pv_disk_format" \
            "_vm_pv_disk_sync" ; do
 
-    eval _y='$'${i}
-    _sprintf "info" "${i}: '${_y}'"
+    eval _i='$'${i}
+
+    _sprintf "info" "${i}: '${_i}'"
 
     _logger "info" \
       "${_FUNCTION_ID}()" \
-      "${i}: '$_y'"
+      "${i}: '$_i'"
 
     # Checking variable values (if they are incorrect values).
     if [[ ! -d "$_vm_storage_l" ]] || \
