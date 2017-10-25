@@ -14,9 +14,7 @@ Performs:
 
 - convert to the selected format (img/qcow2) - **xen/vmware**
 
-- converted img/qcow2 files imports into place created when creating the virtual machine - **xen/vmware**
-
-  > At this moment, only the disk resource mounted as a directory is supported. LVM is not support yet.
+- converted img/qcow2 files imports into place created when creating the virtual machine (directory/lvm) - **xen/vmware**
 
 Important:
 
@@ -71,8 +69,12 @@ readonly r_storage="/path/to/remote/vm/dump"
 readonly l_storage="/xfs900/path/to/local/vm/dump"
 
 # Specifies the local resource of virtual machines.
-# Used only for memory specified as directory (LVM is not used yet).
+# Used only for memory specified as directory.
 readonly l_pv_storage="/xfs900/images"
+
+# Specifies the local resource of virtual machines.
+# Used only for memory specified as LVM.
+readonly l_pv_lvm="/dev/pve"
 ``````
 
 ## Example
