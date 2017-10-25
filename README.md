@@ -2,7 +2,7 @@
 
 ## Description
 
-Allows you to import virtual machines (disks) running under Vmware or Xen to Proxmox.
+Allows you to import virtual machines (disks) running under Vmware or Xen to **Proxmox**.
 
 Performs:
 
@@ -10,15 +10,11 @@ Performs:
 
 - copying the virtual machine from the source (remote hypervisor) to the destination (local resource) - **xen/vmware**
 
-- extraction of disks with extension ova (resulting directories: Ref:\* -, **only for xen**
+- extraction of disks with extension ova (resulting directories: Ref:\*) - **only for xen**
 
 - convert to the selected format (img/qcow2) - **xen/vmware**
 
 - converted img/qcow2 files imports into place created when creating the virtual machine (directory/lvm) - **xen/vmware**
-
-Important:
-
-> In this version, pvimport leaves all files/directories (ova file, Ref: directories).
 
 ## Script parameters
 
@@ -79,6 +75,8 @@ readonly l_pv_lvm="/dev/pve"
 
 ## Example
 
+> Before you start, create a virtual machine in the proxmox web panel. The most important thing is to add the same number of disks of the same size as the current hypervisor.
+
 ``````
 pvimport -c src/configs/xen.cfg -h xen01.domain.com -i web01 -n web01 -p 205 -f img --verbose
 ``````
@@ -87,7 +85,7 @@ In the first place we define the configuration (which should be prepared in adva
 
 - `-c src/configs/xen.cfg`
 
-Specify host name (xen hypervisor):
+Specify hostname (in this example xen hypervisor):
 
 - `-h xen01.domain.com`
 
@@ -114,7 +112,8 @@ Verbose mode - displays more detailed information on the screen:
 ## Important
 
 - exporting a virtual machine running under **xen** takes place by taking a **snapshot**, which allows the virtual machine to run continuously (until the final import) - the disadvantage of this solution may be the current content of the disk
-- before exporting the virtual machine running under **vmware**, you must remove all snapshots - pvimport recognizes only the appropriate virtual machine (including flat) disks, further shortening the migration time
+- before exporting the virtual machine running under vmware, you must **remove all snapshots** - pvimport recognizes only the appropriate virtual machine (including flat) disks, further shortening the migration time
+- pvimport **leaves all files/directories** (ova file, Ref: directories) so check the amount of available disk space before importing the processed virtual machine files
 
 ## Version
 
