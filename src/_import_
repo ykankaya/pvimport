@@ -110,6 +110,18 @@ function InitPv() {
       "${_FUNCTION_ID}()" \
       "${i}: '$_y'"
 
+    # Checking variable values (if they are incorrect values).
+    if [[ ! -d "$_vm_storage_l" ]] || \
+       [[ ! -d "$_local_path" ]] || \
+       [[ ! -d "$_vm_pv_storage_l" ]] \
+       [[ ! -e "$_vm_pv_lvm_l" ]] ; then
+
+      _sprintf "stop" "incorrect value: $_vm_storage_l"
+
+      _logger "stop" \
+        "${_FUNCTION_ID}()" \
+        "incorrect value: $_vm_storage_l"
+
   done
 
   for i in "${_function_stack[@]}" ; do $i ; if [ ! $? ] ; then _exit_ 255 ; fi ; done
