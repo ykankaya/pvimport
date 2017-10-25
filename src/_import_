@@ -67,7 +67,7 @@ function InitPv() {
 
     _sprintf "stop" "incorrectly set hypervisor type (properly: xen or vmware)"
 
-    _logger "info" \
+    _logger "stop" \
       "${_FUNCTION_ID}()" \
       "incorrectly set hypervisor type (properly: xen or vmware)"
 
@@ -83,11 +83,11 @@ function InitPv() {
 
   fi
 
-  _sprintf "head" "creating local environment"
+  _sprintf "head" "creating and checking local environment"
 
-  _logger "info" \
+  _logger "head" \
     "${_FUNCTION_ID}()" \
-    "creating local environment"
+    "creating and checking local environment"
 
   for i in "_socket" \
            "_port" \
@@ -116,11 +116,13 @@ function InitPv() {
        [[ ! -d "$_vm_pv_storage_l" ]] \
        [[ ! -e "$_vm_pv_lvm_l" ]] ; then
 
-      _sprintf "stop" "incorrect value: $_vm_storage_l"
+      _sprintf "stop" "value: incorrect"
 
       _logger "stop" \
         "${_FUNCTION_ID}()" \
-        "incorrect value: $_vm_storage_l"
+        "value: incorrect"
+
+    fi
 
   done
 
@@ -150,7 +152,7 @@ function CheckConn() {
 
   _sprintf "head" "checking connection"
 
-  _logger "info" \
+  _logger "head" \
     "${_FUNCTION_ID}()" \
     "checking connection"
 
@@ -196,7 +198,7 @@ function InitRemoteEnv() {
 
   _sprintf "head" "creating remote environment"
 
-  _logger "info" \
+  _logger "head" \
     "${_FUNCTION_ID}()" \
     "creating remote environment"
 
@@ -242,7 +244,7 @@ function CheckRemoteEnv() {
 
   _sprintf "head" "checking remote variables"
 
-  _logger "info" \
+  _logger "head" \
     "${_FUNCTION_ID}()" \
     "checking remote variables"
 
