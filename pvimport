@@ -738,28 +738,28 @@ function __main__() {
   if [[ "$load_state" -eq 1 ]] ; then _load "info" "$config" ; fi
 
   # Checking variable values (if they are unset or empty).
-  for i in "$r_user" \
-           "$r_host" \
-           "$r_port" \
-           "$r_hypervisor_type" \
-           "$r_storage" \
-           "$r_vm_id" \
-           "$r_vm_name" \
-           "$l_storage" \
-           "$l_pv_storage" \
-           "$l_pv_lvm" \
-           "$l_pv_id" \
-           "$l_pv_disk_format" ; do
+  for i in "r_user" \
+           "r_host" \
+           "r_port" \
+           "r_hypervisor_type" \
+           "r_storage" \
+           "r_vm_id" \
+           "r_vm_name" \
+           "l_storage" \
+           "l_pv_storage" \
+           "l_pv_lvm" \
+           "l_pv_id" \
+           "l_pv_disk_format" ; do
 
-    if [[ -z "$i" ]] ; then
+    eval _i='$'${i}
 
-      _x_var=(${!i@})
+    if [[ -z "$_i" ]] ; then
 
-      _sprintf "stop" "$_x_var is unset or empty"
+      _sprintf "stop" "$i is unset or empty"
 
       _logger "stop" \
         "${_FUNCTION_ID}()" \
-        "$_x_var is unset or empty"
+        "$i is unset or empty"
 
     fi
 
