@@ -73,6 +73,7 @@ function InitPv() {
 
   fi
 
+  # We start the synchronization function when calling the -s|--sync option.
   if [[ "$_vm_pv_disk_sync" == "true" ]] ; then
 
     _function_stack+=(VmImport)
@@ -89,6 +90,7 @@ function InitPv() {
     "${_FUNCTION_ID}()" \
     "creating and checking local environment"
 
+  # Display of variable values without checking them.
   for i in "_socket" \
            "_port" \
            "_vm_type" \
@@ -157,7 +159,7 @@ function CheckConn() {
     "checking connection"
 
   local _arg=(\
-  "to host: '${_socket#*@}'"^"wait-for-it -h ${_socket#*@} -p ${_port} -t 5 -q")
+  "host: '${_socket#*@}'"^"wait-for-it -h ${_socket#*@} -p ${_port} -t 5 -q")
 
   for i in "${_arg[@]}" ; do
 
@@ -196,11 +198,11 @@ function InitRemoteEnv() {
   local _FUNCTION_ID="InitRemoteEnv"
   local _STATE=0
 
-  _sprintf "head" "creating remote environment"
+  _sprintf "head" "preparing the remote environment"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "creating remote environment"
+    "preparing the remote environment"
 
   local _arg=(\
   "resetting '$_pv_vars'"^"ssh ${_socket} -p ${_port} >${_pv_vars}")
@@ -242,23 +244,23 @@ function CheckRemoteEnv() {
   local _FUNCTION_ID="CheckRemoteEnv"
   local _STATE=0
 
-  _sprintf "head" "checking remote variables"
+  _sprintf "head" "checking remote environment"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "checking remote variables"
+    "checking remote environment"
 
   if [[ "$_vm_type" == "xen" ]] ; then
 
     local _arg=(\
-    "directory exist: '${_vm_storage_r}'"^"ssh ${_socket} -p ${_port} if [[ ! -d \"${_vm_storage_r}\" ]] ; then exit 1 ; fi" \
-    "vm exist: '${_vm_id}'"^"ssh ${_socket} -p ${_port} if [[ ! \$(xe vm-list | grep ${_vm_id}) ]] ; then exit 1 ; fi")
+    "directory: '${_vm_storage_r}'"^"ssh ${_socket} -p ${_port} if [[ ! -d \"${_vm_storage_r}\" ]] ; then exit 1 ; fi" \
+    "vm: '${_vm_id}'"^"ssh ${_socket} -p ${_port} if [[ ! \$(xe vm-list | grep ${_vm_id}) ]] ; then exit 1 ; fi")
 
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
     local _arg=(\
-    "directory exist: '${_vm_storage_r}'"^"ssh ${_socket} -p ${_port} if [[ ! -d \"${_vm_storage_r}\" ]] ; then exit 1 ; fi" \
-    "vm exist: '${_vm_id}'"^"ssh ${_socket} -p ${_port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${_vm_id}) ]] ; then exit 1 ; fi")
+    "directory: '${_vm_storage_r}'"^"ssh ${_socket} -p ${_port} if [[ ! -d \"${_vm_storage_r}\" ]] ; then exit 1 ; fi" \
+    "vm: '${_vm_id}'"^"ssh ${_socket} -p ${_port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${_vm_id}) ]] ; then exit 1 ; fi")
 
   fi
 
@@ -306,8 +308,8 @@ function VmExport() {
     "exporting $_vm_id"
 
   local _arg=(\
-  "create snapshot: '${_vm_name}-${_random}'"^"ssh ${_socket} -p ${_port} _id=\$(xe vm-snapshot vm=${_vm_id} new-name-label=${_vm_name}-${_random}) ; echo id=\$_id >> ${_pv_vars}" \
-  "export snapshot: '${_vm_name}.ova'"^"ssh ${_socket} -p ${_port} _id=\$(cat ${_pv_vars} | grep id= | cut -d = -f2) ; xe vm-export vm=\${_id} filename=${_vm_storage_r}/${_vm_name}.ova")
+  "creating snapshot: '${_vm_name}-${_random}'"^"ssh ${_socket} -p ${_port} _id=\$(xe vm-snapshot vm=${_vm_id} new-name-label=${_vm_name}-${_random}) ; echo id=\$_id >> ${_pv_vars}" \
+  "exporting snapshot: '${_vm_name}.ova'"^"ssh ${_socket} -p ${_port} _id=\$(cat ${_pv_vars} | grep id= | cut -d = -f2) ; xe vm-export vm=\${_id} filename=${_vm_storage_r}/${_vm_name}.ova")
 
   for i in "${_arg[@]}" ; do
 
@@ -470,13 +472,13 @@ function VmConvertDisks() {
     if [[ "$_vm_pv_disk_format" == "img" ]] ; then
 
       local _arg=(\
-      "src: 'Ref:*', dst path: '${_local_path}'"^"eval cd ${_local_path} ; for i in \$(find . -name \"Ref:*\") ; do _name=\$(echo \${i} | tr \":\" \"_\") ; xenmigrate --convert=\"\${i}\" \"\${_name}.img\" ; done")
+      "src: 'Ref:*', dst: '${_local_path}/*.${_vm_pv_disk_format}'"^"eval cd ${_local_path} ; for i in \$(find . -name \"Ref:*\") ; do _name=\$(echo \${i} | tr \":\" \"_\") ; xenmigrate --convert=\"\${i}\" \"\${_name}.img\" ; done")
 
     elif [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
 
       local _arg=(\
-      "src: 'Ref:*', dst path: '${_local_path}'"^"eval cd ${_local_path} ; for i in \$(find . -name \"Ref:*\") ; do _name=\$(echo \${i} | tr \":\" \"_\") ; xenmigrate --convert=\"\${i}\" \"\${_name}.img\" ; done" \
-      "src: 'Ref_*.img', dst path: '${_local_path}'"^"eval cd ${_local_path} ; for _name in \$(find . -name \"Ref_*\") ; do _nname=\${_name%.*} ; qemu-img convert -f raw -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
+      "src: 'Ref:*', dst: '${_local_path}/*.img'"^"eval cd ${_local_path} ; for i in \$(find . -name \"Ref:*\") ; do _name=\$(echo \${i} | tr \":\" \"_\") ; xenmigrate --convert=\"\${i}\" \"\${_name}.img\" ; done" \
+      "src: 'Ref_*.img', dst: '${_local_path}/*.${_vm_pv_disk_format}'"^"eval cd ${_local_path} ; for _name in \$(find . -name \"Ref_*\") ; do _nname=\${_name%.*} ; qemu-img convert -f raw -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
 
     fi
 
@@ -485,12 +487,12 @@ function VmConvertDisks() {
     if [[ "$_vm_pv_disk_format" == "img" ]] ; then
 
       local _arg=(\
-      "src: '*.vmdk', dst path: '${_local_path}'"^"eval cd ${_local_path} ; for _name in \$(find . -name \"*.vmdk\" | grep -v \"flat\") ; do _nname=\${_name%.*} ; qemu-img convert -f vmdk -O raw \"\${_name}\" \"\${_nname}.img\" ; done")
+      "src: '*.vmdk', dst: '${_local_path}/*.${_vm_pv_disk_format}'"^"eval cd ${_local_path} ; for _name in \$(find . -name \"*.vmdk\" | grep -v \"flat\") ; do _nname=\${_name%.*} ; qemu-img convert -f vmdk -O raw \"\${_name}\" \"\${_nname}.img\" ; done")
 
     elif [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
 
       local _arg=(\
-      "src: '*.vmdk', dst path: '${_local_path}'"^"eval cd ${_local_path} ; for _name in \$(find . -name \"*.vmdk\" | grep -v \"flat\") ; do _nname=\${_name%.*} ; qemu-img convert -f vmdk -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
+      "src: '*.vmdk', dst: '${_local_path}/*.${_vm_pv_disk_format}'"^"eval cd ${_local_path} ; for _name in \$(find . -name \"*.vmdk\" | grep -v \"flat\") ; do _nname=\${_name%.*} ; qemu-img convert -f vmdk -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
 
     fi
 
@@ -542,7 +544,7 @@ function VmImport() {
   if [[ "$_vm_pv_disk_format" == "img" ]] ; then
 
     local _arg=(\
-    "src: '*.${_vm_pv_disk_format}', dst path: '${_vm_pv_lvm_l}'"^"eval cd ${_local_path} ; _x=1 ; for i in \$(find . -name \"*.${_vm_pv_disk_format}\") ; do if [[ -e ${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-\${_x} ]] ; then dd if=\$i of=${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-\${_x} ; _x=\$((_x + 1)) ; fi ; done")
+    "src: '*.${_vm_pv_disk_format}', dst path: '${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-*'"^"eval cd ${_local_path} ; _x=1 ; for i in \$(find . -name \"*.${_vm_pv_disk_format}\") ; do if [[ -e ${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-\${_x} ]] ; then dd if=\$i of=${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-\${_x} ; _x=\$((_x + 1)) ; fi ; done")
 
   elif [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
 
