@@ -364,7 +364,9 @@ function _sprintf() {
       else
 
         # If not, just display only the "head" string.
-        if [[ "$s_type" == "head" ]] ; then
+        if [[ "$s_type" == "head" ]] || \
+           [[ "$s_type" == "warn" ]] || \
+           [[ "$s_type" == "stop" ]] ; then
 
           printf '[\e['${s_trgb}'m%s\e[m] %s\n' "$s_char" "$s_info"
 
