@@ -115,10 +115,12 @@ function InitPv() {
       "${_FUNCTION_ID}()" \
       "${i}: '$_i'"
 
+    local _num='^[0-9]+$'
     # Checking variable values (if they are incorrect values).
     if [[ ! -d "$_vm_storage_l" ]] || \
        [[ ! -d "$_vm_pv_storage_l" ]] || \
-       [[ ! -e "$_vm_pv_lvm_l" ]] ; then
+       [[ ! -e "$_vm_pv_lvm_l" ]] || \
+       [[ ! "$_vm_pv_id_l" =~ $_num ]] ; then
 
       _sprintf "stop" "value: incorrect"
 
