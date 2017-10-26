@@ -98,6 +98,7 @@ function InitPv() {
            "_vm_id" \
            "_vm_name" \
            "_vm_storage_r" \
+           "_remote_path" \
            "_vm_storage_l" \
            "_local_path" \
            "_vm_pv_storage_l" \
