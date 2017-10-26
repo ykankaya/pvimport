@@ -1,5 +1,10 @@
 # pvimport
 
+## Version
+
+Latest stable: **v1.2**  
+Devel branch: **next-release**
+
 ## Description
 
 Allows you to import virtual machines (disks) running under Vmware or Xen to **Proxmox**.
@@ -16,7 +21,7 @@ Performs:
 
 - converted img/qcow2 files imports into place created when creating the virtual machine (directory/lvm) - **xen/vmware**
 
-## Script parameters
+## Parameters
 
 The tool provides the following options:
 
@@ -30,7 +35,6 @@ The tool provides the following options:
 
   Options:
         --help                  show this message
-        --version               show script version
         --debug                 display information on the screen (debug mode)
         --verbose               display 'info' messages on the screen
     -c, --config <file>         attach an external config file to the script
@@ -42,7 +46,7 @@ The tool provides the following options:
     -s, --sync                  synchronizes the created disks with the current ones (only for qcow2 format)
 ``````
 
-## Config file
+## Configuration file
 
 The configuration file (appended with the `-c|--config` parameter) has the following structure:
 
@@ -73,7 +77,7 @@ readonly l_pv_storage="/xfs900/images"
 readonly l_pv_lvm="/dev/pve"
 ``````
 
-## Example
+## Use example
 
 > Before you start, create a virtual machine in the proxmox web panel. The most important thing is to add the same number of disks of the same size as the current hypervisor.
 
@@ -115,10 +119,10 @@ Verbose mode - displays more detailed information on the screen:
 - before exporting the virtual machine running under vmware, you must **remove all snapshots** - pvimport recognizes only the appropriate virtual machine (including flat) disks, further shortening the migration time
 - pvimport **leaves all files/directories** (ova file, Ref: directories) so check the amount of available disk space before importing the processed virtual machine files
 
-## Version
+## Limitations
 
-Latest stable: **v1.1.48**  
-Devel branch: **next-release**
+- does not create a virtual machine from proxmox (cli/web) - you have to do it yourself
+- requires a disk space of the same size as the imported virtual machine - to store all files (disks)
 
 ## Project architecture
 
