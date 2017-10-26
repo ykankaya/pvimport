@@ -115,12 +115,40 @@ function InitPv() {
       "${_FUNCTION_ID}()" \
       "${i}: '$_i'"
 
+    # First, we check the virtual machine ID and its numeric value.
     local _num='^[0-9]+$'
+    if [[ "$i" == "_vm_pv_id_l" ]] ; then
+
+      if [[ "$_vm_pv_id_l" =~ $_num ]] ; then
+
+        # If the value is a number then we check whether
+        # the virtual machine with that identifier exists in the proxmox cluster.
+        if [[ ! $(pvesh get /cluster/resources --type vm | grep "qemu/$_vm_pv_id_l") ]] ; then
+
+          _sprintf "stop" "vm with this id does not exist"
+
+          _logger "stop" \
+            "${_FUNCTION_ID}()" \
+            "vm with this id does not exist"
+
+        fi
+
+      else
+
+        _sprintf "stop" "_vm_pv_id_l variable has no numeric value"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "_vm_pv_id_l variable has no numeric value"
+
+      fi
+
+    fi
+
     # Checking variable values (if they are incorrect values).
     if [[ ! -d "$_vm_storage_l" ]] || \
        [[ ! -d "$_vm_pv_storage_l" ]] || \
-       [[ ! -e "$_vm_pv_lvm_l" ]] || \
-       [[ ! "$_vm_pv_id_l" =~ $_num ]] ; then
+       [[ ! -e "$_vm_pv_lvm_l" ]] ; then
 
       _sprintf "stop" "value: incorrect"
 
