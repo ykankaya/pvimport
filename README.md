@@ -2,8 +2,7 @@
 
 ## Version
 
-Latest stable: **v1.2**  
-Devel branch: **next-release**
+Latest stable: **v1.2**
 
 ## Description
 
