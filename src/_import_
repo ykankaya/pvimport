@@ -42,6 +42,7 @@ function InitPv() {
   local _vm_pv_disk_format="${_hypervisor_params[8]}"
   local _vm_pv_disk_sync="${_hypervisor_params[9]}"
 
+  local _remote_path="${_vm_storage_r}/${_vm_name}"
   local _local_path="${_vm_storage_l}/${_socket#*@}/${_vm_name}"
   local _local_path_pv="${_vm_pv_storage_l}/${_vm_pv_id_l}"
 
@@ -260,7 +261,8 @@ function CheckRemoteEnv() {
 
     local _arg=(\
     "directory: '${_vm_storage_r}'"^"ssh ${_socket} -p ${_port} if [[ ! -d \"${_vm_storage_r}\" ]] ; then exit 1 ; fi" \
-    "vm: '${_vm_id}'"^"ssh ${_socket} -p ${_port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${_vm_id}) ]] ; then exit 1 ; fi")
+    "vm: '${_vm_id}'"^"ssh ${_socket} -p ${_port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${_vm_id}) ]] ; then exit 1 ; fi" \
+    "vm directory: '${_remote_path}'"^"ssh ${_socket} -p ${_port} if [[ ! -d \"${_remote_path}\" ]] ; then exit 1 ; fi")
 
   fi
 
