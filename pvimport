@@ -6,11 +6,9 @@
 #
 #         fname : "pvimport"
 #         cdate : "12.10.2017"
-#         mdate : "26.10.2017"
-#       version : "v1.1.48"
 #        author : "Michał Żurawski <contact@nslab.at>"
 #      tab_size : "2"
-#     soft_tabs : "YES"
+#     soft_tabs : "yes"
 #
 # Description:
 #
@@ -89,9 +87,6 @@ readonly logdir="${_init_directory}/log"
 readonly logfile="${_init_name}.${cdate}.log"
 readonly logstdout="${logdir}/stdout.log"
 readonly logpath="${logdir}/${logfile}"
-
-# Script version.
-readonly version="v1.1.48"
 
 # External configuration file.
 config=""
@@ -519,7 +514,6 @@ function _help_() {
 
   Options:
         --help                  show this message
-        --version               show script version
         --debug                 display information on the screen (debug mode)
         --verbose               display 'info' messages on the screen
     -c, --config <file>         attach an external config file to the script
@@ -625,7 +619,7 @@ function __main__() {
   # Specifies the call parameters of the script, the exact description
   # can be found in _help_ and file README.md.
   local _short_opt="c:h:i:n:p:f:s"
-  local _long_opt="help,version,debug,verbose,config:,host:,id:,name:,pvid:,format:,sync"
+  local _long_opt="help,debug,verbose,config:,host:,id:,name:,pvid:,format:,sync"
 
   _GETOPT_PARAMS=$(getopt -o "${_short_opt}" --long "${_long_opt}" \
                   -n "${_init_name}" -- "${__script_params[@]}")
@@ -640,12 +634,6 @@ function __main__() {
       --help)
 
         _help_
-
-        shift ; _exit_ 0 ;;
-
-      --version)
-
-        printf "%s, %s\n" "$_init_name" "$version"
 
         shift ; _exit_ 0 ;;
 
