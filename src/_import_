@@ -123,7 +123,7 @@ function InitPv() {
 
         # If the value is a number then we check whether
         # the virtual machine with that identifier exists in the proxmox cluster.
-        if [[ ! $(pvesh get /cluster/resources --type vm | grep "qemu/$_vm_pv_id_l") ]] ; then
+        if [[ ! $(pvesh get /cluster/resources --type vm | grep "qemu/$_vm_pv_id_l" >>"$logstdout" 2>&1) ]] ; then
 
           _sprintf "stop" "vm with this id does not exist"
 
