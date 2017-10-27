@@ -2,7 +2,8 @@
 
 ## Version
 
-Latest stable: **v1.2**
+Stable release: **v1.2**  
+Testing release: **testing**
 
 ## Description
 
