@@ -506,31 +506,27 @@ function VmConvertDisks() {
 
   if [[ "$_vm_type" == "xen" ]] ; then
 
-    if [[ "$_vm_pv_disk_format" == "img" ]] ; then
+    for _fda in $(find . -name "Ref:*") ; do
 
-      for _fda in $(find . -name "Ref:*") ; do
+      _name=$(echo ${_fda} | tr ":" "_")
 
-        _name=$(echo ${_fda} | tr ":" "_")
+      _arg+=(\
+      "src: '${_fda}', dst: '${_local_path}/${_name}.img'"^"xenmigrate --convert=\"${_fda}\" \"${_name}.img\"")
 
-        _arg+=(\
-        "src: '${_fda}', dst: '${_local_path}/${_name}.img'"^"xenmigrate --convert=\"${_fda}\" \"${_name}.img\"")
+      if [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
 
-        if [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
+        for _fdb in $(find . -name "Ref_*.img") ; do
 
-          for _fdb in $(find . -name "Ref_*.img") ; do
+          _nname="${_fdb%.*}"
 
-            _nname="${_fdb%.*}"
+          _arg+=(\
+          "src: '${_fdb}', dst: '${_local_path}/${_nname}.qcow2'"^"qemu-img convert -f raw -O qcow2 \"${_fdb}\" \"${_nname}.qcow2\"")
 
-            _arg+=(\
-            "src: '${_fdb}', dst: '${_local_path}/${_nname}.qcow2'"^"qemu-img convert -f raw -O qcow2 \"${_fdb}\" \"${_nname}.qcow2\"")
+        done
 
-          done
+      fi
 
-        fi
-
-      done
-
-    fi
+    done
 
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
