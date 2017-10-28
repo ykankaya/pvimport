@@ -97,8 +97,6 @@ function InitPv() {
            "_vm_type" \
            "_vm_id" \
            "_vm_name" \
-           "_vm_storage_r" \
-           "_vm_storage_l" \
            "_remote_path" \
            "_local_path" \
            "_vm_pv_storage_l" \
@@ -146,7 +144,7 @@ function InitPv() {
     fi
 
     # Checking variable values (if they are incorrect values).
-    if [[ ! -d "$_vm_storage_l" ]] || \
+    if [[ ! -d "$_local_path" ]] || \
        [[ ! -d "$_vm_pv_storage_l" ]] || \
        [[ ! -e "$_vm_pv_lvm_l" ]] ; then
 
