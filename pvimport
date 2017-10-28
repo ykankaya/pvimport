@@ -523,7 +523,7 @@ function _help_() {
                                 and remote vm directory in datastore (vmware)
     -p, --pvid <num>            sets the vm id created in proxmox
     -f, --format <img|qcow2>    sets the disk format (img/qcow2)
-        --import                import disks into proxmox vm
+        --import <ip|hostname>  import disks into proxmox vm (value is optional)
 
 
   pvimport, Copyright (C) 2017  Michał Żurawski <contact@nslab.at>
@@ -691,6 +691,9 @@ function __main__() {
       --import)
 
         pv_disk_import="true"
+        pv_disk_import_host=${2}
+
+        shift 2 ;;
 
         shift ;;
 
@@ -727,7 +730,8 @@ function __main__() {
            "l_pv_storage" \
            "l_pv_lvm" \
            "l_pv_id" \
-           "l_pv_disk_format" ; do
+           "l_pv_disk_format" \
+           "pv_disk_import_host" ; do
 
     eval _i='$'${i}
 
@@ -756,7 +760,8 @@ function __main__() {
                       "$l_pv_lvm" \
                       "$l_pv_id" \
                       "$l_pv_disk_format" \
-                      "$pv_disk_import")
+                      "$pv_disk_import" \
+                      "$pv_disk_import_host")
 
   # Store remote variables.
   local _pv_vars="/tmp/.pvvars"
