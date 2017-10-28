@@ -520,7 +520,7 @@ function VmConvertDisks() {
       _name=$(echo ${_fda} | tr ":" "_")
 
       _arg+=(\
-      "src: '${_fda}', dst: '${_local_path}/${_name}.img'"^"xenmigrate --convert=${_fda} "${_name}.img"")
+      "src: '${_fda}', dst: '${_local_path}/${_name}.img'"^"xenmigrate --convert=${_fda} ${_name}.img")
 
       if [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
 
@@ -528,7 +528,7 @@ function VmConvertDisks() {
         _nname="${_fdb%.*}"
 
         _arg+=(\
-        "src: '${_fdb}', dst: '${_local_path}/${_nname}.qcow2'"^"qemu-img convert -f raw -O qcow2 "${_fdb}" "${_nname}.qcow2"")
+        "src: '${_fdb}', dst: '${_local_path}/${_nname}.qcow2'"^"qemu-img convert -f raw -O qcow2 ${_fdb} ${_nname}.qcow2")
 
         if [[ "$l_remove_unused" == "yes" ]] ; then
 
@@ -554,7 +554,7 @@ function VmConvertDisks() {
       _name="${_fda%.*}"
 
       _arg+=(\
-      "src: '${_fda}', dst: '${_local_path}/${_name}.${_vm_pv_disk_format}'"^"qemu-img convert -f vmdk -O ${_vm_pv_disk_format} "${_fda}" "${_name}.${_vm_pv_disk_format}"")
+      "src: '${_fda}', dst: '${_local_path}/${_name}.${_vm_pv_disk_format}'"^"qemu-img convert -f vmdk -O ${_vm_pv_disk_format} ${_fda} ${_name}.${_vm_pv_disk_format}")
 
       if [[ "$l_remove_unused" == "yes" ]] ; then
 
