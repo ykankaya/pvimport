@@ -455,6 +455,18 @@ function VmExtract() {
   local _arg=(\
   "src: '${_vm_name}.ova', dst path: '${_local_path}'"^"tar xf ${_local_path}/${_vm_name}.ova -C ${_local_path}")
 
+  if [[ "$l_remove_unused" == "yes" ]] ; then
+
+    # We're checking to make sure there is.
+    if [[ -e "${_local_path}/${_vm_name}.ova" ]] ; then
+    
+      _arg+=(\
+      "remove: '${_vm_name}.ova'"^"echo ${_local_path}/${_vm_name}.ova")
+
+    fi
+
+  fi
+
   for i in "${_arg[@]}" ; do
 
     _msg="${i%%^*}"
@@ -513,11 +525,30 @@ function VmConvertDisks() {
 
       if [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
 
-          _fdb="${_name}.img"
-          _nname="${_fdb%.*}"
+        _fdb="${_name}.img"
+        _nname="${_fdb%.*}"
 
-          _arg+=(\
-          "src: '${_fdb}', dst: '${_local_path}/${_nname}.qcow2'"^"qemu-img convert -f raw -O qcow2 "${_fdb}" "${_nname}.qcow2"")
+        _arg+=(\
+        "src: '${_fdb}', dst: '${_local_path}/${_nname}.qcow2'"^"qemu-img convert -f raw -O qcow2 "${_fdb}" "${_nname}.qcow2"")
+
+        if [[ "$l_remove_unused" == "yes" ]] ; then
+
+          # We're checking to make sure there is.
+          if [[ -e "${_fda}" ]] ; then
+    
+            _arg+=(\
+            "remove: '${_fda}'"^"echo ${_fda}")
+
+          fi
+
+          if [[ -e "${_name}.img" ]] ; then
+    
+            _arg+=(\
+            "remove: '${_name}.img'"^"echo ${_name}.img")
+
+          fi
+
+        fi
 
       fi
 
@@ -529,8 +560,20 @@ function VmConvertDisks() {
 
       _name="${_fda%.*}"
 
-        _arg+=(\
-        "src: '${_fda}', dst: '${_local_path}/${_name}.${_vm_pv_disk_format}'"^"qemu-img convert -f vmdk -O ${_vm_pv_disk_format} "${_fda}" "${_name}.${_vm_pv_disk_format}"")
+      _arg+=(\
+      "src: '${_fda}', dst: '${_local_path}/${_name}.${_vm_pv_disk_format}'"^"qemu-img convert -f vmdk -O ${_vm_pv_disk_format} "${_fda}" "${_name}.${_vm_pv_disk_format}"")
+
+      if [[ "$l_remove_unused" == "yes" ]] ; then
+
+        # We're checking to make sure there is.
+        if [[ -e "${_fda}" ]] ; then
+    
+          _arg+=(\
+          "remove: '${_fda}'"^"echo ${_fda}")
+
+        fi
+
+      fi
 
     done
 
@@ -593,6 +636,18 @@ function VmImport() {
         _arg+=(\
         "src: '${_fda}', dst path: '${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}'"^"dd if=$_fda of=${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}")
 
+        if [[ "$l_remove_unused" == "yes" ]] ; then
+
+          # We're checking to make sure there is.
+          if [[ -e "${_fda}" ]] ; then
+    
+            _arg+=(\
+            "remove: '${_fda}'"^"echo ${_fda}")
+
+          fi
+
+        fi
+
       fi
 
     elif [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
@@ -601,6 +656,18 @@ function VmImport() {
 
         _arg+=(\
         "src: '${_fda}', dst path: '${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.${_vm_pv_disk_format}'"^"cp $_fda ${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.${_vm_pv_disk_format}")
+
+        if [[ "$l_remove_unused" == "yes" ]] ; then
+
+          # We're checking to make sure there is.
+          if [[ -e "${_fda}" ]] ; then
+    
+            _arg+=(\
+            "remove: '${_fda}'"^"echo ${_fda}")
+
+          fi
+
+        fi
 
       fi
 
