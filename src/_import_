@@ -144,8 +144,7 @@ function InitPv() {
     fi
 
     # Checking variable values (if they are incorrect values).
-    if [[ ! -d "$_local_path" ]] || \
-       [[ ! -d "$_vm_pv_storage_l" ]] || \
+    if [[ ! -d "$_vm_pv_storage_l" ]] || \
        [[ ! -e "$_vm_pv_lvm_l" ]] ; then
 
       _sprintf "stop" "value: incorrect"
