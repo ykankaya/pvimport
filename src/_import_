@@ -506,7 +506,7 @@ function VmConvertDisks() {
 
   if [[ "$_vm_type" == "xen" ]] ; then
 
-    for _fda in $(find . -name "Ref:*") ; do
+    for _fda in $(find . -type d -name "Ref:*" -printf '%P\n') ; do
 
       _name=$(echo ${_fda} | tr ":" "_")
 
@@ -515,7 +515,7 @@ function VmConvertDisks() {
 
       if [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
 
-        for _fdb in $(find . -name "Ref_*.img") ; do
+        for _fdb in $(find . -type f -name "Ref_*.img" -printf '%P\n') ; do
 
           _nname="${_fdb%.*}"
 
@@ -530,7 +530,7 @@ function VmConvertDisks() {
 
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
-    for _fda in $(find . -name "*.vmdk" | grep -v "flat") ; do
+    for _fda in $(find . -type f -name "*.vmdk" -printf '%P\n' | grep -v "flat") ; do
 
       _name="${_fda%.*}"
 
@@ -598,7 +598,7 @@ function VmImport() {
 
   cd ${_full_local_path}
 
-  for _fda in $(find . -name "*.$_vm_pv_disk_format") ; do
+  for _fda in $(find . -type f -name "*.$_vm_pv_disk_format" -printf '%P\n') ; do
   
     if [[ "$_vm_pv_disk_format" == "img" ]] ; then
 
