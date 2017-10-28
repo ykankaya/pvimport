@@ -39,11 +39,11 @@ The tool provides the following options:
         --verbose               display 'info' messages on the screen
     -c, --config <file>         attach an external config file to the script
     -h, --host <ip|hostname>    sets the ip address or hostname of the remote hypervisor
-    -i, --id <vm_id|vm_name>    sets the id (xen) or name (vmware) of the imported virtual machine
-    -n, --name <new_vm_name>    sets a new name (xen/vmware) or directory name on the remote disk (vmware)
-    -p, --pvid <num>            sets the virtual machine id created in proxmox
-    -f, --format <img|qcow2>    sets the disk format (img or qcow2)
-    -s, --sync                  synchronizes the created disks with the current ones (only for qcow2 format)
+    -i, --id <vm_id|vm_name>    sets the remote id (xen) or name (vmware) of the imported vm
+    -n, --name <vm_name>        sets the name for the new files/directories and remote vm directory in datastore (vmware)
+    -p, --pvid <num>            sets the vm id created in proxmox
+    -f, --format <img|qcow2>    sets the disk format (img/qcow2)
+    -s, --sync                  synchronizes the created disks with the current ones
 ``````
 
 ## Configuration file
