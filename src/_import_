@@ -192,6 +192,13 @@ function CheckConn() {
   local _arg=(\
   "host: '${_host}'"^"wait-for-it -h ${_host} -p ${_port} -t 5 -q")
 
+  if [[ ! -z "$_vm_pv_disk_sync_host" ]] && [[ "$_vm_pv_disk_sync_host" != "local" ]] ; then
+
+    _arg+=(\
+    "host: '${_vm_pv_disk_sync_host}'"^"wait-for-it -h ${_vm_pv_disk_sync_host} -p ${_port} -t 5 -q")
+
+  fi
+
   for i in "${_arg[@]}" ; do
 
     _msg="${i%%^*}"
