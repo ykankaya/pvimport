@@ -540,13 +540,6 @@ function VmConvertDisks() {
 
           fi
 
-          if [[ -e "${_name}.img" ]] ; then
-    
-            _arg+=(\
-            "remove: '${_name}.img'"^"echo ${_name}.img")
-
-          fi
-
         fi
 
       fi
@@ -654,7 +647,7 @@ function VmImport() {
       if [[ -e "${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.qcow2" ]] ; then
 
         _arg+=(\
-        "src: '${_fda}', dst path: '${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.${_vm_pv_disk_format}'"^"cp $_fda ${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.${_vm_pv_disk_format}")
+        "src: '${_fda}', dst path: '${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.qcow2'"^"cp $_fda ${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.qcow2")
 
         if [[ "$l_remove_unused" == "yes" ]] ; then
 
