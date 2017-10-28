@@ -28,8 +28,8 @@ function InitPv() {
   local _conn_params=("${!1}")
   local _hypervisor_params=("${!2}")
 
-  local _socket="${_conn_params[0]}@${_conn_params[1]}"
-  local _port="${_conn_params[2]}"
+  local _host="${_conn_params[0]}"
+  local _port="${_conn_params[1]}"
 
   local _vm_type="${_hypervisor_params[0]}"
   local _vm_storage_r="${_hypervisor_params[1]}"
@@ -43,7 +43,7 @@ function InitPv() {
   local _vm_pv_disk_sync="${_hypervisor_params[9]}"
 
   local _remote_path="${_vm_storage_r}/${_vm_name}"
-  local _local_path="${_vm_storage_l}/${_socket#*@}/${_vm_name}"
+  local _local_path="${_vm_storage_l}/${_host#*@}/${_vm_name}"
   local _local_path_pv="${_vm_pv_storage_l}/${_vm_pv_id_l}"
 
   # Functions stack description:
@@ -92,7 +92,7 @@ function InitPv() {
     "creating and checking local environment"
 
   # Display of variable values without checking them.
-  for i in "_socket" \
+  for i in "_host" \
            "_port" \
            "_vm_type" \
            "_vm_id" \
@@ -191,7 +191,7 @@ function CheckConn() {
     "checking connection to remote host"
 
   local _arg=(\
-  "host: '${_socket#*@}'"^"wait-for-it -h ${_socket#*@} -p ${_port} -t 5 -q")
+  "host: '${_host}'"^"wait-for-it -h ${_host} -p ${_port} -t 5 -q")
 
   for i in "${_arg[@]}" ; do
 
@@ -237,7 +237,7 @@ function InitRemoteEnv() {
     "preparing remote environment"
 
   local _arg=(\
-  "resetting '$_pv_vars'"^"ssh ${_socket} -p ${_port} >${_pv_vars}")
+  "resetting '$_pv_vars'"^"ssh ${_host} -p ${_port} >${_pv_vars}")
 
   for i in "${_arg[@]}" ; do
 
@@ -285,15 +285,15 @@ function CheckRemoteEnv() {
   if [[ "$_vm_type" == "xen" ]] ; then
 
     local _arg=(\
-    "directory: '${_vm_storage_r}'"^"ssh ${_socket} -p ${_port} if [[ ! -d \"${_vm_storage_r}\" ]] ; then exit 1 ; fi" \
-    "vm: '${_vm_id}'"^"ssh ${_socket} -p ${_port} if [[ ! \$(xe vm-list | grep ${_vm_id}) ]] ; then exit 1 ; fi")
+    "directory: '${_vm_storage_r}'"^"ssh ${_host} -p ${_port} if [[ ! -d \"${_vm_storage_r}\" ]] ; then exit 1 ; fi" \
+    "vm: '${_vm_id}'"^"ssh ${_host} -p ${_port} if [[ ! \$(xe vm-list | grep ${_vm_id}) ]] ; then exit 1 ; fi")
 
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
     local _arg=(\
-    "directory: '${_vm_storage_r}'"^"ssh ${_socket} -p ${_port} if [[ ! -d \"${_vm_storage_r}\" ]] ; then exit 1 ; fi" \
-    "vm: '${_vm_id}'"^"ssh ${_socket} -p ${_port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${_vm_id}) ]] ; then exit 1 ; fi" \
-    "vm directory: '${_remote_path}'"^"ssh ${_socket} -p ${_port} if [[ ! -d \"${_remote_path}\" ]] ; then exit 1 ; fi")
+    "directory: '${_vm_storage_r}'"^"ssh ${_host} -p ${_port} if [[ ! -d \"${_vm_storage_r}\" ]] ; then exit 1 ; fi" \
+    "vm: '${_vm_id}'"^"ssh ${_host} -p ${_port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${_vm_id}) ]] ; then exit 1 ; fi" \
+    "vm directory: '${_remote_path}'"^"ssh ${_host} -p ${_port} if [[ ! -d \"${_remote_path}\" ]] ; then exit 1 ; fi")
 
   fi
 
@@ -341,8 +341,8 @@ function VmExport() {
     "exporting $_vm_id"
 
   local _arg=(\
-  "creating snapshot: '${_vm_name}-${_random}'"^"ssh ${_socket} -p ${_port} _id=\$(xe vm-snapshot vm=${_vm_id} new-name-label=${_vm_name}-${_random}) ; echo id=\$_id >> ${_pv_vars}" \
-  "exporting snapshot: '${_vm_name}.ova'"^"ssh ${_socket} -p ${_port} _id=\$(cat ${_pv_vars} | grep id= | cut -d = -f2) ; xe vm-export vm=\${_id} filename=${_vm_storage_r}/${_vm_name}.ova")
+  "creating snapshot: '${_vm_name}-${_random}'"^"ssh ${_host} -p ${_port} _id=\$(xe vm-snapshot vm=${_vm_id} new-name-label=${_vm_name}-${_random}) ; echo id=\$_id >> ${_pv_vars}" \
+  "exporting snapshot: '${_vm_name}.ova'"^"ssh ${_host} -p ${_port} _id=\$(cat ${_pv_vars} | grep id= | cut -d = -f2) ; xe vm-export vm=\${_id} filename=${_vm_storage_r}/${_vm_name}.ova")
 
   for i in "${_arg[@]}" ; do
 
@@ -402,12 +402,12 @@ function VmCopy() {
   if [[ "$_vm_type" == "xen" ]] ; then
 
     local _arg=(\
-    "src: '${_vm_name}.ova', dst path: '${_local_path}'"^"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}.ova ${_local_path}")
+    "src: '${_vm_name}.ova', dst path: '${_local_path}'"^"scp -P ${_port} ${_host}:${_vm_storage_r}/${_vm_name}.ova ${_local_path}")
 
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
     local _arg=(\
-    "src: '*.vmdk', dst path: '${_local_path}'"^"scp -P ${_port} ${_socket}:${_vm_storage_r}/${_vm_name}/*.vmdk ${_local_path}")
+    "src: '*.vmdk', dst path: '${_local_path}'"^"scp -P ${_port} ${_host}:${_vm_storage_r}/${_vm_name}/*.vmdk ${_local_path}")
 
   fi
 
