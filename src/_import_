@@ -597,17 +597,36 @@ function VmImport() {
     "${_FUNCTION_ID}()" \
     "importing a virtual machine disks"
 
-  if [[ "$_vm_pv_disk_format" == "img" ]] ; then
+  local _arg=()
+  local _x=1
 
-    local _arg=(\
-    "src: '*.${_vm_pv_disk_format}', dst path: '${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-*'"^"eval cd ${_local_path} ; _x=1 ; for i in \$(find . -name \"*.${_vm_pv_disk_format}\") ; do if [[ -e ${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-\${_x} ]] ; then dd if=\$i of=${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-\${_x} ; _x=\$((_x + 1)) ; fi ; done")
+  cd ${_local_path}
 
-  elif [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
+  for _fda in $(find . -name "*.$_vm_pv_disk_format") ; do
+  
+    if [[ "$_vm_pv_disk_format" == "img" ]] ; then
 
-    local _arg=(\
-    "src: '*.${_vm_pv_disk_format}', dst path: '${_local_path_pv}'"^"eval cd ${_local_path} ; _x=1 ; for i in \$(find . -name \"*.${_vm_pv_disk_format}\") ; do if [[ -e ${_local_path_pv}/vm-${_vm_pv_id_l}-disk-\${_x}.${_vm_pv_disk_format} ]] ; then cp \$i ${_local_path_pv}/vm-${_vm_pv_id_l}-disk-\${_x}.${_vm_pv_disk_format} ; _x=\$((_x + 1)) ; fi ; done")
+      if [[ -e "${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}" ]] ; then
 
-  fi
+        _arg+=(\
+        "src: '${_fda}', dst path: '${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}'"^"dd if=$_fda of=${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}")
+
+      fi
+
+    elif [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
+
+      if [[ -e "${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.qcow2" ]] ; then
+
+        _arg+=(\
+        "src: '${_fda}', dst path: '${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.${_vm_pv_disk_format}'"^"cp $_fda ${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.${_vm_pv_disk_format}")
+
+      fi
+
+    fi
+
+    _x=$((_x + 1))
+
+  done
 
   for i in "${_arg[@]}" ; do
 
