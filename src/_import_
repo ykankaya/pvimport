@@ -500,6 +500,8 @@ function VmConvertDisks() {
     "${_FUNCTION_ID}()" \
     "converting disks to $_vm_pv_disk_format format"
 
+  local _arg=()
+
   cd ${_local_path}
 
   if [[ "$_vm_type" == "xen" ]] ; then
@@ -510,16 +512,16 @@ function VmConvertDisks() {
 
         _name=$(echo ${_fda} | tr ":" "_")
 
-        local _arg=(\
+        _arg+=(\
         "src: '${_fda}', dst: '${_local_path}/${_name}.img'"^"xenmigrate --convert=\"${_fda}\" \"${_name}.img\"")
 
         if [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
 
-          for _fdb in $(find . -name "Ref_*") ; do
+          for _fdb in $(find . -name "Ref_*.img") ; do
 
             _nname="${_fdb%.*}"
 
-            local _arg=(\
+            _arg+=(\
             "src: '${_fdb}', dst: '${_local_path}/${_nname}.qcow2'"^"qemu-img convert -f raw -O qcow2 \"${_fdb}\" \"${_nname}.qcow2\"")
 
           done
@@ -532,17 +534,23 @@ function VmConvertDisks() {
 
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
-    if [[ "$_vm_pv_disk_format" == "img" ]] ; then
+    for _fda in $(find . -name "*.vmdk" | grep -v "flat") ; do
 
-      local _arg=(\
-      "src: '*.vmdk', dst: '${_local_path}/*.${_vm_pv_disk_format}'"^"eval cd ${_local_path} ; for _name in \$(find . -name \"*.vmdk\" | grep -v \"flat\") ; do _nname=\${_name%.*} ; qemu-img convert -f vmdk -O raw \"\${_name}\" \"\${_nname}.img\" ; done")
+      _name="${_fda%.*}"
 
-    elif [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
+      if [[ "$_vm_pv_disk_format" == "img" ]] ; then
 
-      local _arg=(\
-      "src: '*.vmdk', dst: '${_local_path}/*.${_vm_pv_disk_format}'"^"eval cd ${_local_path} ; for _name in \$(find . -name \"*.vmdk\" | grep -v \"flat\") ; do _nname=\${_name%.*} ; qemu-img convert -f vmdk -O qcow2 \"\${_name}\" \"\${_nname}.qcow2\" ; done")
+        _arg+=(\
+        "src: '${_fda}', dst: '${_local_path}/${_name}.img'"^"qemu-img convert -f vmdk -O raw \"${_fda}\" \"${_name}.img\"")
 
-    fi
+      elif [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
+
+        _arg+=(\
+        "src: '${_fda}', dst: '${_local_path}/${_name}.img'"^"qemu-img convert -f vmdk -O raw \"${_fda}\" \"${_name}.img\"")
+
+      fi
+
+    done
 
   fi
 
