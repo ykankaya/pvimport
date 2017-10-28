@@ -515,14 +515,11 @@ function VmConvertDisks() {
 
       if [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
 
-        for _fdb in $(find . -type f -name "Ref_*.img" -printf '%P\n') ; do
-
+          _fdb="${_name}.img"
           _nname="${_fdb%.*}"
 
           _arg+=(\
           "src: '${_fdb}', dst: '${_local_path}/${_nname}.qcow2'"^"qemu-img convert -f raw -O qcow2 "${_fdb}" "${_nname}.qcow2"")
-
-        done
 
       fi
 

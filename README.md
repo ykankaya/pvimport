@@ -55,10 +55,9 @@ The configuration file (appended with the `-c|--config` parameter) has the follo
 # Specifies the type of hypervisor (xen or vmware).
 readonly r_hypervisor_type="type"
 
-# Specifies the user and the port number through which the connection
+# Specifies the port number through which the connection
 # to the remote server is established.
 # The ip address or hostname is determined by the parameter (-h|--host).
-readonly r_user="user"
 readonly r_port="port"
 
 # Specifies the remote path (remember to create it) on the remote machine
@@ -77,6 +76,14 @@ readonly l_pv_storage="/xfs900/images"
 # Used only for memory specified as LVM.
 readonly l_pv_lvm="/dev/pve"
 ``````
+
+## Before importing
+
+- set the **key authorization** (pvimport uses ssh protocol for communication)
+  - xen (for root user): */root/.ssh/authorized_keys*
+  - vmware (for root user): */etc/ssh/keys-root/authorized_keys*
+- prepare the **correct configuration file** (*src/configs/template.cfg*)
+- create **remote and local directory** (details above)
 
 ## Use example
 
