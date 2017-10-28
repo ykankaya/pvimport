@@ -536,7 +536,8 @@ function VmConvertDisks() {
           if [[ -e "${_fda}" ]] ; then
     
             _arg+=(\
-            "remove: '${_fda}'"^"echo ${_fda}")
+            "remove: '${_fda}'"^"echo ${_fda}" \
+            "remove: '${_fdb}'"^"echo ${_fdb}")
 
           fi
 
