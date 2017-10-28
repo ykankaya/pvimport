@@ -43,7 +43,7 @@ function InitPv() {
   local _vm_pv_disk_sync="${_hypervisor_params[9]}"
 
   local _remote_path="${_vm_storage_r}/${_vm_name}"
-  local _local_path="${_vm_storage_l}/${_host#*@}/${_vm_name}"
+  local _local_path="${_vm_storage_l}/${_host}/${_vm_name}"
   local _local_path_pv="${_vm_pv_storage_l}/${_vm_pv_id_l}"
 
   # Functions stack description:
