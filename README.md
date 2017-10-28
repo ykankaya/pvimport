@@ -30,7 +30,7 @@ The tool provides the following options:
     pvimport <option|long-option>
 
   Examples:
-    pvimport -c xen.cfg -h 172.20.50.31 -i ac06d737 -n VM_PROD -p 200 -f qcow2 -s --verbose
+    pvimport -c xen.cfg -h 172.20.50.31 -i ac06d737 -n VM_PROD -p 200 -f qcow2 --import --verbose
     pvimport -c vmware.cfg -h 172.20.50.32 -i gitlab_01 -n gitlab_01 -p 300 -f img
 
   Options:
@@ -43,7 +43,7 @@ The tool provides the following options:
     -n, --name <vm_name>        sets the name for the new files/directories and remote vm directory in datastore (vmware)
     -p, --pvid <num>            sets the vm id created in proxmox
     -f, --format <img|qcow2>    sets the disk format (img/qcow2)
-    -s, --sync                  synchronizes the created disks with the current ones
+        --import                import disks into proxmox vm
 ``````
 
 ## Configuration file

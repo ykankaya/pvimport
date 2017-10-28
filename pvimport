@@ -509,7 +509,7 @@ function _help_() {
     $_init_name <option|long-option>
 
   Examples:
-    $_init_name -c xen.cfg -h 172.20.50.31 -i ac06d737 -n VM_PROD -p 200 -f qcow2 -s --verbose
+    $_init_name -c xen.cfg -h 172.20.50.31 -i ac06d737 -n VM_PROD -p 200 -f qcow2 --import --verbose
     $_init_name -c vmware.cfg -h 172.20.50.32 -i gitlab_01 -n gitlab_01 -p 300 -f img
 
   Options:
@@ -522,7 +522,7 @@ function _help_() {
     -n, --name <vm_name>        sets the name for the new files/directories and remote vm directory in datastore (vmware)
     -p, --pvid <num>            sets the vm id created in proxmox
     -f, --format <img|qcow2>    sets the disk format (img/qcow2)
-    -s, --sync                  synchronizes the created disks with the current ones
+        --import                import disks into proxmox vm
 
 
   pvimport, Copyright (C) 2017  Michał Żurawski <contact@nslab.at>
@@ -687,9 +687,9 @@ function __main__() {
 
         shift 2 ;;
 
-      -s|--sync)
+      --import)
 
-        pv_disk_sync="true"
+        pv_disk_import="true"
 
         shift ;;
 
@@ -755,7 +755,7 @@ function __main__() {
                       "$l_pv_lvm" \
                       "$l_pv_id" \
                       "$l_pv_disk_format" \
-                      "$pv_disk_sync")
+                      "$pv_disk_import")
 
   # Store remote variables.
   local _pv_vars="/tmp/.pvvars"
