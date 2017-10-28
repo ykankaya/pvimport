@@ -534,17 +534,8 @@ function VmConvertDisks() {
 
       _name="${_fda%.*}"
 
-      if [[ "$_vm_pv_disk_format" == "img" ]] ; then
-
         _arg+=(\
-        "src: '${_fda}', dst: '${_local_path}/${_name}.img'"^"qemu-img convert -f vmdk -O raw \"${_fda}\" \"${_name}.img\"")
-
-      elif [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
-
-        _arg+=(\
-        "src: '${_fda}', dst: '${_local_path}/${_name}.img'"^"qemu-img convert -f vmdk -O raw \"${_fda}\" \"${_name}.img\"")
-
-      fi
+        "src: '${_fda}', dst: '${_local_path}/${_name}.${_vm_pv_disk_format}'"^"qemu-img convert -f vmdk -O ${_vm_pv_disk_format} \"${_fda}\" \"${_name}.${_vm_pv_disk_format}\"")
 
     done
 
