@@ -691,7 +691,7 @@ function __main__() {
       --import)
 
         pv_disk_import="true"
-        pv_disk_import_host=${2}
+        pv_disk_import_host=${2:-"local"}
 
         shift 2 ;;
 
