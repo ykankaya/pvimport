@@ -633,32 +633,29 @@ function VmImport() {
   
     if [[ "$_vm_pv_disk_format" == "img" ]] ; then
 
-      if [[ -e "${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}" ]] ; then
+      local _vm_pv_local="${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}"
 
-        local _vm_pv_local="${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}"
+      if [[ "$_vm_pv_disk_sync_host" == "local" ]] || [[ "$_vm_pv_disk_sync_host" == "$_host" ]] ; then
 
-        if [[ "$_vm_pv_disk_sync_host" != "local" ]] ; then
+        _arg+=(\
+        "checking: '${_vm_pv_local}'"^"if [[ ! -e ${_vm_pv_local} ]] ; then exit 1 ; fi" \
+        "src: '${_fda}', dst path: '${_vm_pv_local}'"^"dd if=$_fda of=${_vm_pv_local}")
 
-          _arg+=(\
-          "checking: '${_vm_pv_disk_sync_host}:${_vm_pv_local}'"^"ssh ${_vm_pv_disk_sync_host} -p ${_port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
-          "src: '${_fda}', dst path: '${_vm_pv_disk_sync_host}:${_vm_pv_local}'"^"dd if=${_fda} | ssh ${_vm_pv_disk_sync_host} -p ${_port} dd of=${_vm_pv_local}")
+      elif [[ "$_vm_pv_disk_sync_host" != "local" ]] && [[ "$_vm_pv_disk_sync_host" != "$_host" ]] ; then
 
-        else
+        _arg+=(\
+        "checking: '${_vm_pv_disk_sync_host}:${_vm_pv_local}'"^"ssh ${_vm_pv_disk_sync_host} -p ${_port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
+        "src: '${_fda}', dst path: '${_vm_pv_disk_sync_host}:${_vm_pv_local}'"^"dd if=${_fda} | ssh ${_vm_pv_disk_sync_host} -p ${_port} dd of=${_vm_pv_local}")
 
-          _arg+=(\
-          "src: '${_fda}', dst path: '${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}'"^"dd if=$_fda of=${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}")
+      fi
 
-        fi
+      if [[ "$l_remove_unused" == "yes" ]] ; then
 
-        if [[ "$l_remove_unused" == "yes" ]] ; then
-
-          # We're checking to make sure there is.
-          if [[ -e "${_fda}" ]] ; then
+        # We're checking to make sure there is.
+        if [[ -e "${_fda}" ]] ; then
     
-            _arg+=(\
-            "remove: '${_fda}'"^"rm -fr ${_fda}")
-
-          fi
+          _arg+=(\
+          "remove: '${_fda}'"^"rm -fr ${_fda}")
 
         fi
 
@@ -666,32 +663,29 @@ function VmImport() {
 
     elif [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
 
-      if [[ -e "${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.qcow2" ]] ; then
+      local _vm_pv_local="${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.qcow2"
 
-        local _vm_pv_local="${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.qcow2"
+      if [[ "$_vm_pv_disk_sync_host" == "local" ]] || [[ "$_vm_pv_disk_sync_host" == "$_host" ]] ; then
 
-        if [[ "$_vm_pv_disk_sync_host" != "local" ]] ; then
+        _arg+=(\
+        "checking: '${_vm_pv_local}'"^"if [[ ! -e ${_vm_pv_local} ]] ; then exit 1 ; fi" \
+        "src: '${_fda}', dst path: '${_vm_pv_local}'"^"cp $_fda ${_vm_pv_local}")
 
-          _arg+=(\
-          "checking: '${_vm_pv_disk_sync_host}:${_vm_pv_local}'"^"ssh ${_vm_pv_disk_sync_host} -p ${_port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
-          "src: '${_fda}', dst path: '${_vm_pv_disk_sync_host}:${_vm_pv_local}'"^"scp ${_fda} -P ${_port} ${_vm_pv_disk_sync_host}:${_vm_pv_local}")
+      elif [[ "$_vm_pv_disk_sync_host" != "local" ]] && [[ "$_vm_pv_disk_sync_host" != "$_host" ]] ; then
 
-        else
+        _arg+=(\
+        "checking: '${_vm_pv_disk_sync_host}:${_vm_pv_local}'"^"ssh ${_vm_pv_disk_sync_host} -p ${_port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
+        "src: '${_fda}', dst path: '${_vm_pv_disk_sync_host}:${_vm_pv_local}'"^"scp ${_fda} -P ${_port} ${_vm_pv_disk_sync_host}:${_vm_pv_local}")
 
-          _arg+=(\
-          "src: '${_fda}', dst path: '${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.qcow2'"^"cp $_fda ${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.qcow2")
+      fi
 
-        fi
+      if [[ "$l_remove_unused" == "yes" ]] ; then
 
-        if [[ "$l_remove_unused" == "yes" ]] ; then
-
-          # We're checking to make sure there is.
-          if [[ -e "${_fda}" ]] ; then
+        # We're checking to make sure there is.
+        if [[ -e "${_fda}" ]] ; then
     
-            _arg+=(\
-            "remove: '${_fda}'"^"rm -fr ${_fda}")
-
-          fi
+          _arg+=(\
+          "remove: '${_fda}'"^"rm -fr ${_fda}")
 
         fi
 
