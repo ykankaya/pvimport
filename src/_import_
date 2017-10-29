@@ -635,8 +635,18 @@ function VmImport() {
 
       if [[ -e "${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}" ]] ; then
 
-        _arg+=(\
-        "src: '${_fda}', dst path: '${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}'"^"dd if=$_fda of=${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}")
+        local _vm_pv_local="${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}"
+
+        if [[ ! -z "$_vm_pv_disk_sync_host" ]] && [[ "$_vm_pv_disk_sync_host" != "local" ]] ; then
+
+          _arg+=(\
+          "checking: '${_vm_pv_disk_sync_host}:${_vm_pv_local}'"^"ssh ${_vm_pv_disk_sync_host} -p ${_port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
+          "src: '${_fda}', dst path: '${_vm_pv_disk_sync_host}:${_vm_pv_local}'"^"dd if=${_fda} | ssh ${_vm_pv_disk_sync_host} -p ${_port} dd of=${_vm_pv_local}")
+
+        else
+
+          _arg+=(\
+          "src: '${_fda}', dst path: '${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}'"^"dd if=$_fda of=${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}")
 
         if [[ "$l_remove_unused" == "yes" ]] ; then
 
@@ -656,8 +666,20 @@ function VmImport() {
 
       if [[ -e "${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.qcow2" ]] ; then
 
-        _arg+=(\
-        "src: '${_fda}', dst path: '${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.qcow2'"^"cp $_fda ${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.qcow2")
+        local _vm_pv_local="${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.qcow2"
+
+        if [[ ! -z "$_vm_pv_disk_sync_host" ]] && [[ "$_vm_pv_disk_sync_host" != "local" ]] ; then
+
+          _arg+=(\
+          "checking: '${_vm_pv_disk_sync_host}:${_vm_pv_local}'"^"ssh ${_vm_pv_disk_sync_host} -p ${_port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
+          "src: '${_fda}', dst path: '${_vm_pv_disk_sync_host}:${_vm_pv_local}'"^"scp ${_fda} -P ${_port} ${_vm_pv_disk_sync_host}:${_vm_pv_local}")
+
+        else
+
+          _arg+=(\
+          "src: '${_fda}', dst path: '${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.qcow2'"^"cp $_fda ${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.qcow2")
+
+        fi
 
         if [[ "$l_remove_unused" == "yes" ]] ; then
 
