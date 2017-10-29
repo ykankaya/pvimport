@@ -1,5 +1,7 @@
 # pvimport
 
+[TOC]
+
 ## Version
 
 Stable release: **v1.2.1**  
@@ -44,7 +46,7 @@ The tool provides the following options:
                                 and remote vm directory in datastore (vmware)
     -p, --pvid <num>            sets the vm id created in proxmox
     -f, --format <img|qcow2>    sets the disk format (img/qcow2)
-        --import <local|host>   import disks into proxmox vm
+        --import <local|host>   import disks into proxmox node
 ``````
 
 ## Configuration file
@@ -142,14 +144,21 @@ Verbose mode - displays more detailed information on the screen:
 - does not create a virtual machine from proxmox (cli/web) - you have to do it yourself
 - requires a disk space of the same size as the imported virtual machine - to store all files (disks)
 
+## Performance
+
+To be completed.
+
 ## Project architecture
 
-    |-- LICENSE.md      # GNU GENERAL PUBLIC LICENSE, Version 3, 29 June 2007
-    |-- README.md       # this simple documentation
-    |-- .gitignore      # ignore untracked files
-    |-- .gitkeep        # track empty directory
-    |-- src             # includes external project files
-    |-- doc             # includes documentation, images and manuals
+    |-- LICENSE.md      		# GNU GENERAL PUBLIC LICENSE, Version 3, 29 June 2007
+    |-- README.md       		# this simple documentation
+    |-- .gitignore      		# ignore untracked files
+    |-- .gitkeep        		# track empty directory
+    |-- src             		# includes external project files
+        |-- _import_			# init script
+        |-- configs				# directory with configurations
+            |-- template.cfg	# template configuration
+    |-- doc             		# includes documentation, images and manuals
 
 ## License
 
