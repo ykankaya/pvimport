@@ -41,6 +41,7 @@ function InitPv() {
   local _vm_pv_id_l="${_hypervisor_params[7]}"
   local _vm_pv_disk_format="${_hypervisor_params[8]}"
   local _vm_pv_disk_sync="${_hypervisor_params[9]}"
+  local _vm_pv_disk_sync_host="${_hypervisor_params[10]}"
 
   local _remote_path="${_vm_storage_r}/${_vm_name}"
   local _local_path="${_vm_storage_l}/${_host}/${_vm_name}"
@@ -103,7 +104,8 @@ function InitPv() {
            "_vm_pv_lvm_l" \
            "_vm_pv_id_l" \
            "_vm_pv_disk_format" \
-           "_vm_pv_disk_sync" ; do
+           "_vm_pv_disk_sync" \
+           "_vm_pv_disk_sync_host" ; do
 
     eval _i='$'${i}
 
@@ -189,6 +191,13 @@ function CheckConn() {
 
   local _arg=(\
   "host: '${_host}'"^"wait-for-it -h ${_host} -p ${_port} -t 5 -q")
+
+  if [[ ! -z "$_vm_pv_disk_sync_host" ]] && [[ "$_vm_pv_disk_sync_host" != "local" ]] ; then
+
+    _arg+=(\
+    "host: '${_vm_pv_disk_sync_host}'"^"wait-for-it -h ${_vm_pv_disk_sync_host} -p ${_port} -t 5 -q")
+
+  fi
 
   for i in "${_arg[@]}" ; do
 
@@ -626,8 +635,18 @@ function VmImport() {
 
       if [[ -e "${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}" ]] ; then
 
-        _arg+=(\
-        "src: '${_fda}', dst path: '${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}'"^"dd if=$_fda of=${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}")
+        local _vm_pv_local="${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}"
+
+        if [[ ! -z "$_vm_pv_disk_sync_host" ]] && [[ "$_vm_pv_disk_sync_host" != "local" ]] ; then
+
+          _arg+=(\
+          "checking: '${_vm_pv_disk_sync_host}:${_vm_pv_local}'"^"ssh ${_vm_pv_disk_sync_host} -p ${_port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
+          "src: '${_fda}', dst path: '${_vm_pv_disk_sync_host}:${_vm_pv_local}'"^"dd if=${_fda} | ssh ${_vm_pv_disk_sync_host} -p ${_port} dd of=${_vm_pv_local}")
+
+        else
+
+          _arg+=(\
+          "src: '${_fda}', dst path: '${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}'"^"dd if=$_fda of=${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}")
 
         if [[ "$l_remove_unused" == "yes" ]] ; then
 
@@ -647,8 +666,20 @@ function VmImport() {
 
       if [[ -e "${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.qcow2" ]] ; then
 
-        _arg+=(\
-        "src: '${_fda}', dst path: '${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.qcow2'"^"cp $_fda ${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.qcow2")
+        local _vm_pv_local="${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.qcow2"
+
+        if [[ ! -z "$_vm_pv_disk_sync_host" ]] && [[ "$_vm_pv_disk_sync_host" != "local" ]] ; then
+
+          _arg+=(\
+          "checking: '${_vm_pv_disk_sync_host}:${_vm_pv_local}'"^"ssh ${_vm_pv_disk_sync_host} -p ${_port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
+          "src: '${_fda}', dst path: '${_vm_pv_disk_sync_host}:${_vm_pv_local}'"^"scp ${_fda} -P ${_port} ${_vm_pv_disk_sync_host}:${_vm_pv_local}")
+
+        else
+
+          _arg+=(\
+          "src: '${_fda}', dst path: '${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.qcow2'"^"cp $_fda ${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.qcow2")
+
+        fi
 
         if [[ "$l_remove_unused" == "yes" ]] ; then
 
