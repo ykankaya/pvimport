@@ -88,6 +88,13 @@ readonly l_remove_unused="no"
 - prepare the **correct configuration file** (*src/configs/template.cfg*)
 - create **remote and local directory** (details above)
 
+## Requirements
+
+Pvimport uses two external utilities to be installed before running:
+
+- [xenmigrate](https://pve.proxmox.com/wiki/Xenmigrate)
+- [wait-for-it](https://github.com/vishnubob/wait-for-it)
+
 ## Use example
 
 > Before you start, create a virtual machine in the proxmox web panel. The most important thing is to add the same number of disks of the same size as the current hypervisor.
