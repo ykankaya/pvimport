@@ -2,7 +2,7 @@
 
 ## Version
 
-Stable release: **v1.2**  
+Stable release: **v1.2.1**  
 Testing release: **testing**
 
 ## Description
