@@ -30,7 +30,7 @@ The tool provides the following options:
     pvimport <option|long-option>
 
   Examples:
-    pvimport -c xen.cfg -h 172.20.50.31 -i ac06d737 -n VM_PROD -p 200 -f qcow2 --import --verbose
+    pvimport -c xen.cfg -h 172.20.50.31 -i ac06d737 -n VM_PROD -p 200 -f qcow2 --import local --verbose
     pvimport -c vmware.cfg -h 172.20.50.32 -i gitlab_01 -n gitlab_01 -p 300 -f img
 
   Options:
@@ -75,11 +75,14 @@ readonly l_pv_storage="/xfs900/images"
 # Specifies the local resource of virtual machines.
 # Used only for memory specified as LVM.
 readonly l_pv_lvm="/dev/pve"
+
+# Specifies whether to delete unneeded files/directories (only local).
+readonly l_remove_unused="no"
 ``````
 
 ## Before importing
 
-- set the **key authorization** (pvimport uses ssh protocol for communication)
+- set the **key authorization** (pvimport uses ssh protocol for communication):
   - xen (for root user): */root/.ssh/authorized_keys*
   - vmware (for root user): */etc/ssh/keys-root/authorized_keys*
 - prepare the **correct configuration file** (*src/configs/template.cfg*)
