@@ -648,6 +648,8 @@ function VmImport() {
           _arg+=(\
           "src: '${_fda}', dst path: '${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}'"^"dd if=$_fda of=${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}")
 
+        fi
+
         if [[ "$l_remove_unused" == "yes" ]] ; then
 
           # We're checking to make sure there is.
