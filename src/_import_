@@ -192,7 +192,7 @@ function CheckConn() {
   local _arg=(\
   "host: '${_host}'"^"wait-for-it -h ${_host} -p ${_port} -t 5 -q")
 
-  if [[ ! -z "$_vm_pv_disk_sync_host" ]] && [[ "$_vm_pv_disk_sync_host" != "local" ]] ; then
+  if [[ "$_vm_pv_disk_sync_host" != "local" ]] ; then
 
     _arg+=(\
     "host: '${_vm_pv_disk_sync_host}'"^"wait-for-it -h ${_vm_pv_disk_sync_host} -p ${_port} -t 5 -q")
@@ -637,7 +637,7 @@ function VmImport() {
 
         local _vm_pv_local="${_vm_pv_lvm_l}/vm-${_vm_pv_id_l}-disk-${_x}"
 
-        if [[ ! -z "$_vm_pv_disk_sync_host" ]] && [[ "$_vm_pv_disk_sync_host" != "local" ]] ; then
+        if [[ "$_vm_pv_disk_sync_host" != "local" ]] ; then
 
           _arg+=(\
           "checking: '${_vm_pv_disk_sync_host}:${_vm_pv_local}'"^"ssh ${_vm_pv_disk_sync_host} -p ${_port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
@@ -670,7 +670,7 @@ function VmImport() {
 
         local _vm_pv_local="${_local_path_pv}/vm-${_vm_pv_id_l}-disk-${_x}.qcow2"
 
-        if [[ ! -z "$_vm_pv_disk_sync_host" ]] && [[ "$_vm_pv_disk_sync_host" != "local" ]] ; then
+        if [[ "$_vm_pv_disk_sync_host" != "local" ]] ; then
 
           _arg+=(\
           "checking: '${_vm_pv_disk_sync_host}:${_vm_pv_local}'"^"ssh ${_vm_pv_disk_sync_host} -p ${_port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
