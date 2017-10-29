@@ -695,8 +695,6 @@ function __main__() {
 
         shift 2 ;;
 
-        shift ;;
-
       '') shift ; break ;;
       --) shift ; break ;;
       *) _exit_ 0 ;;
