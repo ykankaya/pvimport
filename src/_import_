@@ -539,13 +539,19 @@ function VmConvertDisks() {
         _arg+=(\
         "src: '${_fdb}', dst: '${_local_path}/${_nname}.qcow2'"^"qemu-img convert -f raw -O qcow2 ${_fdb} ${_nname}.qcow2")
 
-        if [[ "$l_remove_unused" == "yes" ]] ; then
+      fi
 
-          # We're checking to make sure there is.
-          if [[ -e "${_fda}" ]] ; then
+      if [[ "$l_remove_unused" == "yes" ]] ; then
+
+        # We're checking to make sure there is.
+        if [[ -e "${_fda}" ]] ; then
     
+          _arg+=(\
+          "remove: '${_fda}'"^"rm -fr ${_fda}")
+
+          if [[ -e "${_fdb}" ]] ; then
+
             _arg+=(\
-            "remove: '${_fda}'"^"rm -fr ${_fda}" \
             "remove: '${_fdb}'"^"rm -fr ${_fdb}")
 
           fi
