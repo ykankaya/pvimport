@@ -83,7 +83,7 @@ function InitPv() {
   else
 
     _vm_pv_disk_sync="false"
-    _vm_pv_disk_sync_host="false"
+    _vm_pv_disk_sync_host="local"
 
   fi
 
