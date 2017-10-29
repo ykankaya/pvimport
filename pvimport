@@ -728,8 +728,7 @@ function __main__() {
            "l_pv_storage" \
            "l_pv_lvm" \
            "l_pv_id" \
-           "l_pv_disk_format" \
-           "pv_disk_import_host" ; do
+           "l_pv_disk_format" ; do
 
     eval _i='$'${i}
 
