@@ -44,7 +44,7 @@ The tool provides the following options:
                                 and remote vm directory in datastore (vmware)
     -p, --pvid <num>            sets the vm id created in proxmox
     -f, --format <img|qcow2>    sets the disk format (img/qcow2)
-        --import <local|host>   import disks into any proxmox node
+        --import <local|host>   import disks into any proxmox node (optional)
 ``````
 
 ## Configuration file
