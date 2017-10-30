@@ -523,7 +523,7 @@ function _help_() {
                                 and remote vm directory in datastore (vmware)
     -p, --pvid <num>            sets the vm id created in proxmox
     -f, --format <img|qcow2>    sets the disk format (img/qcow2)
-        --import <local|host>   import disks into proxmox node
+        --import <local|host>   import disks into any proxmox node
 
 
   pvimport, Copyright (C) 2017  Michał Żurawski <contact@nslab.at>
