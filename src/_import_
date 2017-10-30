@@ -300,8 +300,8 @@ function CheckRemoteEnv() {
     local _arg=(\
     "directory: '${_vm_storage_r}'"^"ssh ${_host} -p ${_port} if [[ ! -d \"${_vm_storage_r}\" ]] ; then exit 1 ; fi" \
     "vm: '${_vm_id}'"^"ssh ${_host} -p ${_port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${_vm_id}) ]] ; then exit 1 ; fi" \
-    "vm config file: '${_vm_id}.vmx'"^"ssh ${_host} -p ${_port} if [[ ! -e \"${_vm_id}.vmx\" ]] ; then exit 1 ; fi" \
-    "vm directory: '${_remote_path}'"^"ssh ${_host} -p ${_port} if [[ ! -d \"${_remote_path}\" ]] ; then exit 1 ; fi")
+    "vm directory: '${_remote_path}'"^"ssh ${_host} -p ${_port} if [[ ! -d \"${_remote_path}\" ]] ; then exit 1 ; fi" \
+    "vm config file: '${_vm_id}.vmx'"^"ssh ${_host} -p ${_port} if [[ ! -e \"${_remote_path}/${_vm_id}.vmx\" ]] ; then exit 1 ; fi")
 
   fi
 
