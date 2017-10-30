@@ -645,7 +645,7 @@ function VmImport() {
       if [[ "$_vm_pv_disk_sync_host" == "local" ]] || [[ "$_vm_pv_disk_sync_host" == "$_host" ]] ; then
 
         _arg+=(\
-        "checking: '${_vm_pv_local}'"^"if [[ ! -e ${_vm_pv_local} ]] ; then exit 1 ; fi" \
+        "checking: '${_vm_pv_local}'"^"eval if [[ ! -e ${_vm_pv_local} ]] ; then exit 1 ; fi" \
         "src: '${_fda}', dst path: '${_vm_pv_local}'"^"dd if=${_fda} of=${_vm_pv_local}")
 
       elif [[ "$_vm_pv_disk_sync_host" != "local" ]] && [[ "$_vm_pv_disk_sync_host" != "$_host" ]] ; then
@@ -675,7 +675,7 @@ function VmImport() {
       if [[ "$_vm_pv_disk_sync_host" == "local" ]] || [[ "$_vm_pv_disk_sync_host" == "$_host" ]] ; then
 
         _arg+=(\
-        "checking: '${_vm_pv_local}'"^"if [[ ! -e ${_vm_pv_local} ]] ; then exit 1 ; fi" \
+        "checking: '${_vm_pv_local}'"^"eval if [[ ! -e ${_vm_pv_local} ]] ; then exit 1 ; fi" \
         "src: '${_fda}', dst path: '${_vm_pv_local}'"^"cp ${_fda} ${_vm_pv_local}")
 
       elif [[ "$_vm_pv_disk_sync_host" != "local" ]] && [[ "$_vm_pv_disk_sync_host" != "$_host" ]] ; then
