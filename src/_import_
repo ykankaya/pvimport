@@ -415,8 +415,8 @@ function VmCopy() {
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
     local _arg=(\
-    "config file: '${_vm_id}.vmx', dst path: '${_local_path}'"^"scp -P ${_port} ${_host}:${_vm_storage_r}/${_vm_name}/${_vm_id}.vmx ${_local_path}" \
-    "src: '*.vmdk', dst path: '${_local_path}'"^"scp -P ${_port} ${_host}:${_vm_storage_r}/${_vm_name}/*.vmdk ${_local_path}")
+    "config file: '${_vm_id}.vmx', dst path: '${_local_path}'"^"scp -P ${_port} ${_host}:${_remote_path}/${_vm_id}.vmx ${_local_path}" \
+    "src: '*.vmdk', dst path: '${_local_path}'"^"scp -P ${_port} ${_host}:${_remote_path}/*.vmdk ${_local_path}")
 
   fi
 
@@ -567,10 +567,8 @@ function VmConvertDisks() {
 
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
-    local _vmdk_order=$(grep ".vmdk" "${_vm_id}.vmx" | cut -d "\"" -f2)
-
     # for _fda in $(find . -type f -name "*.vmdk" -printf '%P\n') ; do
-    for _fda in $_vmdk_order ; do
+    for _fda in $(grep ".vmdk" "${_vm_id}.vmx" | cut -d "\"" -f2) ; do
 
       if [[ "$_fda" != *"flat"* ]] ; then
 
