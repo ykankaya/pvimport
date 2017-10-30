@@ -191,12 +191,12 @@ function CheckConn() {
     "checking connection to remote host"
 
   local _arg=(\
-  "host: '${_host}'"^"wait-for-it -h ${_host} -p ${_port} -t 5 -q")
+  "host: '${_host}'"^"eval timeout 1 bash -c \"</dev/tcp/${_host}/${_port}\"")
 
   if [[ "$_vm_pv_disk_sync_host" != "local" ]] ; then
 
     _arg+=(\
-    "host: '${_vm_pv_disk_sync_host}'"^"wait-for-it -h ${_vm_pv_disk_sync_host} -p ${_port} -t 5 -q")
+    "host: '${_vm_pv_disk_sync_host}'"^"eval timeout 1 bash -c \"</dev/tcp/${_vm_pv_disk_sync_host}/${_port}\"")
 
   fi
 

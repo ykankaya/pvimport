@@ -93,7 +93,6 @@ readonly l_remove_unused="no"
 **<u>Pvimport</u>** uses two external utilities to be installed before running:
 
 - [xenmigrate](https://pve.proxmox.com/wiki/Xenmigrate)
-- [wait-for-it](https://github.com/vishnubob/wait-for-it)
 
 ## Use example
 
@@ -173,7 +172,7 @@ Proxmox Version: 5.0-30
 
 ### Virtual Machine
 
-
+5 disks: 5GB, 2GB, 100GB, 20GB, 2GB
 
 ## Project architecture
 
