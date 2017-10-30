@@ -7,19 +7,19 @@ Testing release: **testing**
 
 ## Description
 
-Allows you to import virtual machines disks running under Vmware or Xen to **Proxmox**.
+Allows you to import virtual machines disks running under **VMware ESXi** or **Xen** to **<u>Proxmox VE</u>**.
 
 Performs:
 
-- execute a snapshot of the virtual machine and export it to an ova file - **only for xen**
+- execute a snapshot of the virtual machine and export it to an ova file - **Xen**
 
-- copying the virtual machine from the source (remote hypervisor) to the destination (local resource) - **xen/vmware**
+- copying the virtual machine from the source (remote hypervisor) to the destination (local resource) - **Xen/VMware**
 
-- extraction of disks with extension ova (resulting directories: Ref:\*) - **only for xen**
+- extraction of disks with extension ova (resulting directories: Ref:\*) - **Xen**
 
-- convert to the selected format (img/qcow2) - **xen/vmware**
+- convert to the selected format (img/qcow2) - **Xen/VMware**
 
-- converted img/qcow2 files imports into place created when creating the virtual machine (directory/lvm) - **xen/vmware**
+- converted img/qcow2 files imports into place created when creating the virtual machine (directory/lvm), also on the selected proxmox node - **Xen/VMware**
 
 ## Parameters
 
@@ -82,15 +82,15 @@ readonly l_remove_unused="no"
 
 ## Before importing
 
-- set the **key authorization** (pvimport uses ssh protocol for communication):
-  - xen (for root user): */root/.ssh/authorized_keys*
-  - vmware (for root user): */etc/ssh/keys-root/authorized_keys*
+- set the **key authorization** (**<u>pvimport</u>** uses ssh protocol for communication):
+  - **Xen** (for root user): */root/.ssh/authorized_keys*
+  - **VMware** (for root user): */etc/ssh/keys-root/authorized_keys*
 - prepare the **correct configuration file** (*src/configs/template.cfg*)
 - create **remote and local directory** (details above)
 
 ## Requirements
 
-Pvimport uses two external utilities to be installed before running:
+**<u>Pvimport</u>** uses two external utilities to be installed before running:
 
 - [xenmigrate](https://pve.proxmox.com/wiki/Xenmigrate)
 - [wait-for-it](https://github.com/vishnubob/wait-for-it)
@@ -123,7 +123,7 @@ This parameter specifies the identifier under which the virtual machine will be 
 
 - `-p 205`
 
-Specifies the resulting format of the created files, available values are **qcow2** or **img** (raw):
+Specifies the resulting format of the created files, available values are **img** (raw) or **qcow2**:
 
 - `-f img`
 
@@ -133,9 +133,10 @@ Verbose mode - displays more detailed information on the screen:
 
 ## Important
 
-- exporting a virtual machine running under **xen** takes place by taking a **snapshot**, which allows the virtual machine to run continuously (until the final import) - the disadvantage of this solution may be the current content of the disk
-- before exporting the virtual machine running under vmware, you must **remove all snapshots** - pvimport recognizes only the appropriate virtual machine (including flat) disks, further shortening the migration time
-- pvimport **leaves all files/directories** (ova file, Ref: directories) so check the amount of available disk space before importing the processed virtual machine files
+- exporting a virtual machine running under **Xen** takes place by taking a **snapshot**, which allows the virtual machine to run continuously (until the final import) - the disadvantage of this solution may be the current content of the disk
+- before exporting the virtual machine running under **VMware**, you must **remove all snapshots** - **<u>pvimport</u>** recognizes only the appropriate virtual machine (including flat) disks, further shortening the migration time
+- **<u>pvimport</u>** can be run on **any proxmox node**. Remember **to have enough space** for the output files in the **img/qcow2** format (which when selected `--import <local|host>` will be deleted)
+- the `--import <local|host>` parameter allows you to **import virtual machine files to any node** (not necessarily from which **<u>pvimport</u>** was started).
 
 ## Limitations
 
@@ -144,7 +145,35 @@ Verbose mode - displays more detailed information on the screen:
 
 ## Performance
 
-To be completed.
+### Physical machines
+
+#### node1 (VMware ESXi)
+
+Type: Dell PowerEdge R510
+
+CPU: 12 CPU's x 3,066GHz
+
+CPU Type: Intel Xeon X5675
+
+Network: 1GB
+
+ESXi Version: 6.0.0
+
+#### node2 (Proxmox VE)
+
+Type: Dell PowerEdge R510
+
+CPU: 16 CPU's x 3,066GHz
+
+CPU Type: Intel Xeon X5667
+
+Network: 1GB
+
+Proxmox Version: 5.0-30
+
+### Virtual Machine
+
+
 
 ## Project architecture
 
