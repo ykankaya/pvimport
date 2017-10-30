@@ -154,25 +154,47 @@ CPU: 12 CPU's x 3,066GHz
 
 CPU Type: Intel Xeon X5675
 
+Memory: 128GB
+
 Network: 1GB
 
-ESXi Version: 6.0.0
+VMware ESXi Version: 6.0.0
 
 #### node2 (Proxmox VE)
 
 Type: Dell PowerEdge R510
 
-CPU: 16 CPU's x 3,066GHz
+CPU: 12 CPU's x 3,066GHz
 
-CPU Type: Intel Xeon X5667
+CPU Type: Intel Xeon X5675
+
+Memory: 128GB
 
 Network: 1GB
 
-Proxmox Version: 5.0-30
+Proxmox VE Version: 5.0-30
 
 ### Virtual Machine
 
-5 disks: 5GB, 2GB, 100GB, 20GB, 2GB
+CPU: 4
+
+Memory: 10240MB
+
+Disks: 5GB, 2GB, 100GB, 20GB, 2GB
+
+### Test
+
+Full command:
+
+``````
+time ./pvimport 
+``````
+
+Execution time:
+
+``````
+
+``````
 
 ## Project architecture
 
