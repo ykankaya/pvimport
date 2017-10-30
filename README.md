@@ -7,7 +7,7 @@ Testing release: **testing**
 
 ## Description
 
-Allows you to import virtual machines disks running under **VMware ESXi** or **Xen** to **<u>Proxmox VE</u>**.
+Allows you to automate all the work involved in importing virtual machine disks from the current hypervisor (**VMware ESXi/Xen**) to the **<u>Proxmox VE</u>** cluster.
 
 Performs:
 
@@ -19,7 +19,7 @@ Performs:
 
 - convert to the selected format (img/qcow2) - **Xen/VMware**
 
-- converted img/qcow2 files imports into place created when creating the virtual machine (directory/lvm), also on the selected proxmox node - **Xen/VMware**
+- converted img/qcow2 files imports into place created when creating the virtual machine (directory/lvm) also on the selected proxmox node - **Xen/VMware**
 
 ## Parameters
 
@@ -90,7 +90,7 @@ readonly l_remove_unused="no"
 
 ## Requirements
 
-**<u>Pvimport</u>** uses two external utilities to be installed before running:
+**<u>Pvimport</u>** uses external utilities to be installed before running:
 
 - [xenmigrate](https://pve.proxmox.com/wiki/Xenmigrate)
 
@@ -146,7 +146,7 @@ Verbose mode - displays more detailed information on the screen:
 
 ### Physical machines
 
-#### node1 (VMware ESXi)
+#### VMware ESXi node
 
 Type: Dell PowerEdge R510
 
@@ -160,7 +160,7 @@ Network: 1GB
 
 VMware ESXi Version: 6.0.0
 
-#### node2 (Proxmox VE)
+#### Proxmox VE node
 
 Type: Dell PowerEdge R510
 
@@ -193,6 +193,8 @@ time ./pvimport
 Execution time:
 
 ``````
+30/10/17 01:28:14 PM  pvimport:  [INIT] init 'pvimport' in /opt/git/pvimport
+[...]
 
 ``````
 
