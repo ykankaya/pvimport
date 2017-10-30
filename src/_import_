@@ -565,22 +565,39 @@ function VmConvertDisks() {
 
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
-    for _fda in $(find . -type f -name "*.vmdk" -printf '%P\n' | grep -v "flat") ; do
+    local _flat_disk=""
 
-      _name="${_fda%.*}"
+    for _fda in $(find . -type f -name "*.vmdk" -printf '%P\n') ; do
 
-      _arg+=(\
-      "src: '${_fda}', dst: '${_local_path}/${_name}.${_vm_pv_disk_format}'"^"qemu-img convert -f vmdk -O ${_vm_pv_disk_format} ${_fda} ${_name}.${_vm_pv_disk_format}")
+      if [[ "$_fda" != *"flat"* ]] && [[ ! -z "$_flat_disk" ]] ; then
 
-      if [[ "$l_remove_unused" == "yes" ]] ; then
+        _name="${_fda%.*}"
 
-        # We're checking to make sure there is.
-        if [[ -e "${_fda}" ]] ; then
+        _arg+=(\
+        "src: '${_fda}', dst: '${_local_path}/${_name}.${_vm_pv_disk_format}'"^"qemu-img convert -f vmdk -O ${_vm_pv_disk_format} ${_fda} ${_name}.${_vm_pv_disk_format}")
+
+        if [[ "$l_remove_unused" == "yes" ]] ; then
+
+          # We're checking to make sure there is.
+          if [[ -e "${_fda}" ]] ; then
     
-          _arg+=(\
-          "remove: '${_fda}'"^"rm -fr ${_fda}")
+            _arg+=(\
+            "remove: '${_fda}'"^"rm -fr ${_fda}")
+
+            if [[ -e "${_flat_disk}" ]] ; then
+
+              _arg+=(\
+              "remove: '${_flat_disk}"^"rm -fr ${_flat_disk}")
+
+            fi
+
+          fi
 
         fi
+
+      else
+
+        _flat_disk="$_fda"
 
       fi
 
