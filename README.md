@@ -90,7 +90,7 @@ readonly l_remove_unused="no"
 
 ## Requirements
 
-**<u>Pvimport</u>** uses external utilities to be installed before running:
+**<u>Pvimport</u>** uses external utilities to be installed before running (only for **Xen**):
 
 - [xenmigrate](https://pve.proxmox.com/wiki/Xenmigrate)
 
