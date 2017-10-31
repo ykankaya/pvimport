@@ -667,7 +667,7 @@ function VmImport() {
 
   cd ${_local_path}
 
-  for _fda in $(find . -type f -name "*.$_vm_pv_disk_format" -printf '%P\n') ; do
+  for _fda in $(find . -type f -name "*.$_vm_pv_disk_format" -printf '%P\n' | sort -V) ; do
   
     if [[ "$_vm_pv_disk_format" == "img" ]] ; then
 
