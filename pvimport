@@ -764,15 +764,17 @@ function __main__() {
   _random=$(_rand "T")
 
   # Checking variable values (if they are unset or empty).
+  # The variables from the additional configuration file
+  # (example: src/configs/template.cfg) are also checked.
   for i in "hv_host" \
-           "r_port" \
-           "r_hypervisor_type" \
-           "r_storage" \
+           "hv_port" \
+           "hv_type" \
+           "hv_storage" \
            "vm_id" \
            "vm_name" \
-           "l_storage" \
-           "l_pv_storage" \
-           "l_pv_lvm" \
+           "local_storage" \
+           "pve_storage" \
+           "pve_lvm" \
            "pve_id" \
            "pve_format" ; do
 
@@ -792,22 +794,22 @@ function __main__() {
 
   # Arrays responsible for keeping all options from a configuration file.
   _conn_params=("$hv_host" \
-                "$r_port")
+                "$hv_port")
 
-  _hypervisor_params=("$r_hypervisor_type" \
-                      "$r_storage" \
+  _hypervisor_params=("$hv_type" \
+                      "$hv_storage" \
                       "$vm_id" \
                       "$vm_name" \
-                      "$l_storage" \
-                      "$l_pv_storage" \
-                      "$l_pv_lvm" \
+                      "$local_storage" \
+                      "$pve_storage" \
+                      "$pve_lvm" \
                       "$pve_id" \
                       "$pve_format" \
                       "$pve_import" \
                       "$pve_host")
 
-  # Store remote variables.
-  local _pv_to_unset="/tmp/.pvvars"
+  # Store extended variables on the remote hv host.
+  local _pv_vars="/tmp/.pv.vars"
 
   # Init environment for pvimport.
   InitPv _conn_params[@] _hypervisor_params[@]
