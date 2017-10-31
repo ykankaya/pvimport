@@ -439,7 +439,7 @@ function _init_cmd() {
 #
 # Examples:
 #   _load "info" "$config"
-#   _load "info" "/tmp/file.cfg"
+#   _load "head" "/tmp/file.cfg"
 #
 
 function _load() {
@@ -452,9 +452,15 @@ function _load() {
 
   if [[ ! -z "$_filename" ]] && [[ -e "$_filename" ]] ; then
 
-    if [[ "$_type" == "info" ]] ; then
+    # If we do not want to inform you that the file is loaded,
+    # the value is 'null', otherwise:
+    if [[ "$_type" == "head" ]] ; then
 
       _sprintf "head" "loading configuration: $_filename"
+
+    elif [[ "$_type" == "info" ]] ; then
+
+      _sprintf "info" "loading configuration: $_filename"
 
     fi
 
@@ -713,7 +719,7 @@ function __main__() {
   # and all the other code blocks.
 
   # In this section we add all external files (for -c|--config script param).
-  if [[ "$load_state" -eq 1 ]] ; then _load "info" "$config" ; fi
+  if [[ "$load_state" -eq 1 ]] ; then _load "head" "$config" ; fi
 
   # Generate random value.
   _random=$(date +"%s")
