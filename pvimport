@@ -39,10 +39,10 @@
 ################################################################################
 
 # Bash 'Strict Mode':
-#   errexit - exit the script if any statement returns a non-true return value
+#   errexit  - exit the script if any statement returns a non-true return value
 #   pipefail - exit the script if any command in a pipeline errors
-#   nounset - exit the script if you try to use an uninitialised variable
-#   xtrace - display debugging information
+#   nounset  - exit the script if you try to use an uninitialised variable
+#   xtrace   - display debugging information
 set -o pipefail
 
 # Internal field separator (more flexible):
