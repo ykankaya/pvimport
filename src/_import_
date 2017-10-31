@@ -528,12 +528,14 @@ function VmConvertDisks() {
 
   if [[ "$_vm_type" == "xen" ]] ; then
 
+    local _x=1
+
     for _fda in $(find . -type d -name "Ref:*" -printf '%P\n') ; do
 
       _name=$(echo ${_fda} | tr ":" "_")
 
       _arg+=(\
-      "src: '${_fda}', dst: '${_local_path}/${_name}.img'"^"xenmigrate --convert=${_fda} ${_name}.img")
+      "src: '${_fda}', dst: '${_local_path}/${_x}-${_name}.img'"^"xenmigrate --convert=${_fda} ${_x}-${_name}.img")
 
       if [[ "$_vm_pv_disk_format" == "qcow2" ]] ; then
 
@@ -541,7 +543,7 @@ function VmConvertDisks() {
         _nname="${_fdb%.*}"
 
         _arg+=(\
-        "src: '${_fdb}', dst: '${_local_path}/${_nname}.qcow2'"^"qemu-img convert -f raw -O qcow2 ${_fdb} ${_nname}.qcow2")
+        "src: '${_fdb}', dst: '${_local_path}/${_x}-${_nname}.qcow2'"^"qemu-img convert -f raw -O qcow2 ${_fdb} ${_x}-${_nname}.qcow2")
 
       fi
 
@@ -563,6 +565,8 @@ function VmConvertDisks() {
         fi
 
       fi
+
+    _x=$((_x + 1))
 
     done
 
