@@ -34,17 +34,17 @@ The tool provides the following options:
     pvimport -c vmware.cfg -h pv01 -i gitlab_01 -n gitlab_01 -p 300 -f img
 
   Options:
-        --help                  show this message
-        --debug                 display information on the screen (debug mode)
-        --verbose               display 'info' messages on the screen (verbose mode)
-    -c, --config <file>         attach an external config file to the script
-    -h, --host <host>           sets the ip address or hostname of the remote hypervisor
-    -i, --id <vm_id|vm_name>    sets the remote id (xen) or name (vmware) of the imported vm
-    -n, --name <vm_name>        sets the name for the new files/directories
-                                and remote vm directory in datastore (vmware)
-    -p, --pvid <num>            sets the vm id created in proxmox
-    -f, --format <img|qcow2>    sets the disk format (img/qcow2)
-        --import <local|host>   import disks into any proxmox node (optional)
+        --help                      show this message
+        --debug                     display information on the screen (debug mode)
+        --verbose                   display 'info' messages on the screen (verbose mode)
+    -c, --config <file>             attach an external config file to the script
+    -h, --host <host>               sets the ip address or hostname of the remote hypervisor
+    -i, --id <vm_id|vm_name>        sets the remote id (xen) or name (vmware) of the imported vm
+    -n, --name <vm_name>            sets the name for the new files/directories
+                                    and remote vm directory in datastore (vmware)
+    -p, --pve-id <num>              sets the vm id created in proxmox
+    -f, --pve-format <img|qcow2>    sets the disk format (img/qcow2)
+        --pve-import <local|host>   import disks into any proxmox node (optional)
 ``````
 
 ## Configuration file

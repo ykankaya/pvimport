@@ -520,17 +520,17 @@ function _help_() {
     $_init_name -c vmware.cfg -h pv01 -i gitlab_01 -n gitlab_01 -p 300 -f img
 
   Options:
-        --help                  show this message
-        --debug                 display information on the screen (debug mode)
-        --verbose               display 'info' messages on the screen (verbose mode)
-    -c, --config <file>         attach an external config file to the script
-    -h, --host <host>           sets the ip address or hostname of the remote hypervisor
-    -i, --id <vm_id|vm_name>    sets the remote id (xen) or name (vmware) of the imported vm
-    -n, --name <vm_name>        sets the name for the new files/directories
-                                and remote vm directory in datastore (vmware)
-    -p, --pvid <num>            sets the vm id created in proxmox
-    -f, --format <img|qcow2>    sets the disk format (img/qcow2)
-        --import <local|host>   import disks into any proxmox node (optional)
+        --help                      show this message
+        --debug                     display information on the screen (debug mode)
+        --verbose                   display 'info' messages on the screen (verbose mode)
+    -c, --config <file>             attach an external config file to the script
+    -h, --host <host>               sets the ip address or hostname of the remote hypervisor
+    -i, --id <vm_id|vm_name>        sets the remote id (xen) or name (vmware) of the imported vm
+    -n, --name <vm_name>            sets the name for the new files/directories
+                                    and remote vm directory in datastore (vmware)
+    -p, --pve-id <num>              sets the vm id created in proxmox
+    -f, --pve-format <img|qcow2>    sets the disk format (img/qcow2)
+        --pve-import <local|host>   import disks into any proxmox node (optional)
 
 
   pvimport, Copyright (C) 2017  Michał Żurawski <contact@nslab.at>
@@ -627,7 +627,7 @@ function __main__() {
   # Specifies the call parameters of the script, the exact description
   # can be found in _help_ and file README.md.
   local _short_opt="c:h:i:n:p:f:"
-  local _long_opt="help,debug,verbose,config:,host:,id:,name:,pvid:,format:,import:"
+  local _long_opt="help,debug,verbose,config:,host:,id:,name:,pve-id:,pve-format:,pve-import:"
 
   _GETOPT_PARAMS=$(getopt -o "${_short_opt}" --long "${_long_opt}" \
                   -n "${_init_name}" -- "${__script_params[@]}")
@@ -683,21 +683,21 @@ function __main__() {
 
         shift 2 ;;
 
-      -p|--pvid)
+      -p|--pve-id)
 
         pve_id=${2}
 
         shift 2 ;;
 
-      -f|--format)
+      -f|--pve-format)
 
-        pve_disk_format=${2}
+        pve_format=${2}
 
         shift 2 ;;
 
-      --import)
+      --pve-import)
 
-        pve_disk_import="true"
+        pve_import="true"
         pve_host=${2}
 
         shift 2 ;;
@@ -735,7 +735,7 @@ function __main__() {
            "l_pv_storage" \
            "l_pv_lvm" \
            "pve_id" \
-           "pve_disk_format" ; do
+           "pve_format" ; do
 
     eval _i='$'${i}
 
@@ -763,8 +763,8 @@ function __main__() {
                       "$l_pv_storage" \
                       "$l_pv_lvm" \
                       "$pve_id" \
-                      "$pve_disk_format" \
-                      "$pve_disk_import" \
+                      "$pve_format" \
+                      "$pve_import" \
                       "$pve_host")
 
   # Store remote variables.
