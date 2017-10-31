@@ -94,6 +94,7 @@ load_state=0
 
 # Declaration of output variables.
 stdout=""
+sprintf=""
 
 
 ################################################################################
@@ -189,7 +190,8 @@ function _logger() {
 
   local _conv_type=$(echo "$_type" | tr '[:lower:]' '[:upper:]')
 
-  if [[ ! -d "$_log_directory" && ! -L "$_log_directory" ]] ; then mkdir -p "$_log_directory" ; fi
+  if [[ ! -d "$_log_directory" && ! -L "$_log_directory" ]] ; then
+    mkdir -p "$_log_directory" ; fi
 
   # Normal debug mode (output the same as the contents of the log file).
   if [[ "$stdout" == "debug" ]] ; then
@@ -267,7 +269,7 @@ function _get_trap_SIG() {
 #   _sprintf "type" "message"
 #
 # Examples:
-#   _sprintf "head" "correct certificate: $_ssl_delivered_certificates_file"
+#   _sprintf "head" "correct certificate: $_ssl_cert_file"
 #
 
 function _sprintf() {
@@ -275,28 +277,27 @@ function _sprintf() {
   local _FUNCTION_ID="_sprintf"
   local _STATE=0
 
-  ### Block of definitions.
-  s_type="$1"
-  s_info="$2"
+  local _s_type="$1"
+  local _s_info="$2"
 
   # Determine the type of character and color for each type
   # of output information.
-  if [[ "$s_type" == "head" ]] ; then
+  if [[ "$_s_type" == "head" ]] ; then
 
     s_char="+"
     s_trgb="1;32"
 
-  elif [[ "$s_type" == "info" ]] ; then
+  elif [[ "$_s_type" == "info" ]] ; then
 
     s_char="-"
     s_trgb="0;33"
 
-  elif [[ "$s_type" == "warn" ]] ; then
+  elif [[ "$_s_type" == "warn" ]] ; then
 
     s_char="!"
     s_trgb="1;37"
 
-  elif [[ "$s_type" == "stop" ]] ; then
+  elif [[ "$_s_type" == "stop" ]] ; then
 
     s_char="!"
     s_trgb="1;31"
@@ -311,20 +312,20 @@ function _sprintf() {
   # If you run the tool in verbose mode do not display output using _sprintf.
   if [[ "$stdout" != "debug" ]] ; then
 
-    if [[ "$s_type" == "spin" ]] && [[ ! -z "$s_info" ]] ; then
+    if [[ "$_s_type" == "spin" ]] && [[ ! -z "$_s_info" ]] ; then
 
       # Process id of the previous running command.
-      local _pid="$s_info"
+      local _pid="$_s_info"
 
       local _sc='-\|/'
 
       # Verify that the process is still running.
-      local n=0
+      local _n=0
 
       while [[ "$(ps a | awk '{print $1}' | grep -w $_pid)" ]] ; do
 
-        n=$(( ( n + 1 ) % 4 ))
-        printf "\r[%s]" "${_sc:n:1}"
+        _n=$(( ( _n + 1 ) % 4 ))
+        printf "\r[%s]" "${_sc:_n:1}"
         sleep 0.1
 
       done
@@ -341,16 +342,16 @@ function _sprintf() {
       # If verbose mode is enabled, display each information.
       if [[ "$sprintf" == "verbose" ]] ; then
 
-        printf '[\e['${s_trgb}'m%s\e[m] %s\n' "$s_char" "$s_info"
+        printf '[\e['${s_trgb}'m%s\e[m] %s\n' "$s_char" "$_s_info"
 
       else
 
         # If not, just display only the "head" string.
-        if [[ "$s_type" == "head" ]] || \
-           [[ "$s_type" == "warn" ]] || \
-           [[ "$s_type" == "stop" ]] ; then
+        if [[ "$_s_type" == "head" ]] || \
+           [[ "$_s_type" == "warn" ]] || \
+           [[ "$_s_type" == "stop" ]] ; then
 
-          printf '[\e['${s_trgb}'m%s\e[m] %s\n' "$s_char" "$s_info"
+          printf '[\e['${s_trgb}'m%s\e[m] %s\n' "$s_char" "$_s_info"
 
         fi
 
