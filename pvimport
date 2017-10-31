@@ -793,26 +793,26 @@ function __main__() {
   done
 
   # Arrays responsible for keeping all options from a configuration file.
-  _conn_params=("$hv_host" \
-                "$hv_port")
+  conn_params=("$hv_host" \
+               "$hv_port")
 
-  _hypervisor_params=("$hv_type" \
-                      "$hv_storage" \
-                      "$vm_id" \
-                      "$vm_name" \
-                      "$local_storage" \
-                      "$pve_storage" \
-                      "$pve_lvm" \
-                      "$pve_id" \
-                      "$pve_format" \
-                      "$pve_import" \
-                      "$pve_host")
+  hypervisor_params=("$hv_type" \
+                     "$hv_storage" \
+                     "$vm_id" \
+                     "$vm_name" \
+                     "$local_storage" \
+                     "$pve_storage" \
+                     "$pve_lvm" \
+                     "$pve_id" \
+                     "$pve_format" \
+                     "$pve_import" \
+                     "$pve_host")
 
   # Store extended variables on the remote hv host.
   local _pv_vars="/tmp/.pv.vars"
 
   # Init environment for pvimport.
-  InitPv _conn_params[@] _hypervisor_params[@]
+  InitPv conn_params[@] hypervisor_params[@]
   if [ ! $? ] ; then _exit_ 255 ; fi
 
   # ````````````````````````````````````````````````````````````````````````````
