@@ -517,12 +517,12 @@ function _help_() {
 
   Examples:
     $_init_name -c xen.cfg -h 172.20.50.31 -i ac06d737 -n VM_PROD -p 200 -f qcow2 --import local --verbose
-    $_init_name -c vmware.cfg -h 172.20.50.32 -i gitlab_01 -n gitlab_01 -p 300 -f img
+    $_init_name -c vmware.cfg -h pv01 -i gitlab_01 -n gitlab_01 -p 300 -f img
 
   Options:
         --help                  show this message
         --debug                 display information on the screen (debug mode)
-        --verbose               display 'info' messages on the screen
+        --verbose               display 'info' messages on the screen (verbose mode)
     -c, --config <file>         attach an external config file to the script
     -h, --host <host>           sets the ip address or hostname of the remote hypervisor
     -i, --id <vm_id|vm_name>    sets the remote id (xen) or name (vmware) of the imported vm
