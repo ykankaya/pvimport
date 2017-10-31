@@ -572,9 +572,10 @@ function VmConvertDisks() {
 
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
+    local _vmx_file=$(find . -name "*.vmx")
     local _x=1
 
-    for _fda in $(find . -name "*.vmx" | grep ".vmdk" | cut -d "\"" -f2) ; do
+    for _fda in $(grep ".vmdk" $_vmx_file | cut -d "\"" -f2) ; do
 
       if [[ "$_fda" != *"flat"* ]] ; then
 
