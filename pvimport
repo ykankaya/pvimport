@@ -667,38 +667,38 @@ function __main__() {
 
       -h|--host)
 
-        r_host=${2}
+        hv_host=${2}
 
         shift 2 ;;
 
       -i|--id)
 
-        r_vm_id=${2}
+        vm_id=${2}
 
         shift 2 ;;
 
       -n|--name)
 
-        r_vm_name=${2}
+        vm_name=${2}
 
         shift 2 ;;
 
       -p|--pvid)
 
-        l_pv_id=${2}
+        pve_id=${2}
 
         shift 2 ;;
 
       -f|--format)
 
-        l_pv_disk_format=${2}
+        pve_disk_format=${2}
 
         shift 2 ;;
 
       --import)
 
-        pv_disk_import="true"
-        pv_disk_import_host=${2}
+        pve_disk_import="true"
+        pve_host=${2}
 
         shift 2 ;;
 
@@ -725,17 +725,17 @@ function __main__() {
   _random=$(date +"%s")
 
   # Checking variable values (if they are unset or empty).
-  for i in "r_host" \
+  for i in "hv_host" \
            "r_port" \
            "r_hypervisor_type" \
            "r_storage" \
-           "r_vm_id" \
-           "r_vm_name" \
+           "vm_id" \
+           "vm_name" \
            "l_storage" \
            "l_pv_storage" \
            "l_pv_lvm" \
-           "l_pv_id" \
-           "l_pv_disk_format" ; do
+           "pve_id" \
+           "pve_disk_format" ; do
 
     eval _i='$'${i}
 
@@ -752,20 +752,20 @@ function __main__() {
   done
 
   # Arrays responsible for keeping all options from a configuration file.
-  _conn_params=("$r_host" \
+  _conn_params=("$hv_host" \
                 "$r_port")
 
   _hypervisor_params=("$r_hypervisor_type" \
                       "$r_storage" \
-                      "$r_vm_id" \
-                      "$r_vm_name" \
+                      "$vm_id" \
+                      "$vm_name" \
                       "$l_storage" \
                       "$l_pv_storage" \
                       "$l_pv_lvm" \
-                      "$l_pv_id" \
-                      "$l_pv_disk_format" \
-                      "$pv_disk_import" \
-                      "$pv_disk_import_host")
+                      "$pve_id" \
+                      "$pve_disk_format" \
+                      "$pve_disk_import" \
+                      "$pve_host")
 
   # Store remote variables.
   local _pv_to_unset="/tmp/.pvvars"
