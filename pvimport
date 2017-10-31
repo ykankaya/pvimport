@@ -92,9 +92,9 @@ readonly cdate=$(date +%Y%m%d)
 config=""
 load_state=0
 
-# Declaration of output variables.
-stdout=""
-sprintf=""
+# Declaration of output variables (--debug and --verbose params).
+stdout_mode=""
+printf_mode=""
 
 
 ################################################################################
@@ -194,7 +194,7 @@ function _logger() {
     mkdir -p "$_log_directory" ; fi
 
   # Normal debug mode (output the same as the contents of the log file).
-  if [[ "$stdout" == "debug" ]] ; then
+  if [[ "$stdout_mode" == "debug" ]] ; then
 
     printf "%s  %s:  [%s] %s\n" \
            "$(date +"%d/%m/%y %X")" \
@@ -310,7 +310,7 @@ function _sprintf() {
   fi
 
   # If you run the tool in verbose mode do not display output using _sprintf.
-  if [[ "$stdout" != "debug" ]] ; then
+  if [[ "$stdout_mode" != "debug" ]] ; then
 
     if [[ "$_s_type" == "spin" ]] && [[ ! -z "$_s_info" ]] ; then
 
@@ -340,7 +340,7 @@ function _sprintf() {
       # - spinner completed
 
       # If verbose mode is enabled, display each information.
-      if [[ "$sprintf" == "verbose" ]] ; then
+      if [[ "$printf_mode" == "verbose" ]] ; then
 
         printf '[\e['${s_trgb}'m%s\e[m] %s\n' "$s_char" "$_s_info"
 
@@ -385,6 +385,7 @@ function _init_cmd() {
 
   local _cmd="$1"
 
+  # Uncomment if you want to display executed commands.
   # _sprintf "info" "init: \"$_cmd\""
 
   _logger "info" \
@@ -641,13 +642,13 @@ function __main__() {
 
       --debug)
 
-        stdout="debug"
+        stdout_mode="debug"
 
         shift ;;
 
       --verbose)
 
-        sprintf="verbose"
+        printf_mode="verbose"
 
         shift ;;
 
