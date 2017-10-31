@@ -88,7 +88,7 @@ readonly logfile="${_init_name}.${cdate}.log"
 readonly logstdout="${logdir}/stdout.log"
 readonly logpath="${logdir}/${logfile}"
 
-# External configuration file.
+# External configuration file (-c|--config script param).
 config=""
 load_state=0
 
