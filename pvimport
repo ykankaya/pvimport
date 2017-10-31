@@ -163,13 +163,13 @@ function _exit_() { _STATUS="$1" ; exit "$_STATUS" ; }
 #
 # Description:
 #   Saving selected operation states to a log file
-#   and allows you to terminate the script with 'STOP' signal.
+#   and allows you to terminate the script with 'stop' signal.
 #
 #   Four states of message type:
-#     INFO - normal information
-#     HEAD - normal information (header)
-#     WARN - warning information
-#     STOP - interrupts script execution
+#     info - normal information
+#     head - normal information (header)
+#     warn - warning information
+#     stop - interrupts script execution
 #
 # Usage:
 #   _logger "type" "message"
