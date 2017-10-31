@@ -372,7 +372,7 @@ function _sprintf() {
 #   Function executing given as a command parameter.
 #
 # Usage:
-#   _init_cmd param"
+#   _init_cmd "parameter"
 #
 # Examples:
 #   _init_cmd "eval cd /etc/init.d && ls"
@@ -392,6 +392,7 @@ function _init_cmd() {
     "${_FUNCTION_ID}()" \
     "init: $_cmd"
 
+  # Execute command and exit save to file.
   $($_cmd >>"$_log_stdout" 2>&1) &
 
   # We keep pid of the last command.
@@ -405,8 +406,6 @@ function _init_cmd() {
   wait $_pid &>/dev/null && _state="0" || _state="1"
 
   if [[ "$_state" -eq 0 ]] ; then
-
-    # _sprintf "info" "result: pass"
 
     _logger "info" \
       "${_FUNCTION_ID}()" \
