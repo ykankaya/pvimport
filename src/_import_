@@ -300,7 +300,8 @@ function CheckRemoteEnv() {
     local _arg=(\
     "directory: '${_vm_storage_r}'"^"ssh ${_host} -p ${_port} if [[ ! -d \"${_vm_storage_r}\" ]] ; then exit 1 ; fi" \
     "vm: '${_vm_id}'"^"ssh ${_host} -p ${_port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${_vm_id}) ]] ; then exit 1 ; fi" \
-    "vm directory: '${_remote_path}'"^"ssh ${_host} -p ${_port} if [[ ! -d \"${_remote_path}\" ]] ; then exit 1 ; fi")
+    "vm directory: '${_remote_path}'"^"ssh ${_host} -p ${_port} if [[ ! -d \"${_remote_path}\" ]] ; then exit 1 ; fi" \
+    "vm config file: '${_vm_id}.vmx'"^"ssh ${_host} -p ${_port} if [[ ! -e \"${_remote_path}/${_vm_id}.vmx\" ]] ; then exit 1 ; fi")
 
   fi
 
@@ -414,7 +415,8 @@ function VmCopy() {
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
     local _arg=(\
-    "src: '*.vmdk', dst path: '${_local_path}'"^"scp -P ${_port} ${_host}:${_vm_storage_r}/${_vm_name}/*.vmdk ${_local_path}")
+    "config file: '${_vm_id}.vmx', dst path: '${_local_path}'"^"scp -P ${_port} ${_host}:${_remote_path}/${_vm_id}.vmx ${_local_path}" \
+    "src: '*.vmdk', dst path: '${_local_path}'"^"scp -P ${_port} ${_host}:${_remote_path}/*.vmdk ${_local_path}")
 
   fi
 
@@ -565,7 +567,9 @@ function VmConvertDisks() {
 
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
-    for _fda in $(find . -type f -name "*.vmdk" -printf '%P\n') ; do
+    local _x=1
+
+    for _fda in $(grep ".vmdk" ${_vm_id}.vmx | cut -d "\"" -f2) ; do
 
       if [[ "$_fda" != *"flat"* ]] ; then
 
@@ -574,12 +578,12 @@ function VmConvertDisks() {
         if [[ "${_vm_pv_disk_format}" == "qcow2" ]] ; then
 
           _arg+=(\
-          "src: '${_fda}', dst: '${_local_path}/${_name}.qcow2'"^"qemu-img convert -f vmdk -O qcow2 ${_fda} ${_name}.qcow2")
+          "src: '${_fda}', dst: '${_local_path}/${_x}-${_name}.qcow2'"^"qemu-img convert -f vmdk -O qcow2 ${_fda} ${_x}-${_name}.qcow2")
 
         elif [[ "${_vm_pv_disk_format}" == "img" ]] ; then
 
-        _arg+=(\
-        "src: '${_fda}', dst: '${_local_path}/${_name}.img'"^"qemu-img convert -f vmdk -O raw ${_fda} ${_name}.img")
+          _arg+=(\
+          "src: '${_fda}', dst: '${_local_path}/${_x}-${_name}.img'"^"qemu-img convert -f vmdk -O raw ${_fda} ${_x}-${_name}.img")
 
         fi
 
@@ -603,6 +607,8 @@ function VmConvertDisks() {
         fi
 
       fi
+
+      _x=$((_x + 1))
 
     done
 
