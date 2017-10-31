@@ -567,8 +567,9 @@ function VmConvertDisks() {
 
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
-    # for _fda in $(find . -type f -name "*.vmdk" -printf '%P\n') ; do
-    for _fda in $(grep ".vmdk" "${_vm_id}.vmx" | cut -d "\"" -f2) ; do
+    local _x=1
+
+    for _fda in $(grep ".vmdk" ${_vm_id}.vmx | cut -d "\"" -f2) ; do
 
       if [[ "$_fda" != *"flat"* ]] ; then
 
@@ -577,12 +578,12 @@ function VmConvertDisks() {
         if [[ "${_vm_pv_disk_format}" == "qcow2" ]] ; then
 
           _arg+=(\
-          "src: '${_fda}', dst: '${_local_path}/${_name}.qcow2'"^"qemu-img convert -f vmdk -O qcow2 ${_fda} ${_name}.qcow2")
+          "src: '${_fda}', dst: '${_local_path}/${_x}-${_name}.qcow2'"^"qemu-img convert -f vmdk -O qcow2 ${_fda} ${_x}-${_name}.qcow2")
 
         elif [[ "${_vm_pv_disk_format}" == "img" ]] ; then
 
-        _arg+=(\
-        "src: '${_fda}', dst: '${_local_path}/${_name}.img'"^"qemu-img convert -f vmdk -O raw ${_fda} ${_name}.img")
+          _arg+=(\
+          "src: '${_fda}', dst: '${_local_path}/${_x}-${_name}.img'"^"qemu-img convert -f vmdk -O raw ${_fda} ${_x}-${_name}.img")
 
         fi
 
@@ -606,6 +607,8 @@ function VmConvertDisks() {
         fi
 
       fi
+
+      _x=$((_x + 1))
 
     done
 
