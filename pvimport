@@ -184,11 +184,12 @@ function _logger() {
   local _FUNCTION_ID="_logger"
   local _STATE=0
 
-  info_type="$1"
-  info_to_log=$(shift ; echo "$@")
-  converts_type=$(echo "$info_type" | tr '[:lower:]' '[:upper:]')
+  local _type="$1"
+  local _to_log=$(shift ; echo "$@")
 
-  if [[ ! -d "$_log_directory" && ! -L "$_log_directory" ]] ; then mkdir "$_log_directory" ; fi
+  local _conv_type=$(echo "$_type" | tr '[:lower:]' '[:upper:]')
+
+  if [[ ! -d "$_log_directory" && ! -L "$_log_directory" ]] ; then mkdir -p "$_log_directory" ; fi
 
   # Normal debug mode (output the same as the contents of the log file).
   if [[ "$stdout" == "debug" ]] ; then
@@ -196,8 +197,8 @@ function _logger() {
     printf "%s  %s:  [%s] %s\n" \
            "$(date +"%d/%m/%y %X")" \
            "$_init_name" \
-           "$converts_type" \
-           "$info_to_log" \
+           "$_conv_type" \
+           "$_to_log" \
            | tee -a "$_log_path"   
 
   # The decision whether an INFO is to be only log to a file
@@ -207,13 +208,13 @@ function _logger() {
     printf "%s  %s:  [%s] %s\n" \
            "$(date +"%d/%m/%y %X")" \
            "$_init_name" \
-           "$converts_type" \
-           "$info_to_log" \
+           "$_conv_type" \
+           "$_to_log" \
            >>"$_log_path"
 
   fi
 
-  if [[ "$info_type" == "stop" ]] ; then _exit_ 255 ; fi
+  if [[ "$_type" == "stop" ]] ; then _exit_ 255 ; fi
 
   return $_STATE
 
