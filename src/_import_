@@ -17,7 +17,7 @@
 #   InitPv "param_0" "param_1"
 #
 # Examples:
-#   InitPv _conn_params[@] _hypervisor_params[@]
+#   InitPv conn_params[@] hypervisor_params[@]
 #
 
 function InitPv() {
@@ -25,28 +25,28 @@ function InitPv() {
   local _FUNCTION_ID="InitPv"
   local _STATE=0
 
-  local _conn_params=("${!1}")
-  local _hypervisor_params=("${!2}")
+  local conn_params=("${!1}")
+  local hypervisor_params=("${!2}")
 
   # Hypervisor variables.
-  local pv_host="${_conn_params[0]}"
-  local pv_port="${_conn_params[1]}"
+  local pv_host="${conn_params[0]}"
+  local pv_port="${conn_params[1]}"
 
-  local pv_type="${_hypervisor_params[0]}"
-  local pv_storage="${_hypervisor_params[1]}"
-  local pv_id="${_hypervisor_params[2]}"
-  local pv_name="${_hypervisor_params[3]}"
+  local pv_type="${hypervisor_params[0]}"
+  local pv_storage="${hypervisor_params[1]}"
+  local pv_id="${hypervisor_params[2]}"
+  local pv_name="${hypervisor_params[3]}"
 
   # Local machine variables.
-  local pv_lstorage="${_hypervisor_params[4]}"
+  local pv_lstorage="${hypervisor_params[4]}"
 
   # Proxmox variables.
-  local pv_storage_pve="${_hypervisor_params[5]}"
-  local pv_lvm_pve="${_hypervisor_params[6]}"
-  local pv_id_pve="${_hypervisor_params[7]}"
-  local pv_format_pve="${_hypervisor_params[8]}"
-  local pv_import_pve="${_hypervisor_params[9]}"
-  local pv_host_pve="${_hypervisor_params[10]}"
+  local pv_storage_pve="${hypervisor_params[5]}"
+  local pv_lvm_pve="${hypervisor_params[6]}"
+  local pv_id_pve="${hypervisor_params[7]}"
+  local pv_format_pve="${hypervisor_params[8]}"
+  local pv_import_pve="${hypervisor_params[9]}"
+  local pv_host_pve="${hypervisor_params[10]}"
 
   # Full paths to the appropriate resources (based on what is above).
   local repath="${pv_storage}/${pv_name}"
