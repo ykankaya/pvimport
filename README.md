@@ -90,9 +90,10 @@ readonly l_remove_unused="no"
 
 ## Requirements
 
-**<u>Pvimport</u>** uses external utilities to be installed before running (only for **Xen**):
+**<u>Pvimport</u>** uses external utilities to be installed before running:
 
-- [xenmigrate](https://pve.proxmox.com/wiki/Xenmigrate)
+- [xenmigrate](https://pve.proxmox.com/wiki/Xenmigrate) - only for **Xen**
+- [qemu-img](https://en.wikibooks.org/wiki/QEMU/Installing_QEMU)
 
 ## Use example
 
