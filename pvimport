@@ -73,10 +73,10 @@ readonly _init_name="$(basename "$0")"
 readonly _init_directory="$(dirname "$(readlink -f "$0")")"
 
 # Directory structure.
-readonly _src="${_init_directory}/src"
+readonly src_directory="${_init_directory}/src"
 
 # File with external (user) functions and variables.
-readonly _import_="${_src}/_import_"
+readonly _import_="${src_directory}/_import_"
 
 # Stores the current date.
 readonly cdate=$(date +%Y%m%d)
