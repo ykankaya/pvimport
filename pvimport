@@ -240,13 +240,13 @@ function _get_trap_SIG() {
   local _STATE="${_STATUS:-}"
 
   # Unset variables (e.g. global).
-  # local _vars=("$IFS_ORIG" "$IFS_HACK" "$IFS" "$PATH")
-  local _vars=("$PATH")
+  # local _to_unset=("$IFS_ORIG" "$IFS_HACK" "$IFS" "$PATH")
+  local _to_unset=("$PATH")
 
   # Running tasks before the end of the script.
   _after_init
 
-  for i in "${_vars[@]}" ; do unset i ; done
+  for i in "${_to_unset[@]}" ; do unset i ; done
 
   if [ -z "$_STATE" ] ; then _STATE=255 ; fi
 
@@ -761,7 +761,7 @@ function __main__() {
                       "$pv_disk_import_host")
 
   # Store remote variables.
-  local _pv_vars="/tmp/.pvvars"
+  local _pv_to_unset="/tmp/.pvvars"
 
   # Init environment for pvimport.
   InitPv _conn_params[@] _hypervisor_params[@]
