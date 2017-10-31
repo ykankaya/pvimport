@@ -160,6 +160,45 @@ fi
 function _exit_() { _STATUS="$1" ; exit "$_STATUS" ; }
 
 # ``````````````````````````````````````````````````````````````````````````````
+# Function name: _rand()
+#
+# Description:
+#   Simple random value generator.
+#
+# Usage:
+#   _rand "type"
+#
+# Examples:
+#   _rand "T"
+#
+
+function _rand() {
+
+  local _FUNCTION_ID="_rand"
+  local _STATE=0
+
+  local _type="$1"
+  local _value=""
+
+  # Time-based generation (seconds).
+  if [[ "$_type" == "T" ]] ; then
+
+    _value=$(date +"%s")
+
+  # Generating based on '$RANDOM' variable.
+  elif [[ "$_type" == "R" ]] ; then
+
+    _value=$RANDOM
+
+  fi
+
+  _STATE=$_value
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
 # Function name: _logger()
 #
 # Description:
@@ -718,11 +757,11 @@ function __main__() {
   # Put here all your variable declarations, function calls
   # and all the other code blocks.
 
-  # In this section we add all external files (for -c|--config script param).
+  # In this section we add external file (for -c|--config script param).
   if [[ "$load_state" -eq 1 ]] ; then _load "head" "$config" ; fi
 
   # Generate random value.
-  _random=$(date +"%s")
+  _random=$(_rand "T")
 
   # Checking variable values (if they are unset or empty).
   for i in "hv_host" \
