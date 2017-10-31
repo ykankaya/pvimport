@@ -148,7 +148,8 @@ function InitPv() {
 
     # Checking variable values (if they are incorrect values).
     if [[ ! -d "$_vm_pv_storage_l" ]] || \
-       [[ ! -e "$_vm_pv_lvm_l" ]] ; then
+       [[ ! -e "$_vm_pv_lvm_l" ]] || \
+       [[ "$_vm_pv_disk_format" != "img" ]] && [[ "$_vm_pv_disk_format" != "qcow2" ]] ; then
 
       _sprintf "stop" "value: incorrect"
 
