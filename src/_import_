@@ -302,7 +302,7 @@ function CheckRemoteEnv() {
     "directory: '${_vm_storage_r}'"^"ssh ${_host} -p ${_port} if [[ ! -d \"${_vm_storage_r}\" ]] ; then exit 1 ; fi" \
     "vm: '${_vm_id}'"^"ssh ${_host} -p ${_port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${_vm_id}) ]] ; then exit 1 ; fi" \
     "vm directory: '${_remote_path}'"^"ssh ${_host} -p ${_port} if [[ ! -d \"${_remote_path}\" ]] ; then exit 1 ; fi" \
-    "vm config file: '*.vmx'"^"ssh ${_host} -p ${_port} if [[ ! -e \$(find . -name \"*.vmx\") ]] ; then exit 1 ; fi")
+    "vm config file: '*.vmx'"^"ssh ${_host} -p ${_port} if [[ ! -e \$(find \"${_remote_path}\" -name \"*.vmx\") ]] ; then exit 1 ; fi")
 
   fi
 
@@ -416,7 +416,7 @@ function VmCopy() {
   elif [[ "$_vm_type" == "vmware" ]] ; then
 
     local _arg=(\
-    "config file: '*.vmx', dst path: '${_local_path}'"^"scp -P ${_port} ${_host}:${_remote_path}/\$(find . -name \"*.vmx\") ${_local_path}" \
+    "config file: '*.vmx', dst path: '${_local_path}'"^"scp -P ${_port} ${_host}:${_remote_path}/*.vmx ${_local_path}" \
     "src: '*.vmdk', dst path: '${_local_path}'"^"scp -P ${_port} ${_host}:${_remote_path}/*.vmdk ${_local_path}")
 
   fi
