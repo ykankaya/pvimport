@@ -65,11 +65,13 @@ function InitPv() {
 
   if [[ "$pv_type" == "xen" ]] ; then
 
-    local _function_stack=(CheckConn InitRemoteEnv CheckRemoteEnv VmExport VmCopy VmExtract VmConvertDisks)
+    local _function_stack=(CheckConn InitRemoteEnv CheckRemoteEnv \
+                           VmExport VmCopy VmExtract VmConvertDisks)
 
   elif [[ "$pv_type" == "vmware" ]] ; then
 
-    local _function_stack=(CheckConn InitRemoteEnv CheckRemoteEnv VmCopy VmConvertDisks)
+    local _function_stack=(CheckConn InitRemoteEnv CheckRemoteEnv \
+                           VmCopy VmConvertDisks)
 
   else
 
@@ -81,7 +83,7 @@ function InitPv() {
 
   fi
 
-  # We start the synchronization function when calling the -s|--sync option.
+  # We start the import when calling the --import option.
   if [[ "$pv_import_pve" == "true" ]] ; then
 
     _function_stack+=(VmImport)
@@ -114,7 +116,7 @@ function InitPv() {
            "pv_import_pve" \
            "pv_host_pve" ; do
 
-    eval _i='$'${i}
+    eval _i='$'$i
 
     _sprintf "info" "${i}: '${_i}'"
 
@@ -124,6 +126,7 @@ function InitPv() {
 
     # First, we check the virtual machine ID and its numeric value.
     local _num='^[0-9]+$'
+
     if [[ "$i" == "pv_id_pve" ]] ; then
 
       if [[ "$pv_id_pve" =~ $_num ]] ; then
@@ -142,11 +145,11 @@ function InitPv() {
 
       else
 
-        _sprintf "stop" "pv_id_pve variable has no numeric value"
+        _sprintf "stop" "vm id has no numeric value"
 
         _logger "stop" \
           "${_FUNCTION_ID}()" \
-          "pv_id_pve variable has no numeric value"
+          "vm id has no numeric value"
 
       fi
 
