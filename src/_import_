@@ -537,7 +537,7 @@ function VmConvertDisks() {
 
   local _arg=()
 
-  cd $lopath || \
+  cd "$lopath" || \
   _logger "stop" \
     "${_FUNCTION_ID}()" \
     "directory change error: $lopath"
@@ -548,7 +548,7 @@ function VmConvertDisks() {
 
     for _fda in $(find . -type d -name "Ref:*" -printf '%P\n') ; do
 
-      _name=$(echo ${_fda} | tr ":" "_")
+      _name=$(echo "$_fda" | tr ":" "_")
 
       _arg+=(\
       "src: '${_fda}', dst: '${lopath}/${_x}-${_name}.img'"^"xenmigrate --convert=${_fda} ${_x}-${_name}.img")
@@ -566,12 +566,12 @@ function VmConvertDisks() {
       if [[ "$remove_unused" == "yes" ]] ; then
 
         # We're checking to make sure there is.
-        if [[ -e "${_fda}" ]] ; then
+        if [[ -e "$_fda" ]] ; then
     
           _arg+=(\
           "remove: '${_fda}'"^"rm -fr ${_fda}")
 
-          if [[ -e "${_fdb}" ]] ; then
+          if [[ -e "$_fdb" ]] ; then
 
             _arg+=(\
             "remove: '${_fdb}'"^"rm -fr ${_fdb}")
@@ -591,18 +591,18 @@ function VmConvertDisks() {
     local _vmx_file=$(find . -name "*.vmx")
     local _x=1
 
-    for _fda in $(grep ".vmdk" $_vmx_file | cut -d "\"" -f2) ; do
+    for _fda in $(grep ".vmdk" "$_vmx_file" | cut -d "\"" -f2) ; do
 
       if [[ "$_fda" != *"flat"* ]] ; then
 
         _name="${_fda%.*}"
 
-        if [[ "${pv_format_pve}" == "qcow2" ]] ; then
+        if [[ "$pv_format_pve" == "qcow2" ]] ; then
 
           _arg+=(\
           "src: '${_fda}', dst: '${lopath}/${_x}-${_name}.qcow2'"^"qemu-img convert -f vmdk -O qcow2 ${_fda} ${_x}-${_name}.qcow2")
 
-        elif [[ "${pv_format_pve}" == "img" ]] ; then
+        elif [[ "$pv_format_pve" == "img" ]] ; then
 
           _arg+=(\
           "src: '${_fda}', dst: '${lopath}/${_x}-${_name}.img'"^"qemu-img convert -f vmdk -O raw ${_fda} ${_x}-${_name}.img")
@@ -612,7 +612,7 @@ function VmConvertDisks() {
         if [[ "$remove_unused" == "yes" ]] ; then
 
           # We're checking to make sure there is.
-          if [[ -e "${_fda}" ]] ; then
+          if [[ -e "$_fda" ]] ; then
     
             _arg+=(\
             "remove: '${_fda}'"^"rm -fr ${_fda}")
@@ -682,7 +682,7 @@ function VmImport() {
   local _arg=()
   local _x=1
 
-  cd $lopath || \
+  cd "$lopath" || \
   _logger "stop" \
     "${_FUNCTION_ID}()" \
     "directory change error: $lopath"
@@ -710,7 +710,7 @@ function VmImport() {
       if [[ "$remove_unused" == "yes" ]] ; then
 
         # We're checking to make sure there is.
-        if [[ -e "${_fda}" ]] ; then
+        if [[ -e "$_fda" ]] ; then
     
           _arg+=(\
           "remove: '${_fda}'"^"rm -fr ${_fda}")
@@ -740,7 +740,7 @@ function VmImport() {
       if [[ "$remove_unused" == "yes" ]] ; then
 
         # We're checking to make sure there is.
-        if [[ -e "${_fda}" ]] ; then
+        if [[ -e "$_fda" ]] ; then
     
           _arg+=(\
           "remove: '${_fda}'"^"rm -fr ${_fda}")
