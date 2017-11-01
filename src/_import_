@@ -173,6 +173,18 @@ function InitEnv() {
 
   done
 
+  if [[ ! -d "$lopath" ]] ; then
+
+    _sprintf "info" "create a local directory: '$lopath'"
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "create a local directory: '$lopath'"
+
+    mkdir -p "$lopath"
+
+  fi
+
   # Launch all functions.
   InitPv
 
@@ -423,18 +435,6 @@ function VmCopy() {
     "${_FUNCTION_ID}()" \
     "copying a virtual machine disks"
 
-  if [[ ! -d "$lopath" ]] ; then
-
-    _sprintf "info" "create a local directory: '$lopath'"
-
-    _logger "info" \
-      "${_FUNCTION_ID}()" \
-      "create a local directory: '$lopath'"
-
-    mkdir -p "$lopath"
-
-  fi
-
   if [[ "$pv_type" == "xen" ]] ; then
 
     _msg_args+=(\
@@ -552,7 +552,7 @@ function VmConvertDisks() {
       _name=$(echo "$_fda" | tr ":" "_")
 
       _msg_args+=(\
-      "src: '${_fda}', dst: '${lopath}/${_x}-${_name}.img'")
+      "src: '${_fda}', dst: '${_x}-${_name}.img'")
 
       _cmd_args+=(\
       "xenmigrate --convert=${_fda} ${_x}-${_name}.img")
@@ -563,7 +563,7 @@ function VmConvertDisks() {
         _nname="${_fdb%.*}"
 
         _msg_args+=(\
-        "src: '${_fdb}', dst: '${lopath}/${_x}-${_nname}.qcow2'")
+        "src: '${_fdb}', dst: '${_x}-${_nname}.qcow2'")
 
         _cmd_args+=(\
         "qemu-img convert -f raw -O qcow2 ${_fdb} ${_x}-${_nname}.qcow2")
@@ -615,7 +615,7 @@ function VmConvertDisks() {
         if [[ "$pv_format_pve" == "qcow2" ]] ; then
 
           _msg_args+=(\
-          "src: '${_fda}', dst: '${lopath}/${_x}-${_name}.qcow2'")
+          "src: '${_fda}', dst: '${_x}-${_name}.qcow2'")
 
           _cmd_args+=(\
           "qemu-img convert -f vmdk -O qcow2 ${_fda} ${_x}-${_name}.qcow2")
@@ -623,7 +623,7 @@ function VmConvertDisks() {
         elif [[ "$pv_format_pve" == "img" ]] ; then
 
           _msg_args+=(\
-          "src: '${_fda}', dst: '${lopath}/${_x}-${_name}.img'")
+          "src: '${_fda}', dst: '${_x}-${_name}.img'")
 
           _cmd_args+=(\
           "qemu-img convert -f vmdk -O raw ${_fda} ${_x}-${_name}.img")
