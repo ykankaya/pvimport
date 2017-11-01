@@ -133,6 +133,7 @@ function InitPv() {
 
       if [[ "$pv_id_pve" =~ $_num ]] ; then
 
+        # shellcheck disable=SC2143
         # If the value is a number then we check whether
         # the virtual machine with that identifier exists in the proxmox cluster.
         if [[ ! $(grep "qemu" /etc/pve/.vmlist | cut -d ":" -f1 | grep "$pv_id_pve") ]] ; then
