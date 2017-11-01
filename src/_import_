@@ -379,7 +379,7 @@ function CheckRemoteEnv() {
 # Function name: DumpRemoteEnv()
 #
 # Description:
-#   Save of the remote environment to local.
+#   Dump of the remote environment to local.
 #
 # Usage:
 #   DumpRemoteEnv
@@ -410,8 +410,8 @@ function DumpRemoteEnv() {
     _cmd_args+=(\
     "ssh ${ssh_opt} ${pv_host} -p ${pv_port} find \"${re_path}\" -name \"*.vmx\" -printf \"%P\n\" >> ${_pv_vmware_vars}" \
     "ssh ${ssh_opt} ${pv_host} -p ${pv_port} find \"${re_path}\" -name \"*.vmdk\" -printf \"%P\n\" >> ${_pv_vmware_disks}" \
-    "scp ${ssh_opt} -P ${pv_port} ${pv_host}:${re_path}/${_pv_vmware_vars} /tmp" \
-    "scp ${ssh_opt} -P ${pv_port} ${pv_host}:${re_path}/${_pv_vmware_disks} /tmp")
+    "scp ${ssh_opt} -P ${pv_port} ${pv_host}:${re_path}/${_pv_vmware_vars} ${_pv_vmware_vars}" \
+    "scp ${ssh_opt} -P ${pv_port} ${pv_host}:${re_path}/${_pv_vmware_disks} ${_pv_vmware_disks}")
 
   fi
 
