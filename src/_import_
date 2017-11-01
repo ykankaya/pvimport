@@ -177,7 +177,7 @@ function InitPv() {
 
     _logger "info" \
       "${_FUNCTION_ID}()" \
-      "init: $_function"
+      "init function: $_function"
 
     export _args=()
 
@@ -228,30 +228,15 @@ function CheckConn() {
     "${_FUNCTION_ID}()" \
     "checking connection to remote host"
 
-  local _arg=(\
+  _args=(\
   "host: '${pv_host}'"^"eval timeout 1 bash -c \"</dev/tcp/${pv_host}/${pv_port}\"")
 
   if [[ "$pv_host_pve" != "local" ]] ; then
 
-    _arg+=(\
+    _args+=(\
     "host: '${pv_host_pve}'"^"eval timeout 1 bash -c \"</dev/tcp/${pv_host_pve}/${pv_port}\"")
 
   fi
-
-  for i in "${_arg[@]}" ; do
-
-    _msg="${i%%^*}"
-    _full_command="${i#*^}"
-
-    _sprintf "info" "$_msg"
-
-    _logger "info" \
-      "${_FUNCTION_ID}()" \
-      "$_msg"
-
-    _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
-
-  done
 
   return $_STATE
 
@@ -281,23 +266,8 @@ function InitRemoteEnv() {
     "${_FUNCTION_ID}()" \
     "preparing remote environment"
 
-  local _arg=(\
+  _args=(\
   "resetting '${_pv_vars}'"^"ssh ${pv_host} -p ${pv_port} >${_pv_vars}")
-
-  for i in "${_arg[@]}" ; do
-
-    _msg="${i%%^*}"
-    _full_command="${i#*^}"
-
-    _sprintf "info" "$_msg"
-
-    _logger "info" \
-      "${_FUNCTION_ID}()" \
-      "$_msg"
-
-    _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
-
-  done
 
   return $_STATE
 
@@ -329,34 +299,19 @@ function CheckRemoteEnv() {
 
   if [[ "$pv_type" == "xen" ]] ; then
 
-    local _arg=(\
+    _args=(\
     "directory: '${pv_storage}'"^"ssh ${pv_host} -p ${pv_port} if [[ ! -d \"${pv_storage}\" ]] ; then exit 1 ; fi" \
     "vm: '${pv_id}'"^"ssh ${pv_host} -p ${pv_port} if [[ ! \$(xe vm-list | grep ${pv_id}) ]] ; then exit 1 ; fi")
 
   elif [[ "$pv_type" == "vmware" ]] ; then
 
-    local _arg=(\
+    _args=(\
     "directory: '${pv_storage}'"^"ssh ${pv_host} -p ${pv_port} if [[ ! -d \"${pv_storage}\" ]] ; then exit 1 ; fi" \
     "vm: '${pv_id}'"^"ssh ${pv_host} -p ${pv_port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${pv_id}) ]] ; then exit 1 ; fi" \
     "vm directory: '${repath}'"^"ssh ${pv_host} -p ${pv_port} if [[ ! -d \"${repath}\" ]] ; then exit 1 ; fi" \
     "vm config file: '*.vmx'"^"ssh ${pv_host} -p ${pv_port} if [[ ! -e \$(find \"${repath}\" -name \"*.vmx\") ]] ; then exit 1 ; fi")
 
   fi
-
-  for i in "${_arg[@]}" ; do
-
-    _msg="${i%%^*}"
-    _full_command="${i#*^}"
-
-    _sprintf "info" "$_msg"
-
-    _logger "info" \
-      "${_FUNCTION_ID}()" \
-      "$_msg"
-
-    _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
-
-  done
 
   return $_STATE
 
@@ -386,24 +341,9 @@ function VmExport() {
     "${_FUNCTION_ID}()" \
     "exporting $pv_id"
 
-  local _arg=(\
+  _args=(\
   "creating snapshot: '${pv_name}-${_random}'"^"ssh ${pv_host} -p ${pv_port} _id=\$(xe vm-snapshot vm=${pv_id} new-name-label=${pv_name}-${_random}) ; echo id=\$_id >> ${_pv_vars}" \
   "exporting snapshot: '${pv_name}.ova'"^"ssh ${pv_host} -p ${pv_port} _id=\$(cat ${_pv_vars} | grep id= | cut -d = -f2) ; xe vm-export vm=\${_id} filename=${pv_storage}/${pv_name}.ova")
-
-  for i in "${_arg[@]}" ; do
-
-    _msg="${i%%^*}"
-    _full_command="${i#*^}"
-
-    _sprintf "info" "$_msg"
-
-    _logger "info" \
-      "${_FUNCTION_ID}()" \
-      "$_msg"
-
-    _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
-
-  done
 
   return $_STATE
 
@@ -447,31 +387,16 @@ function VmCopy() {
 
   if [[ "$pv_type" == "xen" ]] ; then
 
-    local _arg=(\
+    _args=(\
     "src: '${pv_name}.ova', dst path: '${lopath}'"^"scp -P ${pv_port} ${pv_host}:${pv_storage}/${pv_name}.ova ${lopath}")
 
   elif [[ "$pv_type" == "vmware" ]] ; then
 
-    local _arg=(\
+    _args=(\
     "config file: '*.vmx', dst path: '${lopath}'"^"scp -P ${pv_port} ${pv_host}:${repath}/*.vmx ${lopath}" \
     "src: '*.vmdk', dst path: '${lopath}'"^"scp -P ${pv_port} ${pv_host}:${repath}/*.vmdk ${lopath}")
 
   fi
-
-  for i in "${_arg[@]}" ; do
-
-    _msg="${i%%^*}"
-    _full_command="${i#*^}"
-
-    _sprintf "info" "$_msg"
-
-    _logger "info" \
-      "${_FUNCTION_ID}()" \
-      "$_msg"
-
-    _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
-
-  done
 
   return $_STATE
 
@@ -501,7 +426,7 @@ function VmExtract() {
     "${_FUNCTION_ID}()" \
     "extracting ova files"
 
-  local _arg=(\
+  _args=(\
   "src: '${pv_name}.ova', dst path: '${lopath}'"^"tar xf ${lopath}/${pv_name}.ova -C ${lopath}")
 
   # shellcheck disable=SC2154
@@ -510,27 +435,12 @@ function VmExtract() {
     # We're checking to make sure there is.
     if [[ -e "${lopath}/${pv_name}.ova" ]] ; then
     
-      _arg+=(\
+      _args+=(\
       "remove: '${pv_name}.ova'"^"rm -fr ${lopath}/${pv_name}.ova")
 
     fi
 
   fi
-
-  for i in "${_arg[@]}" ; do
-
-    _msg="${i%%^*}"
-    _full_command="${i#*^}"
-
-    _sprintf "info" "$_msg"
-
-    _logger "info" \
-      "${_FUNCTION_ID}()" \
-      "$_msg"
-
-    _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
-
-  done
 
   return $_STATE
 
@@ -560,7 +470,6 @@ function VmConvertDisks() {
     "${_FUNCTION_ID}()" \
     "converting disks to $pv_format_pve format"
 
-  local _arg=()
   local _vmx_file
   local _x
 
@@ -579,7 +488,7 @@ function VmConvertDisks() {
 
       _name=$(echo "$_fda" | tr ":" "_")
 
-      _arg+=(\
+      _args+=(\
       "src: '${_fda}', dst: '${lopath}/${_x}-${_name}.img'"^"xenmigrate --convert=${_fda} ${_x}-${_name}.img")
 
       if [[ "$pv_format_pve" == "qcow2" ]] ; then
@@ -587,7 +496,7 @@ function VmConvertDisks() {
         _fdb="${_name}.img"
         _nname="${_fdb%.*}"
 
-        _arg+=(\
+        _args+=(\
         "src: '${_fdb}', dst: '${lopath}/${_x}-${_nname}.qcow2'"^"qemu-img convert -f raw -O qcow2 ${_fdb} ${_x}-${_nname}.qcow2")
 
       fi
@@ -597,12 +506,12 @@ function VmConvertDisks() {
         # We're checking to make sure there is.
         if [[ -e "$_fda" ]] ; then
     
-          _arg+=(\
+          _args+=(\
           "remove: '${_fda}'"^"rm -fr ${_fda}")
 
           if [[ -e "$_fdb" ]] ; then
 
-            _arg+=(\
+            _args+=(\
             "remove: '${_fdb}'"^"rm -fr ${_fdb}")
 
           fi
@@ -630,12 +539,12 @@ function VmConvertDisks() {
 
         if [[ "$pv_format_pve" == "qcow2" ]] ; then
 
-          _arg+=(\
+          _args+=(\
           "src: '${_fda}', dst: '${lopath}/${_x}-${_name}.qcow2'"^"qemu-img convert -f vmdk -O qcow2 ${_fda} ${_x}-${_name}.qcow2")
 
         elif [[ "$pv_format_pve" == "img" ]] ; then
 
-          _arg+=(\
+          _args+=(\
           "src: '${_fda}', dst: '${lopath}/${_x}-${_name}.img'"^"qemu-img convert -f vmdk -O raw ${_fda} ${_x}-${_name}.img")
 
         fi
@@ -645,12 +554,12 @@ function VmConvertDisks() {
           # We're checking to make sure there is.
           if [[ -e "$_fda" ]] ; then
     
-            _arg+=(\
+            _args+=(\
             "remove: '${_fda}'"^"rm -fr ${_fda}")
 
             if [[ -e "${_name}-flat.vmdk" ]] ; then
 
-              _arg+=(\
+              _args+=(\
               "remove: '${_name}-flat.vmdk"^"rm -fr ${_name}-flat.vmdk")
 
             fi
@@ -666,21 +575,6 @@ function VmConvertDisks() {
     done
 
   fi
-
-  for i in "${_arg[@]}" ; do
-
-    _msg="${i%%^*}"
-    _full_command="${i#*^}"
-
-    _sprintf "info" "$_msg"
-
-    _logger "info" \
-      "${_FUNCTION_ID}()" \
-      "$_msg"
-
-    _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
-
-  done
 
   return $_STATE
 
@@ -710,7 +604,6 @@ function VmImport() {
     "${_FUNCTION_ID}()" \
     "importing a virtual machine disks"
 
-  local _arg=()
   local _x=1
 
   cd "$lopath" || \
@@ -726,13 +619,13 @@ function VmImport() {
 
       if [[ "$pv_host_pve" == "local" ]] ; then
 
-        _arg+=(\
+        _args+=(\
         "checking: '${_vm_pv_local}'"^"eval if [[ ! -e ${_vm_pv_local} ]] ; then exit 1 ; fi" \
         "src: '${_fda}', dst path: '${_vm_pv_local}'"^"dd if=${_fda} of=${_vm_pv_local}")
 
       elif [[ "$pv_host_pve" != "local" ]] ; then
 
-        _arg+=(\
+        _args+=(\
         "checking: '${pv_host_pve}:${_vm_pv_local}'"^"ssh ${pv_host_pve} -p ${pv_port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
         "src: '${_fda}', dst path: '${pv_host_pve}:${_vm_pv_local}'"^"eval dd if=${_fda} bs=4096 | ssh ${pv_host_pve} -p ${pv_port} dd of=${_vm_pv_local} bs=4096")
 
@@ -743,7 +636,7 @@ function VmImport() {
         # We're checking to make sure there is.
         if [[ -e "$_fda" ]] ; then
     
-          _arg+=(\
+          _args+=(\
           "remove: '${_fda}'"^"rm -fr ${_fda}")
 
         fi
@@ -756,13 +649,13 @@ function VmImport() {
 
       if [[ "$pv_host_pve" == "local" ]] ; then
 
-        _arg+=(\
+        _args+=(\
         "checking: '${_vm_pv_local}'"^"eval if [[ ! -e ${_vm_pv_local} ]] ; then exit 1 ; fi" \
         "src: '${_fda}', dst path: '${_vm_pv_local}'"^"cp ${_fda} ${_vm_pv_local}")
 
       elif [[ "$pv_host_pve" != "local" ]] ; then
 
-        _arg+=(\
+        _args+=(\
         "checking: '${pv_host_pve}:${_vm_pv_local}'"^"ssh ${pv_host_pve} -p ${pv_port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
         "src: '${_fda}', dst path: '${pv_host_pve}:${_vm_pv_local}'"^"scp ${_fda} -P ${pv_port} ${pv_host_pve}:${_vm_pv_local}")
 
@@ -773,7 +666,7 @@ function VmImport() {
         # We're checking to make sure there is.
         if [[ -e "$_fda" ]] ; then
     
-          _arg+=(\
+          _args+=(\
           "remove: '${_fda}'"^"rm -fr ${_fda}")
 
         fi
@@ -783,21 +676,6 @@ function VmImport() {
     fi
 
     _x=$((_x + 1))
-
-  done
-
-  for i in "${_arg[@]}" ; do
-
-    _msg="${i%%^*}"
-    _full_command="${i#*^}"
-
-    _sprintf "info" "$_msg"
-
-    _logger "info" \
-      "${_FUNCTION_ID}()" \
-      "$_msg"
-
-    _init_cmd "$_full_command" ; if [ ! $? ] ; then _STATE=$? ; fi
 
   done
 
