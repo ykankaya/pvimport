@@ -118,9 +118,9 @@ function InitPv() {
            "pv_import_pve" \
            "pv_host_pve" ; do
 
-    eval _i='$'$i
+    _i="" ; eval _i='$'$i
 
-    _sprintf "info" "${i}: '${_i}'"
+    _sprintf "info" "${i}: '$_i'"
 
     _logger "info" \
       "${_FUNCTION_ID}()" \
