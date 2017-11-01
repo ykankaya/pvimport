@@ -679,7 +679,7 @@ function __main__() {
   local _long_opt="help,debug,verbose,config:,host:,id:,name:,pve-id:,pve-format:,pve-import:"
 
   _GETOPT_PARAMS=$(getopt -o "${_short_opt}" --long "${_long_opt}" \
-                  -n "${_init_name}" -- "${__script_params[@]}")
+                   -n "${_init_name}" -- "${__script_params[@]}")
 
   for i in "${__script_params[@]}" ; do
 
