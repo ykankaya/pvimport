@@ -830,7 +830,7 @@ function __main__() {
   local _pv_vars="/tmp/.pv.vars"
 
   # Init environment for pvimport.
-  InitPv _conn_params[@] _hypervisor_params[@]
+  InitEnv _conn_params[@] _hypervisor_params[@]
   if [ ! $? ] ; then _exit_ 255 ; fi
 
   # ````````````````````````````````````````````````````````````````````````````
