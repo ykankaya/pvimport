@@ -315,7 +315,7 @@ function InitRemoteEnv() {
   "resetting '${_pv_vars}'")
 
   _cmd_args+=(\
-  "ssh ${pv_host} -p ${pv_port} >${_pv_vars}")
+  "ssh ${ssh_opt} ${pv_host} -p ${pv_port} >${_pv_vars}")
 
   return $_STATE
 
@@ -352,8 +352,8 @@ function CheckRemoteEnv() {
     "directory: '${pv_storage}'")
 
     _cmd_args+=(\
-    "ssh ${pv_host} -p ${pv_port} if [[ ! \$(xe vm-list | grep ${pv_id}) ]] ; then exit 1 ; fi" \
-    "ssh ${pv_host} -p ${pv_port} if [[ ! -d \"${pv_storage}\" ]] ; then exit 1 ; fi")
+    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} if [[ ! \$(xe vm-list | grep ${pv_id}) ]] ; then exit 1 ; fi" \
+    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} if [[ ! -d \"${pv_storage}\" ]] ; then exit 1 ; fi")
 
   elif [[ "$pv_type" == "vmware" ]] ; then
 
@@ -363,9 +363,9 @@ function CheckRemoteEnv() {
     "vm config file: '*.vmx'")
 
     _cmd_args+=(\
-    "ssh ${pv_host} -p ${pv_port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${pv_id}) ]] ; then exit 1 ; fi" \
-    "ssh ${pv_host} -p ${pv_port} if [[ ! -d \"${re_path}\" ]] ; then exit 1 ; fi" \
-    "ssh ${pv_host} -p ${pv_port} if [[ ! -e \$(find \"${re_path}\" -name \"*.vmx\") ]] ; then exit 1 ; fi")
+    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${pv_id}) ]] ; then exit 1 ; fi" \
+    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} if [[ ! -d \"${re_path}\" ]] ; then exit 1 ; fi" \
+    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} if [[ ! -e \$(find \"${re_path}\" -name \"*.vmx\") ]] ; then exit 1 ; fi")
 
   fi
 
@@ -402,8 +402,8 @@ function VmExport() {
   "exporting snapshot: '${pv_name}.ova'")
 
   _cmd_args+=(\
-  "ssh ${pv_host} -p ${pv_port} _id=\$(xe vm-snapshot vm=${pv_id} new-name-label=${pv_name}-${_random}) ; echo id=\$_id >> ${_pv_vars}" \
-  "ssh ${pv_host} -p ${pv_port} _id=\$(cat ${_pv_vars} | grep id= | cut -d = -f2) ; xe vm-export vm=\${_id} filename=${pv_storage}/${pv_name}.ova")
+  "ssh ${ssh_opt} ${pv_host} -p ${pv_port} _id=\$(xe vm-snapshot vm=${pv_id} new-name-label=${pv_name}-${_random}) ; echo id=\$_id >> ${_pv_vars}" \
+  "ssh ${ssh_opt} ${pv_host} -p ${pv_port} _id=\$(cat ${_pv_vars} | grep id= | cut -d = -f2) ; xe vm-export vm=\${_id} filename=${pv_storage}/${pv_name}.ova")
 
   return $_STATE
 
@@ -723,8 +723,8 @@ function VmImport() {
         "src: '${_fda}', dst path: '${pv_host_pve}:${_vm_pv_local}'")
 
         _cmd_args+=(\
-        "ssh ${pv_host_pve} -p ${pv_port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
-        "eval dd if=${_fda} bs=4096 | ssh ${pv_host_pve} -p ${pv_port} dd of=${_vm_pv_local} bs=4096")
+        "ssh ${ssh_opt} ${pv_host_pve} -p ${pv_port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
+        "eval dd if=${_fda} bs=4096 | ssh ${ssh_opt} ${pv_host_pve} -p ${pv_port} dd of=${_vm_pv_local} bs=4096")
 
       fi
 
@@ -764,7 +764,7 @@ function VmImport() {
         "src: '${_fda}', dst path: '${pv_host_pve}:${_vm_pv_local}'")
 
         _cmd_args+=(\
-        "ssh ${pv_host_pve} -p ${pv_port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
+        "ssh ${ssh_opt} ${pv_host_pve} -p ${pv_port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
         "scp ${_fda} -P ${pv_port} ${pv_host_pve}:${_vm_pv_local}")
 
       fi
