@@ -10,21 +10,21 @@
 ################################################################################
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: InitPv()
+# Function name: InitEnv()
 #
 # Description:
 #   Initialization of the environment for other functions.
 #
 # Usage:
-#   InitPv "param_0" "param_1"
+#   InitEnv "param_0" "param_1"
 #
 # Examples:
-#   InitPv conn_params[@] hypervisor_params[@]
+#   InitEnv conn_params[@] hypervisor_params[@]
 #
 
-function InitPv() {
+function InitEnv() {
 
-  local _FUNCTION_ID="InitPv"
+  local _FUNCTION_ID="InitEnv"
   local _STATE=0
 
   local conn_params=("${!1}")
@@ -172,6 +172,31 @@ function InitPv() {
     fi
 
   done
+
+  # Launch all functions.
+  InitPv
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: InitPv()
+#
+# Description:
+#   Validates the connection to the remote server.
+#
+# Usage:
+#   InitPv
+#
+# Examples:
+#   InitPv
+#
+
+function InitPv() {
+
+  local _FUNCTION_ID="InitPv"
+  local _STATE=0
 
   for _function in "${_function_stack[@]}" ; do
 
