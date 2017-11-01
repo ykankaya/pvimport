@@ -409,8 +409,8 @@ function DumpRemoteEnv() {
     "get vm disks list")
 
     _cmd_args+=(\
-    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} find \"${re_path}\" -name \"*.vmx\" -printf \"%P\n\" >> ${_pv_vmware_vars}" \
-    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} find \"${re_path}\" -name \"*.vmdk\" -printf \"%P\n\" >> ${_pv_vmware_disks}" \
+    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} find \"${re_path}/*\" -name \"*.vmx\" >> ${_pv_vmware_vars}" \
+    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} find \"${re_path}/*\" -name \"*.vmdk\" >> ${_pv_vmware_disks}" \
     "scp ${ssh_opt} -P ${pv_port} ${pv_host}:${re_path}/${_pv_vmware_vars} ${_pv_vmware_vars}" \
     "scp ${ssh_opt} -P ${pv_port} ${pv_host}:${re_path}/${_pv_vmware_disks} ${_pv_vmware_disks}")
 
@@ -616,7 +616,7 @@ function VmConvertDisks() {
 
     # Issue to solve:
     # shellcheck disable=SC2044
-    for _fda in $(find . -type d -name "Ref:*" -printf '%P\n') ; do
+    for _fda in $(find * -type d -name "Ref:*") ; do
 
       _name=$(echo "$_fda" | tr ":" "_")
 
@@ -670,7 +670,7 @@ function VmConvertDisks() {
 
   elif [[ "$pv_type" == "vmware" ]] ; then
 
-    _vmx_file=$(find . -name "*.vmx")
+    _vmx_file=$(find * -name "*.vmx")
     _x=1
 
     # Issue to solve:
@@ -769,7 +769,7 @@ function VmImport() {
     "${_FUNCTION_ID}()" \
     "directory change error: $lo_path"
 
-  for _fda in $(find . -type f -name "*.$pv_format_pve" -printf '%P\n' | sort -V) ; do
+  for _fda in $(find * -type f -name "*.$pv_format_pve" | sort -V) ; do
   
     if [[ "$pv_format_pve" == "img" ]] ; then
 
