@@ -312,10 +312,14 @@ function InitRemoteEnv() {
     "preparing remote environment"
 
   _msg_args+=(\
-  "resetting '${_pv_vars}'")
+  "resetting '${_pv_xen_vars}'" \
+  "resetting '${_pv_vmware_vars}'" \
+  "resetting '${_pv_vmware_disks}")
 
   _cmd_args+=(\
-  "ssh ${ssh_opt} ${pv_host} -p ${pv_port} >${_pv_vars}")
+  "ssh ${ssh_opt} ${pv_host} -p ${pv_port} >${_pv_xen_vars}" \
+  "ssh ${ssh_opt} ${pv_host} -p ${pv_port} >${_pv_vmware_vars}" \
+  "ssh ${ssh_opt} ${pv_host} -p ${pv_port} >${_pv_vmware_disks}")
 
   return $_STATE
 
@@ -360,12 +364,54 @@ function CheckRemoteEnv() {
     _msg_args+=(\
     "vm id: '${pv_id}'" \
     "vm directory: '${re_path}'" \
-    "vm config file: '*.vmx'")
 
     _cmd_args+=(\
     "ssh ${ssh_opt} ${pv_host} -p ${pv_port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${pv_id}) ]] ; then exit 1 ; fi" \
-    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} if [[ ! -d \"${re_path}\" ]] ; then exit 1 ; fi" \
-    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} if [[ ! -e \$(find \"${re_path}\" -name \"*.vmx\") ]] ; then exit 1 ; fi")
+    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} if [[ ! -d \"${re_path}\" ]] ; then exit 1 ; fi")
+
+  fi
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: DumpRemoteEnv()
+#
+# Description:
+#   Save of the remote environment to local.
+#
+# Usage:
+#   DumpRemoteEnv
+#
+# Examples:
+#   DumpRemoteEnv
+#
+
+function DumpRemoteEnv() {
+
+  local _FUNCTION_ID="DumpRemoteEnv"
+  local _STATE=0
+
+  _sprintf "head" "dump remote environment"
+
+  _logger "head" \
+    "${_FUNCTION_ID}()" \
+    "dump remote environment"
+
+  if [[ "$pv_type" == "vmware" ]] ; then
+
+    _msg_args+=(\
+    "dump vm config file" \
+    "dump vm disks list" \
+    "get vm config list" \
+    "get vm disks list")
+
+    _cmd_args+=(\
+    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} find \"${re_path}\" -name \"*.vmx\" -printf \"%P\n\" >> ${_pv_vmware_vars}" \
+    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} find \"${re_path}\" -name \"*.vmdk\" -printf \"%P\n\" >> ${_pv_vmware_disks}" \
+    "scp ${ssh_opt} -P ${pv_port} ${pv_host}:${re_path}/${_pv_vmware_vars} /tmp" \
+    "scp ${ssh_opt} -P ${pv_port} ${pv_host}:${re_path}/${_pv_vmware_disks} /tmp")
 
   fi
 
@@ -402,8 +448,8 @@ function VmExport() {
   "exporting snapshot: '${pv_name}.ova'")
 
   _cmd_args+=(\
-  "ssh ${ssh_opt} ${pv_host} -p ${pv_port} _id=\$(xe vm-snapshot vm=${pv_id} new-name-label=${pv_name}-${_random}) ; echo id=\$_id >> ${_pv_vars}" \
-  "ssh ${ssh_opt} ${pv_host} -p ${pv_port} _id=\$(cat ${_pv_vars} | grep id= | cut -d = -f2) ; xe vm-export vm=\${_id} filename=${pv_storage}/${pv_name}.ova")
+  "ssh ${ssh_opt} ${pv_host} -p ${pv_port} _id=\$(xe vm-snapshot vm=${pv_id} new-name-label=${pv_name}-${_random}) ; echo id=\$_id >> ${_pv_xen_vars}" \
+  "ssh ${ssh_opt} ${pv_host} -p ${pv_port} _id=\$(cat ${_pv_xen_vars} | grep id= | cut -d = -f2) ; xe vm-export vm=\${_id} filename=${pv_storage}/${pv_name}.ova")
 
   return $_STATE
 
