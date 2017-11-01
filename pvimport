@@ -5,7 +5,7 @@
 # Header:
 #
 #         fname : "pvimport"
-#         cdate : "12.10.2017"
+#         _cdate : "12.10.2017"
 #        author : "Michał Żurawski <contact@nslab.at>"
 #      tab_size : "2"
 #     soft_tabs : "yes"
@@ -78,15 +78,15 @@ readonly _src_directory="${_init_directory}/src"
 # File with external (user) functions and variables.
 readonly _import_="${_src_directory}/_import_"
 
+# Stores the current date.
+readonly _cdate=$(date +%Y%m%d)
+
 # Variables related to the log file. Divided into three parts due
 # to the better possibility of manipulation for the user.
 readonly _log_directory="${_init_directory}/log"
-readonly _log_file="${_init_name}.${cdate}.log"
+readonly _log_file="${_init_name}.${_cdate}.log"
 readonly _log_stdout="${_log_directory}/stdout.log"
 readonly _log_path="${_log_directory}/${_log_file}"
-
-# Stores the current date.
-readonly cdate=$(date +%Y%m%d)
 
 # External configuration file (-c|--config script param).
 config=""
