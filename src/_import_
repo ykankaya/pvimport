@@ -254,7 +254,7 @@ function InitRemoteEnv() {
     "preparing remote environment"
 
   local _arg=(\
-  "resetting '$_pv_vars'"^"ssh ${pv_host} -p ${pv_port} >${_pv_vars}")
+  "resetting '${_pv_vars}'"^"ssh ${pv_host} -p ${pv_port} >${_pv_vars}")
 
   for i in "${_arg[@]}" ; do
 
