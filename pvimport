@@ -619,7 +619,7 @@ function _before_init() {
     "${_FUNCTION_ID}()" \
     "directory change error: $_init_directory"
 
-  >"$_log_stdout"
+  : >"$_log_stdout"
 
   return $_STATE
 
