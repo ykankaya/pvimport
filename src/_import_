@@ -481,7 +481,6 @@ function VmCopy() {
     "copying a virtual machine disks"
 
   local _vmx_name
-  local _vmdk_name
 
   if [[ "$pv_type" == "xen" ]] ; then
 
@@ -496,7 +495,6 @@ function VmCopy() {
   elif [[ "$pv_type" == "vmware" ]] ; then
 
     _vmx_name=$(grep ".vmx" "$_pv_vmware_vars" | cut -d "/" -f2)
-    _vmdk_name=$(grep ".vmdk" "$_pv_vmware_disks" | cut -d "/" -f2)
 
     _msg_args+=(\
     "checking: '${_vmx_name}'" \
@@ -508,7 +506,7 @@ function VmCopy() {
 
     # Issue to solve:
     # shellcheck disable=SC2013
-    for _fname in "$_vmdk_name" ; do
+    for _fname in $(grep ".vmdk" "$_pv_vmware_disks" | cut -d "/" -f2) ; do
 
       _msg_args+=(\
       "checking: '${_fname}'" \
@@ -616,7 +614,7 @@ function VmConvertDisks() {
 
     # Issue to solve:
     # shellcheck disable=SC2044
-    for _fda in $(find * -type d -name "Ref:*") ; do
+    for _fda in $(find ./* -type d -name "Ref:*") ; do
 
       _name=$(echo "$_fda" | tr ":" "_")
 
@@ -670,7 +668,7 @@ function VmConvertDisks() {
 
   elif [[ "$pv_type" == "vmware" ]] ; then
 
-    _vmx_file=$(find * -name "*.vmx")
+    _vmx_file=$(find ./* -name "*.vmx")
     _x=1
 
     # Issue to solve:
@@ -769,7 +767,7 @@ function VmImport() {
     "${_FUNCTION_ID}()" \
     "directory change error: $lo_path"
 
-  for _fda in $(find * -type f -name "*.$pv_format_pve" | sort -V) ; do
+  for _fda in $(find ./* -type f -name "*.$pv_format_pve" | sort -V) ; do
   
     if [[ "$pv_format_pve" == "img" ]] ; then
 
