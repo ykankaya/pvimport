@@ -762,6 +762,7 @@ function __main__() {
   # In this section we add external file (for -c|--config script param).
   if [[ "$load_state" -eq 1 ]] ; then _load "head" "$config" ; fi
 
+  # shellcheck disable=SC2034
   # Generate random value.
   _random=$(_rand "T")
 
@@ -794,10 +795,12 @@ function __main__() {
 
   done
 
+  # shellcheck disable=SC2034
   # Arrays responsible for keeping all options from a configuration file.
   _conn_params=("$hv_host" \
                 "$hv_port")
 
+  # shellcheck disable=SC2034
   _hypervisor_params=("$hv_type" \
                       "$hv_storage" \
                       "$vm_id" \
@@ -810,6 +813,7 @@ function __main__() {
                       "$pve_import" \
                       "$pve_host")
 
+  # shellcheck disable=SC2034
   # Store extended variables on the remote hv host.
   local _pv_vars="/tmp/.pv.vars"
 
