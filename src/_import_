@@ -363,7 +363,7 @@ function CheckRemoteEnv() {
 
     _msg_args+=(\
     "vm id: '${pv_id}'" \
-    "vm directory: '${re_path}'" \
+    "vm directory: '${re_path}'")
 
     _cmd_args+=(\
     "ssh ${ssh_opt} ${pv_host} -p ${pv_port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${pv_id}) ]] ; then exit 1 ; fi" \
