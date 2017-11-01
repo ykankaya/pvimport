@@ -614,7 +614,10 @@ function _before_init() {
   local _FUNCTION_ID="_before_init"
   local _STATE=0
 
-  cd "$_init_directory"
+  cd "$_init_directory" || \
+  _logger "stop" \
+    "${_FUNCTION_ID}()" \
+    "directory change error: $_init_directory"
 
   >"$_log_stdout"
 
@@ -642,7 +645,10 @@ function _after_init() {
   local _FUNCTION_ID="_after_init"
   local _STATE=0
 
-  cd "$_init_directory"
+  cd "$_init_directory"  || \
+  _logger "stop" \
+    "${_FUNCTION_ID}()" \
+    "directory change error: $_init_directory"
 
   return $_STATE
 
