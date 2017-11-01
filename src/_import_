@@ -73,7 +73,7 @@ function InitEnv() {
   elif [[ "$pv_type" == "vmware" ]] ; then
 
     local _function_stack=(CheckConn InitRemoteEnv CheckRemoteEnv \
-                           VmCopy VmConvertDisks)
+                           DumpRemoteEnv VmCopy VmConvertDisks)
 
   else
 
@@ -106,6 +106,7 @@ function InitEnv() {
   # Display of variable values without checking them.
   for i in "pv_host" \
            "pv_port" \
+           "ssh_opt" \
            "pv_type" \
            "pv_id" \
            "pv_name" \
@@ -261,11 +262,11 @@ function CheckConn() {
   local _FUNCTION_ID="CheckConn"
   local _STATE=0
 
-  _sprintf "head" "checking connection to remote host"
+  _sprintf "head" "checking connection to remote host(s)"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "checking connection to remote host"
+    "checking connection to remote host(s)"
 
   _msg_args+=(\
   "host: '${pv_host}'")
