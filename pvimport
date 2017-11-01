@@ -434,7 +434,7 @@ function _init_cmd() {
     "init: $_cmd"
 
   # Execute command and exit save to file.
-  $($_cmd >>"$_log_stdout" 2>&1) &
+  $_cmd >>"$_log_stdout" 2>&1 &
 
   # We keep pid of the last command.
   _pid=$!
