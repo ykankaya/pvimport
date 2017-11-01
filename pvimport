@@ -89,12 +89,12 @@ readonly _log_path="${_log_directory}/${_log_file}"
 readonly cdate=$(date +%Y%m%d)
 
 # External configuration file (-c|--config script param).
-config=""
+config
 load_state=0
 
 # Declaration of output variables (--debug and --verbose params).
-stdout_mode=""
-printf_mode=""
+stdout_mode
+printf_mode
 
 
 ################################################################################
@@ -226,10 +226,10 @@ function _logger() {
 
   local _type="$1"
   local _to_log
+  local _conv_type
 
   _to_log=$(shift ; echo "$@")
-
-  local _conv_type=$(echo "$_type" | tr '[:lower:]' '[:upper:]')
+  _conv_type=$(echo "$_type" | tr '[:lower:]' '[:upper:]')
 
   if [[ ! -d "$_log_directory" && ! -L "$_log_directory" ]] ; then
     mkdir -p "$_log_directory" ; fi
