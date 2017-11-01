@@ -173,7 +173,32 @@ function InitPv() {
 
   done
 
-  for i in "${_function_stack[@]}" ; do $i ; if [ ! $? ] ; then _exit_ 255 ; fi ; done
+  for _function in "${_function_stack[@]}" ; do
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "init: $_function"
+
+    export _args=()
+
+    $_function ; if [ ! $? ] ; then _exit_ 255 ; fi
+
+    for _cmd in "${_args[@]}" ; do
+
+      _msg="${_cmd%%^*}"
+      _full_command="${_cmd#*^}"
+
+      _sprintf "info" "$_msg"
+
+      _logger "info" \
+        "${_FUNCTION_ID}()" \
+        "$_msg"
+
+      _init_cmd "$_full_command" ; if [ ! $? ] ; then _exit_ 255 ; fi
+
+    done
+
+  done
 
   return $_STATE
 
