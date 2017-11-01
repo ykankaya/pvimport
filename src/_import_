@@ -409,8 +409,8 @@ function DumpRemoteEnv() {
     "get vm disks list")
 
     _cmd_args+=(\
-    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} eval cd \"${re_path}\" ; eval find * -name \"*.vmx\" >> ${_pv_vmware_vars}" \
-    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} eval cd \"${re_path}\" ; eval find * -name \"*.vmdk\" >> ${_pv_vmware_disks}" \
+    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} \"eval cd \"${re_path}\" && eval find * -name \"*.vmx\" >> ${_pv_vmware_vars}\"" \
+    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} \"eval cd \"${re_path}\" && eval find * -name \"*.vmdk\" >> ${_pv_vmware_disks}\"" \
     "scp ${ssh_opt} -P ${pv_port} ${pv_host}:${_pv_vmware_vars} ${_pv_vmware_vars}" \
     "scp ${ssh_opt} -P ${pv_port} ${pv_host}:${_pv_vmware_disks} ${_pv_vmware_disks}")
 
