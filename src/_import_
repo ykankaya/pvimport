@@ -448,8 +448,8 @@ function VmExport() {
   "exporting snapshot: '${pv_name}.ova'")
 
   _cmd_args+=(\
-  "ssh ${ssh_opt} ${pv_host} -p ${pv_port} _id=\$(xe vm-snapshot vm=${pv_id} new-name-label=${pv_name}-${_random}) ; echo id=\$_id >> ${_pv_xen_vars}" \
-  "ssh ${ssh_opt} ${pv_host} -p ${pv_port} _id=\$(cat ${_pv_xen_vars} | grep id= | cut -d = -f2) ; xe vm-export vm=\${_id} filename=${pv_storage}/${pv_name}.ova")
+  "ssh ${ssh_opt} ${pv_host} -p ${pv_port} _id=\$(xe vm-snapshot vm=${pv_id} new-name-label=${pv_name}-${_random}) ; echo \$_id >> ${_pv_xen_vars}" \
+  "ssh ${ssh_opt} ${pv_host} -p ${pv_port} _id=\$(cat ${_pv_xen_vars}) ; xe vm-export vm=\${_id} filename=${pv_storage}/${pv_name}.ova")
 
   return $_STATE
 
@@ -482,20 +482,37 @@ function VmCopy() {
   if [[ "$pv_type" == "xen" ]] ; then
 
     _msg_args+=(\
+    "checking: '${pv_name}.ova'" \
     "src: '${pv_name}.ova', dst path: '${lo_path}'")
 
     _cmd_args+=(\
+    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} if [[ ! -e \"${pv_storage}/${pv_name}.ova\" ]] ; then exit 1 ; fi")
     "scp ${ssh_opt} -P ${pv_port} ${pv_host}:${pv_storage}/${pv_name}.ova ${lo_path}")
 
   elif [[ "$pv_type" == "vmware" ]] ; then
 
+    local _vmx_name=$(grep ".vmx" $_pv_vmware_vars)
+    local _vmdk_name=$(grep ".vmdk" $_pv_vmware_disks)
+
     _msg_args+=(\
-    "config file: '*.vmx', dst path: '${lo_path}'" \
-    "src: '*.vmdk', dst path: '${lo_path}'")
+    "checking: '${_vmx_name}'" \
+    "config file: '${_vmx_name}', dst path: '${lo_path}'")
 
     _cmd_args+=(\
-    "scp ${ssh_opt} -P ${pv_port} ${pv_host}:${re_path}/*.vmx ${lo_path}" \
-    "scp ${ssh_opt} -P ${pv_port} ${pv_host}:${re_path}/*.vmdk ${lo_path}")
+    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} if [[ ! -e \"${re_path}/${_vmx_name}\" ]] ; then exit 1 ; fi")
+    "scp ${ssh_opt} -P ${pv_port} ${pv_host}:${re_path}/${_vmx_name} ${lo_path}")
+
+    for _fname in $(cat $_vmdk_name) ; do
+
+      _msg_args+=(\
+      "checking: '${_fname}'" \
+      "src: '${_fname}', dst path: '${lo_path}'")
+
+      _cmd_args+=(\
+      "ssh ${ssh_opt} ${pv_host} -p ${pv_port} if [[ ! -e \"${re_path}/${_fname}\" ]] ; then exit 1 ; fi")
+      "scp ${ssh_opt} -P ${pv_port} ${pv_host}:${re_path}/${_fname} ${lo_path}")
+
+    done
 
   fi
 
