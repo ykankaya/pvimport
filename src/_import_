@@ -348,23 +348,21 @@ function CheckRemoteEnv() {
   if [[ "$pv_type" == "xen" ]] ; then
 
     _msg_args+=(\
-    "directory: '${pv_storage}'" \
-    "vm: '${pv_id}'")
+    "vm id: '${pv_id}'" \
+    "directory: '${pv_storage}'")
 
     _cmd_args+=(\
-    "ssh ${pv_host} -p ${pv_port} if [[ ! -d \"${pv_storage}\" ]] ; then exit 1 ; fi" \
-    "ssh ${pv_host} -p ${pv_port} if [[ ! \$(xe vm-list | grep ${pv_id}) ]] ; then exit 1 ; fi")
+    "ssh ${pv_host} -p ${pv_port} if [[ ! \$(xe vm-list | grep ${pv_id}) ]] ; then exit 1 ; fi" \
+    "ssh ${pv_host} -p ${pv_port} if [[ ! -d \"${pv_storage}\" ]] ; then exit 1 ; fi")
 
   elif [[ "$pv_type" == "vmware" ]] ; then
 
     _msg_args+=(\
-    "directory: '${pv_storage}'" \
-    "vm: '${pv_id}'" \
+    "vm id: '${pv_id}'" \
     "vm directory: '${re_path}'" \
     "vm config file: '*.vmx'")
 
     _cmd_args+=(\
-    "ssh ${pv_host} -p ${pv_port} if [[ ! -d \"${pv_storage}\" ]] ; then exit 1 ; fi" \
     "ssh ${pv_host} -p ${pv_port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${pv_id}) ]] ; then exit 1 ; fi" \
     "ssh ${pv_host} -p ${pv_port} if [[ ! -d \"${re_path}\" ]] ; then exit 1 ; fi" \
     "ssh ${pv_host} -p ${pv_port} if [[ ! -e \$(find \"${re_path}\" -name \"*.vmx\") ]] ; then exit 1 ; fi")
@@ -536,6 +534,8 @@ function VmConvertDisks() {
   local _vmx_file
   local _x
 
+  _sprintf "info" "set directory: $lo_path"
+
   cd "$lo_path" || \
   _logger "stop" \
     "${_FUNCTION_ID}()" \
@@ -692,6 +692,8 @@ function VmImport() {
     "importing a virtual machine disks"
 
   local _x=1
+
+  _sprintf "info" "set directory: $lo_path"
 
   cd "$lo_path" || \
   _logger "stop" \
