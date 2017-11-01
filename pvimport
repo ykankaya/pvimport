@@ -506,6 +506,7 @@ function _load() {
 
     fi
 
+    # shellcheck disable=SC1090
     # If the file exists is loaded.
     . "$_filename" && \
     _logger "info" \
