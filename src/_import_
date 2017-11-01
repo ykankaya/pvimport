@@ -548,6 +548,8 @@ function VmConvertDisks() {
 
     _x=1
 
+    # Issue to solve:
+    # shellcheck disable=SC2044
     for _fda in $(find . -type d -name "Ref:*" -printf '%P\n') ; do
 
       _name=$(echo "$_fda" | tr ":" "_")
