@@ -52,32 +52,32 @@ The tool provides the following options:
 The configuration file (appended with the `-c|--config` parameter) has the following structure:
 
 ``````
-# Specifies the type of hypervisor (xen or vmware).
-readonly r_hypervisor_type="type"
+# Specifies the type of hypervisor (VMware ESXi or Xen).
+readonly hv_type="type"
 
 # Specifies the port number through which the connection
 # to the remote server is established.
 # The ip address or hostname is determined by the parameter (-h|--host).
-readonly r_port="port"
+readonly hv_port="port"
 
 # Specifies the remote path (remember to create it) on the remote machine
-# where files (such as snapshots) will be placed.
-readonly r_storage="/path/to/remote/vm/dump"
-
-# Specifies the local path (remember to create it) on the proxmox machine
-# where the virtual machine files from the remote host will be copied.
-readonly l_storage="/xfs900/path/to/local/vm/dump"
+# where files (such as snapshots) will be placed (only for Xen).
+readonly hv_storage="/path/to/remote/vm/dump"
 
 # Specifies the local resource of virtual machines.
 # Used only for memory specified as directory.
-readonly l_pv_storage="/xfs900/images"
+readonly pve_storage="/xfs900/images"
 
 # Specifies the local resource of virtual machines.
 # Used only for memory specified as LVM.
-readonly l_pv_lvm="/dev/pve"
+readonly pve_lvm="/dev/pve"
+
+# Specifies the local path (remember to create it) on the proxmox machine
+# where the virtual machine files from the remote host will be copied.
+readonly local_storage="/xfs900/path/to/local/vm/dump"
 
 # Specifies whether to delete unneeded files/directories (only local).
-readonly l_remove_unused="no"
+readonly remove_unused="no"
 ``````
 
 ## Before importing
@@ -92,8 +92,8 @@ readonly l_remove_unused="no"
 
 **<u>Pvimport</u>** uses external utilities to be installed before running:
 
-- [xenmigrate](https://pve.proxmox.com/wiki/Xenmigrate) - only for **Xen**
 - [qemu-img](https://en.wikibooks.org/wiki/QEMU/Installing_QEMU)
+- [xenmigrate](https://pve.proxmox.com/wiki/Xenmigrate) (only for **Xen**)
 
 ## Use example
 
