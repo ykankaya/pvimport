@@ -479,6 +479,7 @@ function VmExtract() {
   local _arg=(\
   "src: '${pv_name}.ova', dst path: '${lopath}'"^"tar xf ${lopath}/${pv_name}.ova -C ${lopath}")
 
+  # shellcheck disable=SC2154
   if [[ "$remove_unused" == "yes" ]] ; then
 
     # We're checking to make sure there is.
