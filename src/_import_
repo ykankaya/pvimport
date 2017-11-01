@@ -51,8 +51,8 @@ function InitEnv() {
   local pv_host_pve="${hypervisor_params[10]}"
 
   # Full paths to the appropriate resources (based on what is above).
-  local repath="${pv_storage}/${pv_name}"
-  local lopath="${pv_lstorage}/${pv_host}/${pv_name}"
+  local re_path="${pv_storage}/${pv_name}"
+  local lo_path="${pv_lstorage}/${pv_host}/${pv_name}"
   local pvpath="${pv_storage_pve}/${pv_id_pve}"
 
   # Functions stack description:
@@ -109,8 +109,8 @@ function InitEnv() {
            "pv_type" \
            "pv_id" \
            "pv_name" \
-           "repath" \
-           "lopath" \
+           "re_path" \
+           "lo_path" \
            "pv_storage_pve" \
            "pv_lvm_pve" \
            "pv_id_pve" \
@@ -173,15 +173,15 @@ function InitEnv() {
 
   done
 
-  if [[ ! -d "$lopath" ]] ; then
+  if [[ ! -d "$lo_path" ]] ; then
 
-    _sprintf "info" "create a local directory: '$lopath'"
+    _sprintf "info" "create a local directory: '$lo_path'"
 
     _logger "info" \
       "${_FUNCTION_ID}()" \
-      "create a local directory: '$lopath'"
+      "create a local directory: '$lo_path'"
 
-    mkdir -p "$lopath"
+    mkdir -p "$lo_path"
 
   fi
 
@@ -360,14 +360,14 @@ function CheckRemoteEnv() {
     _msg_args+=(\
     "directory: '${pv_storage}'" \
     "vm: '${pv_id}'" \
-    "vm directory: '${repath}'" \
+    "vm directory: '${re_path}'" \
     "vm config file: '*.vmx'")
 
     _cmd_args+=(\
     "ssh ${pv_host} -p ${pv_port} if [[ ! -d \"${pv_storage}\" ]] ; then exit 1 ; fi" \
     "ssh ${pv_host} -p ${pv_port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${pv_id}) ]] ; then exit 1 ; fi" \
-    "ssh ${pv_host} -p ${pv_port} if [[ ! -d \"${repath}\" ]] ; then exit 1 ; fi" \
-    "ssh ${pv_host} -p ${pv_port} if [[ ! -e \$(find \"${repath}\" -name \"*.vmx\") ]] ; then exit 1 ; fi")
+    "ssh ${pv_host} -p ${pv_port} if [[ ! -d \"${re_path}\" ]] ; then exit 1 ; fi" \
+    "ssh ${pv_host} -p ${pv_port} if [[ ! -e \$(find \"${re_path}\" -name \"*.vmx\") ]] ; then exit 1 ; fi")
 
   fi
 
@@ -438,20 +438,20 @@ function VmCopy() {
   if [[ "$pv_type" == "xen" ]] ; then
 
     _msg_args+=(\
-    "src: '${pv_name}.ova', dst path: '${lopath}'")
+    "src: '${pv_name}.ova', dst path: '${lo_path}'")
 
     _cmd_args+=(\
-    "scp -P ${pv_port} ${pv_host}:${pv_storage}/${pv_name}.ova ${lopath}")
+    "scp -P ${pv_port} ${pv_host}:${pv_storage}/${pv_name}.ova ${lo_path}")
 
   elif [[ "$pv_type" == "vmware" ]] ; then
 
     _msg_args+=(\
-    "config file: '*.vmx', dst path: '${lopath}'" \
-    "src: '*.vmdk', dst path: '${lopath}'")
+    "config file: '*.vmx', dst path: '${lo_path}'" \
+    "src: '*.vmdk', dst path: '${lo_path}'")
 
     _cmd_args+=(\
-    "scp -P ${pv_port} ${pv_host}:${repath}/*.vmx ${lopath}" \
-    "scp -P ${pv_port} ${pv_host}:${repath}/*.vmdk ${lopath}")
+    "scp -P ${pv_port} ${pv_host}:${re_path}/*.vmx ${lo_path}" \
+    "scp -P ${pv_port} ${pv_host}:${re_path}/*.vmdk ${lo_path}")
 
   fi
 
@@ -484,22 +484,22 @@ function VmExtract() {
     "extracting ova files"
 
   _msg_args+=(\
-  "src: '${pv_name}.ova', dst path: '${lopath}'")
+  "src: '${pv_name}.ova', dst path: '${lo_path}'")
 
   _cmd_args+=(\
-  "tar xf ${lopath}/${pv_name}.ova -C ${lopath}")
+  "tar xf ${lo_path}/${pv_name}.ova -C ${lo_path}")
 
   # shellcheck disable=SC2154
   if [[ "$remove_unused" == "yes" ]] ; then
 
     # We're checking to make sure there is.
-    if [[ -e "${lopath}/${pv_name}.ova" ]] ; then
+    if [[ -e "${lo_path}/${pv_name}.ova" ]] ; then
     
       _msg_args+=(\
       "remove: '${pv_name}.ova'")
 
       _cmd_args+=(\
-      "rm -fr ${lopath}/${pv_name}.ova")
+      "rm -fr ${lo_path}/${pv_name}.ova")
 
     fi
 
@@ -536,10 +536,10 @@ function VmConvertDisks() {
   local _vmx_file
   local _x
 
-  cd "$lopath" || \
+  cd "$lo_path" || \
   _logger "stop" \
     "${_FUNCTION_ID}()" \
-    "directory change error: $lopath"
+    "directory change error: $lo_path"
 
   if [[ "$pv_type" == "xen" ]] ; then
 
@@ -693,10 +693,10 @@ function VmImport() {
 
   local _x=1
 
-  cd "$lopath" || \
+  cd "$lo_path" || \
   _logger "stop" \
     "${_FUNCTION_ID}()" \
-    "directory change error: $lopath"
+    "directory change error: $lo_path"
 
   for _fda in $(find . -type f -name "*.$pv_format_pve" -printf '%P\n' | sort -V) ; do
   
