@@ -113,9 +113,9 @@ readonly commands=(basename dirname stat date grep egrep cut sed gzip tar \
 missing_hash=
 missing_counter=0
 
-if [[ -z "${missing_hash[@]}" ]] ; then
+for i in "${commands[@]}" ; do
 
-  for i in "${commands[@]}" ; do
+  if [[ ! -z "$i" ]] ; then
 
     hash "$i" >/dev/null 2>&1 ; state="$?"
 
@@ -127,15 +127,15 @@ if [[ -z "${missing_hash[@]}" ]] ; then
 
     fi
 
-  done
-
-  # Stop the script if you do not find at least one command.
-  if [[ "$missing_counter" -gt 0 ]] ; then
-
-    printf "not found in PATH: %s\n" "${missing_hash[*]}" >&2
-    exit 1
-
   fi
+
+done
+
+# Stop the script if you do not find at least one command.
+if [[ "$missing_counter" -gt 0 ]] ; then
+
+  printf "not found in PATH: %s\n" "${missing_hash[*]}" >&2
+  exit 1
 
 fi
 
