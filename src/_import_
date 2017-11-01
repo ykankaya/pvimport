@@ -409,8 +409,8 @@ function DumpRemoteEnv() {
     "get vm disks list")
 
     _cmd_args+=(\
-    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} \"cd \"${re_path}\" && find * -name \"*.vmx\" >> ${_pv_vmware_vars}\"" \
-    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} \"cd \"${re_path}\" && find * -name \"*.vmdk\" >> ${_pv_vmware_disks}\"" \
+    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} cd \"${re_path}\" && find . -name \"*.vmx\" >> ${_pv_vmware_vars}" \
+    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} cd \"${re_path}\" && find . -name \"*.vmdk\" >> ${_pv_vmware_disks}" \
     "scp ${ssh_opt} -P ${pv_port} ${pv_host}:${_pv_vmware_vars} ${_pv_vmware_vars}" \
     "scp ${ssh_opt} -P ${pv_port} ${pv_host}:${_pv_vmware_disks} ${_pv_vmware_disks}")
 
@@ -495,8 +495,8 @@ function VmCopy() {
 
   elif [[ "$pv_type" == "vmware" ]] ; then
 
-    _vmx_name=$(grep ".vmx" "$_pv_vmware_vars")
-    _vmdk_name=$(grep ".vmdk" "$_pv_vmware_disks")
+    _vmx_name=$(grep ".vmx" "$_pv_vmware_vars" | cut -d "/" -f2)
+    _vmdk_name=$(grep ".vmdk" "$_pv_vmware_disks" | cut -d "/" -f2)
 
     _msg_args+=(\
     "checking: '${_vmx_name}'" \
@@ -508,7 +508,7 @@ function VmCopy() {
 
     # Issue to solve:
     # shellcheck disable=SC2013
-    for _fname in $(cat "$_vmdk_name") ; do
+    for _fname in "$_vmdk_name" ; do
 
       _msg_args+=(\
       "checking: '${_fname}'" \
