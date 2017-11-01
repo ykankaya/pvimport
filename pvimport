@@ -794,19 +794,19 @@ function __main__() {
 
   # Arrays responsible for keeping all options from a configuration file.
   _conn_params=("$hv_host" \
-               "$hv_port")
+                "$hv_port")
 
   _hypervisor_params=("$hv_type" \
-                     "$hv_storage" \
-                     "$vm_id" \
-                     "$vm_name" \
-                     "$local_storage" \
-                     "$pve_storage" \
-                     "$pve_lvm" \
-                     "$pve_id" \
-                     "$pve_format" \
-                     "$pve_import" \
-                     "$pve_host")
+                      "$hv_storage" \
+                      "$vm_id" \
+                      "$vm_name" \
+                      "$local_storage" \
+                      "$pve_storage" \
+                      "$pve_lvm" \
+                      "$pve_id" \
+                      "$pve_format" \
+                      "$pve_import" \
+                      "$pve_host")
 
   # Store extended variables on the remote hv host.
   local _pv_vars="/tmp/.pv.vars"
