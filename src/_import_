@@ -479,7 +479,7 @@ function VmExtract() {
   local _arg=(\
   "src: '${pv_name}.ova', dst path: '${lopath}'"^"tar xf ${lopath}/${pv_name}.ova -C ${lopath}")
 
-  if [[ "$l_remove_unused" == "yes" ]] ; then
+  if [[ "$remove_unused" == "yes" ]] ; then
 
     # We're checking to make sure there is.
     if [[ -e "${lopath}/${pv_name}.ova" ]] ; then
@@ -559,7 +559,7 @@ function VmConvertDisks() {
 
       fi
 
-      if [[ "$l_remove_unused" == "yes" ]] ; then
+      if [[ "$remove_unused" == "yes" ]] ; then
 
         # We're checking to make sure there is.
         if [[ -e "${_fda}" ]] ; then
@@ -605,7 +605,7 @@ function VmConvertDisks() {
 
         fi
 
-        if [[ "$l_remove_unused" == "yes" ]] ; then
+        if [[ "$remove_unused" == "yes" ]] ; then
 
           # We're checking to make sure there is.
           if [[ -e "${_fda}" ]] ; then
@@ -700,7 +700,7 @@ function VmImport() {
 
       fi
 
-      if [[ "$l_remove_unused" == "yes" ]] ; then
+      if [[ "$remove_unused" == "yes" ]] ; then
 
         # We're checking to make sure there is.
         if [[ -e "${_fda}" ]] ; then
@@ -730,7 +730,7 @@ function VmImport() {
 
       fi
 
-      if [[ "$l_remove_unused" == "yes" ]] ; then
+      if [[ "$remove_unused" == "yes" ]] ; then
 
         # We're checking to make sure there is.
         if [[ -e "${_fda}" ]] ; then
