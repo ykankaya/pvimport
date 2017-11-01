@@ -175,11 +175,11 @@ function InitEnv() {
 
   if [[ ! -d "$lo_path" ]] ; then
 
-    _sprintf "info" "create a local directory: '$lo_path'"
+    _sprintf "info" "creating a local directory: '$lo_path'"
 
     _logger "info" \
       "${_FUNCTION_ID}()" \
-      "create a local directory: '$lo_path'"
+      "creating a local directory: '$lo_path'"
 
     mkdir -p "$lo_path"
 
