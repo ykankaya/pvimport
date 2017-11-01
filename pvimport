@@ -89,12 +89,12 @@ readonly _log_path="${_log_directory}/${_log_file}"
 readonly cdate=$(date +%Y%m%d)
 
 # External configuration file (-c|--config script param).
-config
+config=""
 load_state=0
 
 # Declaration of output variables (--debug and --verbose params).
-stdout_mode
-printf_mode
+stdout_mode=""
+printf_mode=""
 
 
 ################################################################################
