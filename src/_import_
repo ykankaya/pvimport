@@ -486,7 +486,7 @@ function VmCopy() {
     "src: '${pv_name}.ova', dst path: '${lo_path}'")
 
     _cmd_args+=(\
-    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} if [[ ! -e \"${pv_storage}/${pv_name}.ova\" ]] ; then exit 1 ; fi")
+    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} if [[ ! -e \"${pv_storage}/${pv_name}.ova\" ]] ; then exit 1 ; fi" \
     "scp ${ssh_opt} -P ${pv_port} ${pv_host}:${pv_storage}/${pv_name}.ova ${lo_path}")
 
   elif [[ "$pv_type" == "vmware" ]] ; then
@@ -499,7 +499,7 @@ function VmCopy() {
     "config file: '${_vmx_name}', dst path: '${lo_path}'")
 
     _cmd_args+=(\
-    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} if [[ ! -e \"${re_path}/${_vmx_name}\" ]] ; then exit 1 ; fi")
+    "ssh ${ssh_opt} ${pv_host} -p ${pv_port} if [[ ! -e \"${re_path}/${_vmx_name}\" ]] ; then exit 1 ; fi" \
     "scp ${ssh_opt} -P ${pv_port} ${pv_host}:${re_path}/${_vmx_name} ${lo_path}")
 
     for _fname in $(cat $_vmdk_name) ; do
@@ -509,7 +509,7 @@ function VmCopy() {
       "src: '${_fname}', dst path: '${lo_path}'")
 
       _cmd_args+=(\
-      "ssh ${ssh_opt} ${pv_host} -p ${pv_port} if [[ ! -e \"${re_path}/${_fname}\" ]] ; then exit 1 ; fi")
+      "ssh ${ssh_opt} ${pv_host} -p ${pv_port} if [[ ! -e \"${re_path}/${_fname}\" ]] ; then exit 1 ; fi" \
       "scp ${ssh_opt} -P ${pv_port} ${pv_host}:${re_path}/${_fname} ${lo_path}")
 
     done
