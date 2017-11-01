@@ -826,9 +826,13 @@ function __main__() {
                       "$pve_import" \
                       "$pve_host")
 
-  # shellcheck disable=SC2034
   # Store extended variables on the remote hv host.
-  local _pv_vars="/tmp/.pv.vars"
+  # shellcheck disable=SC2034
+  local _pv_xen_vars="/tmp/.xen.vars"
+  # shellcheck disable=SC2034
+  local _pv_vmware_vars="/tmp/.vmware.vars"
+  # shellcheck disable=SC2034
+  local _pv_vmware_disks="/tmp/.vmware.disks"
 
   # Init environment for pvimport.
   InitEnv _conn_params[@] _hypervisor_params[@]
