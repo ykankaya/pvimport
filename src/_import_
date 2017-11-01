@@ -439,7 +439,7 @@ function VmCopy() {
     "src: '${pv_name}.ova', dst path: '${lo_path}'")
 
     _cmd_args+=(\
-    "scp -P ${pv_port} ${pv_host}:${pv_storage}/${pv_name}.ova ${lo_path}")
+    "scp ${ssh_opt} -P ${pv_port} ${pv_host}:${pv_storage}/${pv_name}.ova ${lo_path}")
 
   elif [[ "$pv_type" == "vmware" ]] ; then
 
@@ -448,8 +448,8 @@ function VmCopy() {
     "src: '*.vmdk', dst path: '${lo_path}'")
 
     _cmd_args+=(\
-    "scp -P ${pv_port} ${pv_host}:${re_path}/*.vmx ${lo_path}" \
-    "scp -P ${pv_port} ${pv_host}:${re_path}/*.vmdk ${lo_path}")
+    "scp ${ssh_opt} -P ${pv_port} ${pv_host}:${re_path}/*.vmx ${lo_path}" \
+    "scp ${ssh_opt} -P ${pv_port} ${pv_host}:${re_path}/*.vmdk ${lo_path}")
 
   fi
 
@@ -765,7 +765,7 @@ function VmImport() {
 
         _cmd_args+=(\
         "ssh ${ssh_opt} ${pv_host_pve} -p ${pv_port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
-        "scp ${_fda} -P ${pv_port} ${pv_host_pve}:${_vm_pv_local}")
+        "scp ${ssh_opt} ${_fda} -P ${pv_port} ${pv_host_pve}:${_vm_pv_local}")
 
       fi
 
