@@ -225,7 +225,9 @@ function _logger() {
   local _STATE=0
 
   local _type="$1"
-  local _to_log=$(shift ; echo "$@")
+  local _to_log
+
+  _to_log=$(shift ; echo "$@")
 
   local _conv_type=$(echo "$_type" | tr '[:lower:]' '[:upper:]')
 
