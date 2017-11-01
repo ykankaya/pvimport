@@ -537,7 +537,10 @@ function VmConvertDisks() {
 
   local _arg=()
 
-  cd ${lopath}
+  cd $lopath || \
+  _logger "stop" \
+    "${_FUNCTION_ID}()" \
+    "directory change error: $lopath"
 
   if [[ "$pv_type" == "xen" ]] ; then
 
@@ -679,7 +682,10 @@ function VmImport() {
   local _arg=()
   local _x=1
 
-  cd ${lopath}
+  cd $lopath || \
+  _logger "stop" \
+    "${_FUNCTION_ID}()" \
+    "directory change error: $lopath"
 
   for _fda in $(find . -type f -name "*.$pv_format_pve" -printf '%P\n' | sort -V) ; do
   
