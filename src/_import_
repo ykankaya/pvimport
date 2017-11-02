@@ -799,7 +799,7 @@ function VmImport() {
 
         _cmd_args+=(\
         "eval if [[ ! -e ${_vm_pv_local} ]] ; then exit 1 ; fi" \
-        "dd if=${_fda} of=${_vm_pv_local} bs=4096")
+        "dd if=${_fda} of=${_vm_pv_local} ${dd_opt}")
 
       elif [[ "$pv_host_pve" != "local" ]] ; then
 
@@ -809,7 +809,7 @@ function VmImport() {
 
         _cmd_args+=(\
         "ssh ${ssh_opt} ${pv_host_pve} -p ${pv_port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
-        "eval dd if=${_fda} bs=4096 | ssh ${ssh_opt} ${pv_host_pve} -p ${pv_port} dd of=${_vm_pv_local} bs=4096")
+        "eval dd if=${_fda} ${dd_opt} | ssh ${ssh_opt} ${pv_host_pve} -p ${pv_port} dd of=${_vm_pv_local} ${dd_opt}")
 
       fi
 
