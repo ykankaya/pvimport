@@ -682,38 +682,38 @@ function __main__() {
 
       -h|--host)
 
-        hv_host=${2}
+        export hv_host=${2}
 
         shift 2 ;;
 
       -i|--id)
 
-        vm_id=${2}
+        export vm_id=${2}
 
         shift 2 ;;
 
       -n|--name)
 
-        vm_name=${2}
+        export vm_name=${2}
 
         shift 2 ;;
 
       -p|--pve-id)
 
-        pve_id=${2}
+        export pve_id=${2}
 
         shift 2 ;;
 
       -f|--pve-format)
 
-        pve_format=${2}
+        export pve_format=${2}
 
         shift 2 ;;
 
       --pve-import)
 
-        pve_import="true"
-        pve_host=${2}
+        export pve_import="true"
+        export pve_host=${2}
 
         shift 2 ;;
 
