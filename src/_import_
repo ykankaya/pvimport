@@ -117,7 +117,8 @@ function InitEnv() {
            "pv_id_pve" \
            "pv_format_pve" \
            "pv_import_pve" \
-           "pv_host_pve" ; do
+           "pv_host_pve" \
+           "dd_opt" ; do
 
     _i="" ; eval _i='$'$i
 
