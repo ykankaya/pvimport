@@ -799,7 +799,7 @@ function VmImport() {
 
         _cmd_args+=(\
         "eval if [[ ! -e ${_vm_pv_local} ]] ; then exit 1 ; fi" \
-        "dd if=${_fda} of=${_vm_pv_local}")
+        "dd if=${_fda} of=${_vm_pv_local} bs=4096")
 
       elif [[ "$pv_host_pve" != "local" ]] ; then
 
