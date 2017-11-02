@@ -53,7 +53,7 @@ function InitEnv() {
   # Full paths to the appropriate resources (based on what is above).
   local re_path="${pv_storage}/${pv_name}"
   local lo_path="${pv_lstorage}/${pv_host}/${pv_name}"
-  local pvpath="${pv_storage_pve}/${pv_id_pve}"
+  local pv_path="${pv_storage_pve}/${pv_id_pve}"
 
   # Functions stack description:
   #   CheckConn       - check the connection to the server (xen/vmware)
@@ -73,7 +73,7 @@ function InitEnv() {
   elif [[ "$pv_type" == "vmware" ]] ; then
 
     local _function_stack=(CheckConn InitRemoteEnv CheckRemoteEnv \
-                           DumpRemoteEnv VmCopy VmConvertDisks)
+                           DownloadRemoteEnv VmCopy VmConvertDisks)
 
   else
 
@@ -97,11 +97,11 @@ function InitEnv() {
 
   fi
 
-  _sprintf "head" "creating and checking local environment"
+  _sprintf "head" "creating and checking configuration of local environment"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "creating and checking local environment"
+    "creating and checking configuration of local environment"
 
   # Display of variable values without checking them.
   for i in "pv_host" \
@@ -306,16 +306,16 @@ function InitRemoteEnv() {
   local _FUNCTION_ID="InitRemoteEnv"
   local _STATE=0
 
-  _sprintf "head" "preparing remote environment"
+  _sprintf "head" "preparing configuration of remote environment"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "preparing remote environment"
+    "preparing configuration of remote environment"
 
   _msg_args+=(\
-  "resetting '${_pv_xen_vars}'" \
-  "resetting '${_pv_vmware_vars}'" \
-  "resetting '${_pv_vmware_disks}")
+  "resetting: '${_pv_xen_vars}'" \
+  "resetting: '${_pv_vmware_vars}'" \
+  "resetting: '${_pv_vmware_disks}")
 
   _cmd_args+=(\
   "ssh ${ssh_opt} ${pv_host} -p ${pv_port} >${_pv_xen_vars}" \
@@ -344,11 +344,11 @@ function CheckRemoteEnv() {
   local _FUNCTION_ID="CheckRemoteEnv"
   local _STATE=0
 
-  _sprintf "head" "checking remote environment"
+  _sprintf "head" "checking configuration of remote environment"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "checking remote environment"
+    "checking configuration of remote environment"
 
   if [[ "$pv_type" == "xen" ]] ; then
 
@@ -377,36 +377,36 @@ function CheckRemoteEnv() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: DumpRemoteEnv()
+# Function name: DownloadRemoteEnv()
 #
 # Description:
 #   Dump of the remote environment to local.
 #
 # Usage:
-#   DumpRemoteEnv
+#   DownloadRemoteEnv
 #
 # Examples:
-#   DumpRemoteEnv
+#   DownloadRemoteEnv
 #
 
-function DumpRemoteEnv() {
+function DownloadRemoteEnv() {
 
-  local _FUNCTION_ID="DumpRemoteEnv"
+  local _FUNCTION_ID="DownloadRemoteEnv"
   local _STATE=0
 
-  _sprintf "head" "dump remote environment"
+  _sprintf "head" "downloading configuration of remote environment"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "dump remote environment"
+    "downloading configuration of remote environment"
 
   if [[ "$pv_type" == "vmware" ]] ; then
 
     _msg_args+=(\
-    "dump vm config file" \
-    "dump vm disks list" \
-    "get vm config list" \
-    "get vm disks list")
+    "config format: 'vmx'" \
+    "disks format: 'vmdk'" \
+    "get config file: '$_pv_vmware_vars'" \
+    "get disks files: '$_pv_vmware_disks'")
 
     _cmd_args+=(\
     "ssh ${ssh_opt} ${pv_host} -p ${pv_port} cd \"${re_path}\" && find . -name \"*.vmx\" >> ${_pv_vmware_vars}" \
@@ -474,19 +474,26 @@ function VmCopy() {
   local _FUNCTION_ID="VmCopy"
   local _STATE=0
 
-  _sprintf "head" "copying a virtual machine disks"
+  _sprintf "head" "copying a virtual machine stack"
 
   _logger "info" \
     "${_FUNCTION_ID}()" \
-    "copying a virtual machine disks"
+    "copying a virtual machine stack"
 
   local _vmx_name
+
+  _sprintf "info" "set directory: $lo_path"
+
+  cd "$lo_path" || \
+  _logger "stop" \
+    "${_FUNCTION_ID}()" \
+    "directory change error: $lo_path"
 
   if [[ "$pv_type" == "xen" ]] ; then
 
     _msg_args+=(\
     "checking: '${pv_name}.ova'" \
-    "src: '${pv_name}.ova', dst path: '${lo_path}'")
+    "src: '${pv_name}.ova'")
 
     _cmd_args+=(\
     "ssh ${ssh_opt} ${pv_host} -p ${pv_port} if [[ ! -e \"${pv_storage}/${pv_name}.ova\" ]] ; then exit 1 ; fi" \
@@ -498,7 +505,7 @@ function VmCopy() {
 
     _msg_args+=(\
     "checking: '${_vmx_name}'" \
-    "config file: '${_vmx_name}', dst path: '${lo_path}'")
+    "config file: '${_vmx_name}'")
 
     _cmd_args+=(\
     "ssh ${ssh_opt} ${pv_host} -p ${pv_port} if [[ ! -e \"${re_path}/${_vmx_name}\" ]] ; then exit 1 ; fi" \
@@ -510,7 +517,7 @@ function VmCopy() {
 
       _msg_args+=(\
       "checking: '${_fname}'" \
-      "src: '${_fname}', dst path: '${lo_path}'")
+      "src: '${_fname}'")
 
       _cmd_args+=(\
       "ssh ${ssh_opt} ${pv_host} -p ${pv_port} if [[ ! -e \"${re_path}/${_fname}\" ]] ; then exit 1 ; fi" \
@@ -548,11 +555,18 @@ function VmExtract() {
     "${_FUNCTION_ID}()" \
     "extracting ova files"
 
+  _sprintf "info" "set directory: $lo_path"
+
+  cd "$lo_path" || \
+  _logger "stop" \
+    "${_FUNCTION_ID}()" \
+    "directory change error: $lo_path"
+
   _msg_args+=(\
-  "src: '${pv_name}.ova', dst path: '${lo_path}'")
+  "src: '${pv_name}.ova'")
 
   _cmd_args+=(\
-  "tar xf ${lo_path}/${pv_name}.ova -C ${lo_path}")
+  "tar xf ${pv_name}.ova -C ${lo_path}")
 
   # shellcheck disable=SC2154
   if [[ "$remove_unused" == "yes" ]] ; then
@@ -812,13 +826,13 @@ function VmImport() {
 
     elif [[ "$pv_format_pve" == "qcow2" ]] ; then
 
-      local _vm_pv_local="${pvpath}/vm-${pv_id_pve}-disk-${_x}.qcow2"
+      local _vm_pv_local="${pv_path}/vm-${pv_id_pve}-disk-${_x}.qcow2"
 
       if [[ "$pv_host_pve" == "local" ]] ; then
 
         _msg_args+=(\
         "checking: '${_vm_pv_local}'" \
-        "src: '${_fda}', dst path: '${_vm_pv_local}'")
+        "src: '${_fda}'")
 
         _cmd_args+=(\
         "eval if [[ ! -e ${_vm_pv_local} ]] ; then exit 1 ; fi" \
@@ -828,7 +842,7 @@ function VmImport() {
 
         _msg_args+=(\
         "checking: '${pv_host_pve}:${_vm_pv_local}'" \
-        "src: '${_fda}', dst path: '${pv_host_pve}:${_vm_pv_local}'")
+        "src: '${_fda}'")
 
         _cmd_args+=(\
         "ssh ${ssh_opt} ${pv_host_pve} -p ${pv_port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
