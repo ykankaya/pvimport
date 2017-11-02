@@ -20,10 +20,10 @@ pv_path="${pve_storage}/${pve_id}"
 #   Initialization of the environment for other functions.
 #
 # Usage:
-#   InitEnv "param_0" "param_1"
+#   InitEnv
 #
 # Examples:
-#   InitEnv conn_params[@] hypervisor_params[@]
+#   InitEnv
 #
 
 function InitEnv() {
