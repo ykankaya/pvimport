@@ -769,24 +769,6 @@ function __main__() {
 
   done
 
-  # shellcheck disable=SC2034
-  # Arrays responsible for keeping all options from a configuration file.
-  _conn_params=("$hv_host" \
-                "$hv_port")
-
-  # shellcheck disable=SC2034
-  _hypervisor_params=("$hv_type" \
-                      "$hv_storage" \
-                      "$vm_id" \
-                      "$vm_name" \
-                      "$local_storage" \
-                      "$pve_storage" \
-                      "$pve_lvm" \
-                      "$pve_id" \
-                      "$pve_format" \
-                      "$pve_import" \
-                      "$pve_host")
-
   # Store extended variables on the remote hv host.
   # shellcheck disable=SC2034
   local _pv_xen_vars="/tmp/.xen.vars"
@@ -796,8 +778,7 @@ function __main__() {
   local _pv_vmware_disks="/tmp/.vmware.disks"
 
   # Init environment for pvimport.
-  InitEnv _conn_params[@] _hypervisor_params[@]
-  if [ ! $? ] ; then _exit_ 255 ; fi
+  InitEnv || _exit_ 255
 
   # ````````````````````````````````````````````````````````````````````````````
 
