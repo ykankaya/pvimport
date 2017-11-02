@@ -178,7 +178,7 @@ function _rand() {
   local _STATE=0
 
   local _type="$1"
-  local _random=""
+  _random=""
 
   # Time-based generation (seconds).
   if [[ "$_type" == "T" ]] ; then
