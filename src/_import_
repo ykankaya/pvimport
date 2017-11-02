@@ -299,9 +299,9 @@ function InitRemoteEnv() {
     "preparing configuration of remote environment"
 
   _msg_args+=(\
-  "cleaning: '${_pv_xen_vars}'" \
-  "cleaning: '${_pv_vmware_vars}'" \
-  "cleaning: '${_pv_vmware_disks}")
+  "file: '${_pv_xen_vars}'" \
+  "file: '${_pv_vmware_vars}'" \
+  "file: '${_pv_vmware_disks}")
 
   _cmd_args+=(\
   "ssh ${ssh_opt} ${hv_host} -p ${hv_port} >${_pv_xen_vars}" \
