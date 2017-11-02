@@ -573,7 +573,7 @@ function _help_() {
     -n, --name <vm_name>            sets the name for the new files/directories
                                     and remote vm directory in datastore (vmware)
     -p, --pve-id <num>              sets the vm id created in proxmox
-    -f, --pve-format <img|qcow2>    sets the disk format (img/qcow2)
+    -f, --pve-format <img|qcow2>    sets the disk output format
         --pve-import <local|host>   import disks into any proxmox node (optional)
 
 
