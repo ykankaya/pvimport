@@ -160,45 +160,6 @@ fi
 function _exit_() { _STATUS="$1" ; exit "$_STATUS" ; }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: _rand()
-#
-# Description:
-#   Simple random value generator.
-#
-# Usage:
-#   _rand "type"
-#
-# Examples:
-#   _rand "T"
-#
-
-function _rand() {
-
-  local _FUNCTION_ID="_rand"
-  local _STATE=0
-
-  local _type="$1"
-  _random=""
-
-  # Time-based generation (seconds).
-  if [[ "$_type" == "T" ]] ; then
-
-    _random=$(date +"%s")
-
-  # Generating based on '$RANDOM' variable.
-  elif [[ "$_type" == "R" ]] ; then
-
-    _random=$RANDOM
-
-  fi
-
-  _STATE=$_random
-
-  return $_STATE
-
-}
-
-# ``````````````````````````````````````````````````````````````````````````````
 # Function name: _logger()
 #
 # Description:
@@ -777,7 +738,7 @@ function __main__() {
 
   # shellcheck disable=SC2034
   # Generate random value.
-  _rand "T"
+  _random=$(date +"%s")
 
   # Checking variable values (if they are unset or empty).
   # The variables from the additional configuration file
