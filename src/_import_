@@ -598,7 +598,7 @@ function VmConvertDisks() {
   local _fdc
 
   local _vmx_file
-  local _x
+  local _x=1
 
   _sprintf "info" "set directory: $lo_path"
 
@@ -608,8 +608,6 @@ function VmConvertDisks() {
     "directory change error: $lo_path"
 
   if [[ "$hv_type" == "xen" ]] ; then
-
-    _x=1
 
     # Issue to solve:
     # shellcheck disable=SC2044
@@ -668,7 +666,6 @@ function VmConvertDisks() {
   elif [[ "$hv_type" == "vmware" ]] ; then
 
     _vmx_file=$(find ./* -name "*.vmx")
-    _x=1
 
     # Issue to solve:
     # shellcheck disable=SC2013
@@ -768,8 +765,10 @@ function VmImport() {
     "${_FUNCTION_ID}()" \
     "directory change error: $lo_path"
 
-  for _fda in $(find ./* -type f -name "*.$pve_format" | sort -V) ; do
+  for _fname in $(find ./* -type f -name "*.$pve_format" | sort -V) ; do
   
+    _fda="$_fname"
+
     if [[ "$pve_format" == "img" ]] ; then
 
       local _vm_pv_local="${pve_lvm}/vm-${pve_id}-disk-${_x}"
