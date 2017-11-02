@@ -294,9 +294,9 @@ function InitRemoteEnv() {
     "preparing configuration of remote environment"
 
   _msg_args+=(\
-  "resetting: '${_pv_xen_vars}'" \
-  "resetting: '${_pv_vmware_vars}'" \
-  "resetting: '${_pv_vmware_disks}")
+  "cleaning: '${_pv_xen_vars}'" \
+  "cleaning: '${_pv_vmware_vars}'" \
+  "cleaning: '${_pv_vmware_disks}")
 
   _cmd_args+=(\
   "ssh ${ssh_opt} ${hv_host} -p ${hv_port} >${_pv_xen_vars}" \
@@ -593,6 +593,10 @@ function VmConvertDisks() {
     "${_FUNCTION_ID}()" \
     "converting disks to $pve_format format"
 
+  local _fda
+  local _fdb
+  local _fdc
+
   local _vmx_file
   local _x
 
@@ -609,26 +613,26 @@ function VmConvertDisks() {
 
     # Issue to solve:
     # shellcheck disable=SC2044
-    for _fda in $(find ./* -type d -name "Ref:*" | cut -d "/" -f2) ; do
+    for _fname in $(find ./* -type d -name "Ref:*" | cut -d "/" -f2) ; do
 
-      _name=$(echo "$_fda" | tr ":" "_")
+      _fda=$(echo "$_fname" | tr ":" "_")
 
       _msg_args+=(\
-      "src: '${_fda}', dst: '${_x}-${_name}.img'")
+      "src: '${_fda}', dst: '${_x}-${_fda}.img'")
 
       _cmd_args+=(\
-      "xenmigrate --convert=${_fda} ${_x}-${_name}.img")
+      "xenmigrate --convert=${_fda} ${_x}-${_fda}.img")
 
       if [[ "$pve_format" == "qcow2" ]] ; then
 
-        _fdb="${_name}.img"
-        _nname="${_fdb%.*}"
+        _fdb="${_fda}.img"
+        _fdc="${_fdb%.*}"
 
         _msg_args+=(\
-        "src: '${_fdb}', dst: '${_x}-${_nname}.qcow2'")
+        "src: '${_fdb}', dst: '${_x}-${_fdc}.qcow2'")
 
         _cmd_args+=(\
-        "qemu-img convert -f raw -O qcow2 ${_fdb} ${_x}-${_nname}.qcow2")
+        "qemu-img convert -f raw -O qcow2 ${_fdb} ${_x}-${_fdc}.qcow2")
 
       fi
 
@@ -668,27 +672,29 @@ function VmConvertDisks() {
 
     # Issue to solve:
     # shellcheck disable=SC2013
-    for _fda in $(grep ".vmdk" "$_vmx_file" | cut -d "\"" -f2) ; do
+    for _fname in $(grep ".vmdk" "$_vmx_file" | cut -d "\"" -f2) ; do
+
+      _fda="$_fname"
 
       if [[ "$_fda" != *"flat"* ]] ; then
 
-        _name="${_fda%.*}"
+        _fdb="${_fda%.*}"
 
         if [[ "$pve_format" == "qcow2" ]] ; then
 
           _msg_args+=(\
-          "src: '${_fda}', dst: '${_x}-${_name}.qcow2'")
+          "src: '${_fda}', dst: '${_x}-${_fdb}.qcow2'")
 
           _cmd_args+=(\
-          "qemu-img convert -f vmdk -O qcow2 ${_fda} ${_x}-${_name}.qcow2")
+          "qemu-img convert -f vmdk -O qcow2 ${_fda} ${_x}-${_fdb}.qcow2")
 
         elif [[ "$pve_format" == "img" ]] ; then
 
           _msg_args+=(\
-          "src: '${_fda}', dst: '${_x}-${_name}.img'")
+          "src: '${_fda}', dst: '${_x}-${_fdb}.img'")
 
           _cmd_args+=(\
-          "qemu-img convert -f vmdk -O raw ${_fda} ${_x}-${_name}.img")
+          "qemu-img convert -f vmdk -O raw ${_fda} ${_x}-${_fdb}.img")
 
         fi
 
@@ -703,13 +709,13 @@ function VmConvertDisks() {
             _cmd_args+=(\
             "rm -fr ${_fda}")
 
-            if [[ -e "${_name}-flat.vmdk" ]] ; then
+            if [[ -e "${_fdb}-flat.vmdk" ]] ; then
 
               _msg_args+=(\
-              "remove: '${_name}-flat.vmdk")
+              "remove: '${_fdb}-flat.vmdk")
 
               _cmd_args+=(\
-              "rm -fr ${_name}-flat.vmdk")
+              "rm -fr ${_fdb}-flat.vmdk")
 
             fi
 
