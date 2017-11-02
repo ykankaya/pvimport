@@ -53,30 +53,47 @@ The configuration file (appended with the `-c|--config` parameter) has the follo
 
 ``````
 # Specifies the type of hypervisor (VMware ESXi or Xen).
+#   Example: hv_type="vmware"
 readonly hv_type="type"
 
-# Specifies the port number through which the connection
-# to the remote server is established.
-# The ip address or hostname is determined by the parameter (-h|--host).
+# Specifies the port number through which the ssh connection
+# to the remote server is established (ssh/scp). The ip address
+# or hostname is determined by the parameter (-h|--host).
+#   Example: hv_port="22"
 readonly hv_port="port"
+
+# Specifies the parameters for the ssh protocol. Before setting
+# test whether the server accepts it.
+#   Example: ssh_opt="-C -c arcfour -vv"
+readonly ssh_opt=""
+
+# Specifies the parameters for the dd. Before setting
+# test whether the server accepts it.
+#   Example: dd="bs=16M"
+readonly dd_opt=""
 
 # Specifies the remote path (remember to create it) on the remote machine
 # where files (such as snapshots) will be placed (only for Xen).
+#   Example: hv_storage="/vmfs/volumes/datastore1"
 readonly hv_storage="/path/to/remote/vm/dump"
 
 # Specifies the local resource of virtual machines.
 # Used only for memory specified as directory.
-readonly pve_storage="/xfs900/images"
+#   Example: pve_storage="/xfs900/images"
+readonly pve_storage="/path/to/proxmox/images"
 
 # Specifies the local resource of virtual machines.
 # Used only for memory specified as LVM.
-readonly pve_lvm="/dev/pve"
+#   Example: pve_lvm="/dev/pve"
+readonly pve_lvm="/path/to/lvm/vg"
 
 # Specifies the local path (remember to create it) on the proxmox machine
 # where the virtual machine files from the remote host will be copied.
+#   Example: local_storage="/xfs900/vmware"
 readonly local_storage="/xfs900/path/to/local/vm/dump"
 
 # Specifies whether to delete unneeded files/directories (only local).
+#   Example: remove_unused="yes"
 readonly remove_unused="no"
 ``````
 
