@@ -4,12 +4,15 @@
 ######################## Definitions of user variables #########################
 ################################################################################
 
+# shellcheck disable=SC2154
 # Full path to the remote virtual machine directory.
 re_path="${hv_storage}/${vm_name}"
 
+# shellcheck disable=SC2154
 # Full path to the local virtual machine directory (working directory).
 lo_path="${local_storage}/${hv_host}/${vm_name}"
 
+# shellcheck disable=SC2154
 # Full path to the local virtual machine directory (proxmox directory).
 pv_path="${pve_storage}/${pve_id}"
 
@@ -46,6 +49,7 @@ function InitEnv() {
   #   VmConvertDisks  - convert Virtual Machine (xen/vmware)
   #   VmImport        - import Virtual Machine (xen/vmware)
 
+  # shellcheck disable=SC2154
   if [[ "$hv_type" == "xen" ]] ; then
 
     local _function_stack=(CheckConn InitRemoteEnv CheckRemoteEnv \
@@ -141,6 +145,7 @@ function InitEnv() {
 
     fi
 
+    # shellcheck disable=SC2154
     # Checking variable values (if they are incorrect values).
     if [[ ! -d "$pve_storage" ]] || \
        [[ ! -e "$pve_lvm" ]] || \
