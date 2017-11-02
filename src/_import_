@@ -54,7 +54,7 @@ function InitEnv() {
   elif [[ "$hv_type" == "vmware" ]] ; then
 
     local _function_stack=(CheckConn InitRemoteEnv CheckRemoteEnv \
-                           DownloadRemoteEnv VmCopy VmConvertDisks)
+                           GetRemoteEnv VmCopy VmConvertDisks)
 
   else
 
@@ -199,6 +199,8 @@ function InitPv() {
       "${_FUNCTION_ID}()" \
       "init function: $_function"
 
+    # In these two variables we store the message to display
+    # and the command to execute.
     export _msg_args=()
     export _cmd_args=()
 
@@ -250,6 +252,7 @@ function CheckConn() {
     "${_FUNCTION_ID}()" \
     "checking connection to remote host(s)"
 
+  # We test two types of connections that will be used.
   _msg_args+=(\
   "host (tcp): '${hv_host}'" \
   "host (ssh): '${hv_host}'")
@@ -363,21 +366,21 @@ function CheckRemoteEnv() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: DownloadRemoteEnv()
+# Function name: GetRemoteEnv()
 #
 # Description:
 #   Dump of the remote environment to local.
 #
 # Usage:
-#   DownloadRemoteEnv
+#   GetRemoteEnv
 #
 # Examples:
-#   DownloadRemoteEnv
+#   GetRemoteEnv
 #
 
-function DownloadRemoteEnv() {
+function GetRemoteEnv() {
 
-  local _FUNCTION_ID="DownloadRemoteEnv"
+  local _FUNCTION_ID="GetRemoteEnv"
   local _STATE=0
 
   _sprintf "head" "downloading configuration of remote environment"
@@ -389,8 +392,8 @@ function DownloadRemoteEnv() {
   if [[ "$hv_type" == "vmware" ]] ; then
 
     _msg_args+=(\
-    "config format: 'vmx'" \
-    "disks format: 'vmdk'" \
+    "vmx configuration search" \
+    "vmdk disk search" \
     "get config file: '$_pv_vmware_vars'" \
     "get disks files: '$_pv_vmware_disks'")
 
