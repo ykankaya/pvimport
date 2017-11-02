@@ -499,11 +499,11 @@ function _load() {
     if [[ "$_type" == "head" ]] ; then
 
       _sprintf "head" "loading configuration"
-      _sprintf "info" "file: $_filename"
+      _sprintf "info" "file: '$_filename'"
 
     elif [[ "$_type" == "info" ]] ; then
 
-      _sprintf "info" "loading configuration: $_filename"
+      _sprintf "info" "loading configuration: '$_filename'"
 
     fi
 
