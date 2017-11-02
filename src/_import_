@@ -559,7 +559,7 @@ function VmExtract() {
 
     # We're checking to make sure there is.
     if [[ -e "${lo_path}/${vm_name}.ova" ]] ; then
-    
+
       _msg_args+=(\
       "remove: '${vm_name}.ova'")
 
@@ -643,7 +643,7 @@ function VmConvertDisks() {
 
         # We're checking to make sure there is.
         if [[ -e "$_fda" ]] ; then
-    
+
           _msg_args+=(\
           "remove: '${_fda}'")
 
@@ -704,7 +704,7 @@ function VmConvertDisks() {
 
           # We're checking to make sure there is.
           if [[ -e "$_fda" ]] ; then
-    
+
             _msg_args+=(\
             "remove: '${_fda}'")
 
@@ -771,7 +771,7 @@ function VmImport() {
     "directory change error: $lo_path"
 
   for _fname in $(find ./* -type f -name "*.$pve_format" | sort -V) ; do
-  
+
     _fda="$_fname"
 
     if [[ "$pve_format" == "img" ]] ; then
@@ -804,7 +804,7 @@ function VmImport() {
 
         # We're checking to make sure there is.
         if [[ -e "$_fda" ]] ; then
-    
+
           _msg_args+=(\
           "remove: '${_fda}'")
 
@@ -845,7 +845,7 @@ function VmImport() {
 
         # We're checking to make sure there is.
         if [[ -e "$_fda" ]] ; then
-    
+
           _msg_args+=(\
           "remove: '${_fda}'")
 

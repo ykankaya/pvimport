@@ -203,7 +203,7 @@ function _logger() {
            "$_init_name" \
            "$_conv_type" \
            "$_to_log" \
-           | tee -a "$_log_path"   
+           | tee -a "$_log_path"
 
   # The decision whether an INFO is to be only log to a file
   # or to a file and to standard output.
