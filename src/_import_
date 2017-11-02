@@ -269,18 +269,22 @@ function CheckConn() {
     "checking connection to remote host(s)"
 
   _msg_args+=(\
-  "host: '${pv_host}'")
+  "host (tcp): '${pv_host}'" \
+  "host (ssh): '${pv_host}'")
 
   _cmd_args+=(\
-  "eval timeout 1 bash -c \"</dev/tcp/${pv_host}/${pv_port}\"")
+  "eval timeout 1 bash -c \"</dev/tcp/${pv_host}/${pv_port}\"" \
+  "ssh ${ssh_opt} ${pv_host} -p ${pv_port} exit 0")
 
   if [[ "$pv_host_pve" != "local" ]] ; then
 
     _msg_args+=(\
-    "host: '${pv_host_pve}'")
+    "host (tcp): '${pv_host_pve}'" \
+    "host (ssh): '${pv_host_pve}'")
 
     _cmd_args+=(\
-    "eval timeout 1 bash -c \"</dev/tcp/${pv_host_pve}/${pv_port}\"")
+    "eval timeout 1 bash -c \"</dev/tcp/${pv_host_pve}/${pv_port}\"" \
+    "ssh ${ssh_opt} ${pv_host_pve} -p ${pv_port} exit 0")
 
   fi
 
