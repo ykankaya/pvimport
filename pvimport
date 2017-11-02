@@ -178,21 +178,21 @@ function _rand() {
   local _STATE=0
 
   local _type="$1"
-  local _value=""
+  local _random=""
 
   # Time-based generation (seconds).
   if [[ "$_type" == "T" ]] ; then
 
-    _value=$(date +"%s")
+    _random=$(date +"%s")
 
   # Generating based on '$RANDOM' variable.
   elif [[ "$_type" == "R" ]] ; then
 
-    _value=$RANDOM
+    _random=$RANDOM
 
   fi
 
-  _STATE=$_value
+  _STATE=$_random
 
   return $_STATE
 
@@ -777,7 +777,7 @@ function __main__() {
 
   # shellcheck disable=SC2034
   # Generate random value.
-  _random=$(_rand "T")
+  _rand "T"
 
   # Checking variable values (if they are unset or empty).
   # The variables from the additional configuration file
