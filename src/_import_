@@ -735,9 +735,9 @@ function VmConvertDisks() {
 
         fi
 
-      fi
+        _x=$((_x + 1))
 
-      _x=$((_x + 1))
+      fi
 
     done
 

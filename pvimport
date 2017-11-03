@@ -789,7 +789,7 @@ function __main__() {
   # Full path to the local virtual machine directory (proxmox directory).
   pv_path="${pve_storage}/${pve_id}"
 
-  # Init environment for pvimport.
+  # Init environment.
   InitEnv
 
   # Init all functions.
