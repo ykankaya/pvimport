@@ -521,7 +521,7 @@ function _help_() {
     $_init_name <option|long-option>
 
   Examples:
-    $_init_name -c xen.cfg -h 172.20.50.31 -i ac06d737 -n VM_PROD -p 200 -f qcow2 --import local --verbose
+    $_init_name -c xen.cfg -h 172.20.50.31 -i ac06d737 -n VM_PROD -p 200 -f qcow2 --pve-import local --verbose
     $_init_name -c vmware.cfg -h pv01 -i gitlab_01 -n gitlab_01 -p 300 -f img
 
   Options:

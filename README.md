@@ -30,7 +30,7 @@ The tool provides the following options:
     pvimport <option|long-option>
 
   Examples:
-    pvimport -c xen.cfg -h 172.20.50.31 -i ac06d737 -n VM_PROD -p 200 -f qcow2 --import local --verbose
+    pvimport -c xen.cfg -h 172.20.50.31 -i ac06d737 -n VM_PROD -p 200 -f qcow2 --pve-import local --verbose
     pvimport -c vmware.cfg -h pv01 -i gitlab_01 -n gitlab_01 -p 300 -f img
 
   Options:
