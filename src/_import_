@@ -672,12 +672,12 @@ function VmConvertDisks() {
 
   elif [[ "$hv_type" == "vmware" ]] ; then
 
-    _fvmx=$(find ./* -name "*.vmx")
+    _fvmx=$(grep ".vmx" "$_pv_vmware_vars" | cut -d "/" -f2)
 
     # Issue to solve:
     # shellcheck disable=SC2013
     _fname=""
-    for _fname in $(grep ".vmdk" "$_fvmx" | cut -d "\"" -f2) ; do
+    for _fname in $(grep ".vmdk" "$_pv_vmware_disks" | cut -d "/" -f2) ; do
 
       # Store 'vmdk' file name (eg. vm.vmdk).
       _fdx="$_fname"
@@ -791,7 +791,7 @@ function VmImport() {
     "directory change error: $lo_path"
 
   _fname=""
-  for _fname in $(find ./* -type f -name "*.$pve_format" | cut -d "\"" -f2 | sort -V) ; do
+  for _fname in $(find ./* -type f -name "*.$pve_format" | cut -d "/" -f2 | sort -V) ; do
 
     _fda="$_fname"
 
