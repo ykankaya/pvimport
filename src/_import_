@@ -459,7 +459,7 @@ function VmCopy() {
     "${_FUNCTION_ID}()" \
     "copying a virtual machine stack"
 
-  local _vmx_name
+  local _fvmx
 
   _sprintf "info" "set directory: $lo_path"
 
@@ -480,18 +480,19 @@ function VmCopy() {
 
   elif [[ "$hv_type" == "vmware" ]] ; then
 
-    _vmx_name=$(grep ".vmx" "$_pv_vmware_vars" | cut -d "/" -f2)
+    _fvmx=$(grep ".vmx" "$_pv_vmware_vars" | cut -d "/" -f2)
 
     _msg_args+=(\
-    "checking: '${_vmx_name}'" \
-    "config file: '${_vmx_name}'")
+    "checking: '${_fvmx}'" \
+    "config file: '${_fvmx}'")
 
     _cmd_args+=(\
-    "ssh ${ssh_opt} ${hv_host} -p ${hv_port} if [[ ! -e \"${re_path}/${_vmx_name}\" ]] ; then exit 1 ; fi" \
-    "scp ${ssh_opt} -P ${hv_port} ${hv_host}:${re_path}/${_vmx_name} ${lo_path}")
+    "ssh ${ssh_opt} ${hv_host} -p ${hv_port} if [[ ! -e \"${re_path}/${_fvmx}\" ]] ; then exit 1 ; fi" \
+    "scp ${ssh_opt} -P ${hv_port} ${hv_host}:${re_path}/${_fvmx} ${lo_path}")
 
     # Issue to solve:
     # shellcheck disable=SC2013
+    _fname=""
     for _fname in $(grep ".vmdk" "$_pv_vmware_disks" | cut -d "/" -f2) ; do
 
       _msg_args+=(\
@@ -610,6 +611,7 @@ function VmConvertDisks() {
 
     # Issue to solve:
     # shellcheck disable=SC2044
+    _fname=""
     for _fname in $(find ./* -type d -name "Ref:*" | cut -d "/" -f2) ; do
 
       # _fname=Ref:20, _fdd
@@ -671,6 +673,7 @@ function VmConvertDisks() {
 
     # Issue to solve:
     # shellcheck disable=SC2013
+    _fname=""
     for _fname in $(grep ".vmdk" "$_vmx_file" | cut -d "\"" -f2) ; do
 
       _fda="$_fname"
@@ -767,6 +770,7 @@ function VmImport() {
     "${_FUNCTION_ID}()" \
     "directory change error: $lo_path"
 
+  _fname=""
   for _fname in $(find ./* -type f -name "*.$pve_format" | sort -V) ; do
 
     _fda="$_fname"
