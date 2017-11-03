@@ -791,7 +791,7 @@ function VmImport() {
     "directory change error: $lo_path"
 
   _fname=""
-  for _fname in $(find ./* -type f -name "*.$pve_format" | sort -V) ; do
+  for _fname in $(find ./* -type f -name "*.$pve_format" | cut -d "\"" -f2 | sort -V) ; do
 
     _fda="$_fname"
 
