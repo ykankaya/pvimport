@@ -790,7 +790,10 @@ function __main__() {
   pv_path="${pve_storage}/${pve_id}"
 
   # Init environment for pvimport.
-  InitEnv || _exit_ 255
+  InitEnv
+
+  # Init all functions.
+  InitPv
 
   # ````````````````````````````````````````````````````````````````````````````
 
