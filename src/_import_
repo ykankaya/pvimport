@@ -460,6 +460,7 @@ function VmCopy() {
     "copying a virtual machine stack"
 
   local _fvmx
+  local _fda
 
   _sprintf "info" "set directory: $lo_path"
 
@@ -495,13 +496,15 @@ function VmCopy() {
     _fname=""
     for _fname in $(grep ".vmdk" "$_pv_vmware_disks" | cut -d "/" -f2) ; do
 
+      _fda="$_fname"
+
       _msg_args+=(\
-      "checking: '${_fname}'" \
-      "get src: '${_fname}'")
+      "checking: '${_fda}'" \
+      "get src: '${_fda}'")
 
       _cmd_args+=(\
-      "ssh ${ssh_opt} ${hv_host} -p ${hv_port} if [[ ! -e \"${re_path}/${_fname}\" ]] ; then exit 1 ; fi" \
-      "scp ${ssh_opt} -P ${hv_port} ${hv_host}:${re_path}/${_fname} ${lo_path}")
+      "ssh ${ssh_opt} ${hv_host} -p ${hv_port} if [[ ! -e \"${re_path}/${_fda}\" ]] ; then exit 1 ; fi" \
+      "scp ${ssh_opt} -P ${hv_port} ${hv_host}:${re_path}/${_fda} ${lo_path}")
 
     done
 
