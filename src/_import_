@@ -595,12 +595,12 @@ function VmConvertDisks() {
     "${_FUNCTION_ID}()" \
     "converting disks to $pve_format format"
 
-  local _dir
+  local _fdx
   local _fda
   local _fdb
   local _fdc
 
-  local _vmx_file
+  local _fvmx
   local _x=1
 
   _sprintf "info" "set directory: $lo_path"
@@ -617,27 +617,31 @@ function VmConvertDisks() {
     _fname=""
     for _fname in $(find ./* -type d -name "Ref:*" | cut -d "/" -f2) ; do
 
-      # _fname=Ref:20, _fdd
-      _dir="$_fname"
-      # _fda=Ref_20
-      _fda=$(echo "$_dir" | tr ":" "_")
+      # Store directory name (eg. Ref:20).
+      _fdx="$_fname"
+
+      # Store new directory/file name (eg. Ref_20).
+      _fda=$(echo "$_fdx" | tr ":" "_")
+
+      # Store new 'img' file (eg. 1-Ref_20.img).
+      _fdb="${_x}-${_fda}.img"
 
       _msg_args+=(\
-      "src: '${_dir}', dst: '${_x}-${_fda}.img'")
+      "src: '${_fdx}', dst: '${_fdb}'")
 
       _cmd_args+=(\
-      "xenmigrate --convert=${_fdx} ${_x}-${_fda}.img")
+      "xenmigrate --convert=${_fdx} ${_fdb}")
 
       if [[ "$pve_format" == "qcow2" ]] ; then
 
-        _fdb="${_x}-${_fda}.img"
-        _fdc="${_fdb%.*}"
+        # Store 'qcow2' file name (eg. 1-Ref_20.qcow2).
+        _fdc="${_fdb%.*}.qcow2"
 
         _msg_args+=(\
-        "src: '${_fdb}', dst: '${_fdc}.qcow2'")
+        "src: '${_fdb}', dst: '${_fdc}'")
 
         _cmd_args+=(\
-        "qemu-img convert -f raw -O qcow2 ${_fdb} ${_fdc}.qcow2")
+        "qemu-img convert -f raw -O qcow2 ${_fdb} ${_fdc}")
 
       fi
 
@@ -672,55 +676,63 @@ function VmConvertDisks() {
 
   elif [[ "$hv_type" == "vmware" ]] ; then
 
-    _vmx_file=$(find ./* -name "*.vmx")
+    _fvmx=$(find ./* -name "*.vmx")
 
     # Issue to solve:
     # shellcheck disable=SC2013
     _fname=""
-    for _fname in $(grep ".vmdk" "$_vmx_file" | cut -d "\"" -f2) ; do
+    for _fname in $(grep ".vmdk" "$_fvmx" | cut -d "\"" -f2) ; do
 
-      _fda="$_fname"
+      # Store 'vmdk' file name (eg. vm.vmdk).
+      _fdx="$_fname"
 
-      if [[ "$_fda" != *"flat"* ]] ; then
+      # Store file name without extension (eg. vm).
+      _fda=${_fname%.*}
 
-        _fdb="${_fda%.*}"
+      if [[ "$_fdx" != *"flat"* ]] ; then
 
         if [[ "$pve_format" == "qcow2" ]] ; then
 
+          # Store 'qcow2' file name (eg. 1-vm.qcow2).
+          _fdb="${_x}-${_fdx%.*}.qcow2"
+
           _msg_args+=(\
-          "src: '${_fda}', dst: '${_x}-${_fdb}.qcow2'")
+          "src: '${_fdx}', dst: '${_fdb}'")
 
           _cmd_args+=(\
-          "qemu-img convert -f vmdk -O qcow2 ${_fda} ${_x}-${_fdb}.qcow2")
+          "qemu-img convert -f vmdk -O qcow2 ${_fdx} ${_fdb}")
 
         elif [[ "$pve_format" == "img" ]] ; then
 
+          # Store 'img' file name (eg. 1-vm.img).
+          _fdb="${_x}-${_fdx%.*}.img"
+
           _msg_args+=(\
-          "src: '${_fda}', dst: '${_x}-${_fdb}.img'")
+          "src: '${_fdx}', dst: '${_fdb}'")
 
           _cmd_args+=(\
-          "qemu-img convert -f vmdk -O raw ${_fda} ${_x}-${_fdb}.img")
+          "qemu-img convert -f vmdk -O raw ${_fdx} ${_fdb}")
 
         fi
 
         if [[ "$remove_unused" == "yes" ]] ; then
 
           # We're checking to make sure there is.
-          if [[ -e "$_fda" ]] ; then
+          if [[ -e "$_fdx" ]] ; then
 
             _msg_args+=(\
-            "remove: '${_fda}'")
+            "remove: '${_fdx}'")
 
             _cmd_args+=(\
-            "rm -fr ${_fda}")
+            "rm -fr ${_fdx}")
 
-            if [[ -e "${_fdb}-flat.vmdk" ]] ; then
+            if [[ -e "${_fda}-flat.vmdk" ]] ; then
 
               _msg_args+=(\
-              "remove: '${_fdb}-flat.vmdk")
+              "remove: '${_fda}-flat.vmdk")
 
               _cmd_args+=(\
-              "rm -fr ${_fdb}-flat.vmdk")
+              "rm -fr ${_fda}-flat.vmdk")
 
             fi
 
@@ -733,6 +745,16 @@ function VmConvertDisks() {
       _x=$((_x + 1))
 
     done
+
+  fi
+
+  if [[ -e "${_fvmx}" ]] ; then
+
+    _msg_args+=(\
+    "remove: '${_fvmx}")
+
+    _cmd_args+=(\
+    "rm -fr ${_fvmx}")
 
   fi
 
