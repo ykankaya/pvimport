@@ -638,16 +638,11 @@ function VmConvertDisks() {
 
       if [[ "$remove_unused" == "yes" ]] ; then
 
-        # We're checking to make sure there is.
-        if [[ -d "$_fdx" ]] ; then
+        _msg_args+=(\
+        "remove: '${_fdx}'")
 
-          _msg_args+=(\
-          "remove: '${_fdx}'")
-
-          _cmd_args+=(\
-          "rm -fr ${_fdx}")
-
-        fi
+        _cmd_args+=(\
+        "rm -fr ${_fdx}")
 
       fi
 
@@ -666,16 +661,11 @@ function VmConvertDisks() {
 
         if [[ "$remove_unused" == "yes" ]] ; then
 
-          # We're checking to make sure there is.
-          if [[ -e "$_fdb" ]] ; then
+          _msg_args+=(\
+          "remove: '${_fdb}'")
 
-            _msg_args+=(\
-            "remove: '${_fdb}'")
-
-            _cmd_args+=(\
-            "rm -fr ${_fdb}")
-
-          fi
+          _cmd_args+=(\
+          "rm -fr ${_fdb}")
 
         fi
 
@@ -732,24 +722,19 @@ function VmConvertDisks() {
 
         if [[ "$remove_unused" == "yes" ]] ; then
 
-          # We're checking to make sure there is.
-          if [[ -e "$_fdx" ]] ; then
+          _msg_args+=(\
+          "remove: '${_fdx}'")
+
+          _cmd_args+=(\
+          "rm -fr ${_fdx}")
+
+          if [[ -e "${_fda}-flat.vmdk" ]] ; then
 
             _msg_args+=(\
-            "remove: '${_fdx}'")
+            "remove: '${_fda}-flat.vmdk")
 
             _cmd_args+=(\
-            "rm -fr ${_fdx}")
-
-            if [[ -e "${_fda}-flat.vmdk" ]] ; then
-
-              _msg_args+=(\
-              "remove: '${_fda}-flat.vmdk")
-
-              _cmd_args+=(\
-              "rm -fr ${_fda}-flat.vmdk")
-
-            fi
+            "rm -fr ${_fda}-flat.vmdk")
 
           fi
 
@@ -843,16 +828,11 @@ function VmImport() {
 
       if [[ "$remove_unused" == "yes" ]] ; then
 
-        # We're checking to make sure there is.
-        if [[ -e "$_fda" ]] ; then
+        _msg_args+=(\
+        "remove: '${_fda}'")
 
-          _msg_args+=(\
-          "remove: '${_fda}'")
-
-          _cmd_args+=(\
-          "rm -fr ${_fda}")
-
-        fi
+        _cmd_args+=(\
+        "rm -fr ${_fda}")
 
       fi
 
@@ -884,16 +864,11 @@ function VmImport() {
 
       if [[ "$remove_unused" == "yes" ]] ; then
 
-        # We're checking to make sure there is.
-        if [[ -e "$_fda" ]] ; then
+        _msg_args+=(\
+        "remove: '${_fda}'")
 
-          _msg_args+=(\
-          "remove: '${_fda}'")
-
-          _cmd_args+=(\
-          "rm -fr ${_fda}")
-
-        fi
+        _cmd_args+=(\
+        "rm -fr ${_fda}")
 
       fi
 
