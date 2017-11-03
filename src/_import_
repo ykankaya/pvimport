@@ -546,9 +546,11 @@ function VmExtract() {
     "directory change error: $lo_path"
 
   _msg_args+=(\
+  "checking: '${vm_name}.ova'" \
   "src: '${vm_name}.ova'")
 
   _cmd_args+=(\
+  "eval if [[ ! -e ${vm_name}.ova ]] ; then exit 1 ; fi" \
   "tar xf ${vm_name}.ova -C ${lo_path}")
 
   # shellcheck disable=SC2154
@@ -627,9 +629,11 @@ function VmConvertDisks() {
       _fdb="${_x}-${_fda}.img"
 
       _msg_args+=(\
+      "checking: '${_fdx}'" \
       "src: '${_fdx}', dst: '${_fdb}'")
 
       _cmd_args+=(\
+      "eval if [[ ! -e ${_fdx} ]] ; then exit 1 ; fi" \
       "xenmigrate --convert=${_fdx} ${_fdb}")
 
       if [[ "$pve_format" == "qcow2" ]] ; then
@@ -638,9 +642,11 @@ function VmConvertDisks() {
         _fdc="${_fdb%.*}.qcow2"
 
         _msg_args+=(\
+        "checking: '${_fdb}'" \
         "src: '${_fdb}', dst: '${_fdc}'")
 
         _cmd_args+=(\
+        "eval if [[ ! -e ${_fdb} ]] ; then exit 1 ; fi" \
         "qemu-img convert -f raw -O qcow2 ${_fdb} ${_fdc}")
 
       fi
@@ -697,9 +703,11 @@ function VmConvertDisks() {
           _fdb="${_x}-${_fdx%.*}.qcow2"
 
           _msg_args+=(\
+          "checking: '${_fdx}'" \
           "src: '${_fdx}', dst: '${_fdb}'")
 
           _cmd_args+=(\
+          "eval if [[ ! -e ${_fdx} ]] ; then exit 1 ; fi" \
           "qemu-img convert -f vmdk -O qcow2 ${_fdx} ${_fdb}")
 
         elif [[ "$pve_format" == "img" ]] ; then
@@ -708,9 +716,11 @@ function VmConvertDisks() {
           _fdb="${_x}-${_fdx%.*}.img"
 
           _msg_args+=(\
+          "checking: '${_fdx}'" \
           "src: '${_fdx}', dst: '${_fdb}'")
 
           _cmd_args+=(\
+          "eval if [[ ! -e ${_fdx} ]] ; then exit 1 ; fi" \
           "qemu-img convert -f vmdk -O raw ${_fdx} ${_fdb}")
 
         fi
