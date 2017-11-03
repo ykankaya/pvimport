@@ -556,16 +556,11 @@ function VmExtract() {
   # shellcheck disable=SC2154
   if [[ "$remove_unused" == "yes" ]] ; then
 
-    # We're checking to make sure there is.
-    if [[ -e "${lo_path}/${vm_name}.ova" ]] ; then
+    _msg_args+=(\
+    "remove: '${vm_name}.ova'")
 
-      _msg_args+=(\
-      "remove: '${vm_name}.ova'")
-
-      _cmd_args+=(\
-      "rm -fr ${lo_path}/${vm_name}.ova")
-
-    fi
+    _cmd_args+=(\
+    "rm -fr ${vm_name}.ova")
 
   fi
 
@@ -751,7 +746,7 @@ function VmConvertDisks() {
   if [[ -e "${_fvmx}" ]] ; then
 
     _msg_args+=(\
-    "remove: '${_fvmx}")
+    "remove: '${_fvmx}'")
 
     _cmd_args+=(\
     "rm -fr ${_fvmx}")
@@ -799,6 +794,12 @@ function VmImport() {
   for _fname in $(find ./* -type f -name "*.$pve_format" | sort -V) ; do
 
     _fda="$_fname"
+
+    _msg_args+=(\
+    "checking: '${_fda}'")
+
+    _cmd_args+=(\
+    "eval if [[ ! -e ${_fda} ]] ; then exit 1 ; fi")
 
     if [[ "$pve_format" == "img" ]] ; then
 
