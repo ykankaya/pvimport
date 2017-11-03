@@ -292,9 +292,9 @@ function InitRemoteEnv() {
     "preparing configuration of remote environment"
 
   _msg_args+=(\
-  "file: '${_pv_xen_vars}'" \
-  "file: '${_pv_vmware_vars}'" \
-  "file: '${_pv_vmware_disks}")
+  "src: '${_pv_xen_vars}'" \
+  "src: '${_pv_vmware_vars}'" \
+  "src: '${_pv_vmware_disks}")
 
   _cmd_args+=(\
   "ssh ${ssh_opt} ${hv_host} -p ${hv_port} >${_pv_xen_vars}" \
@@ -384,8 +384,8 @@ function GetRemoteEnv() {
     _msg_args+=(\
     "vmx configuration search" \
     "vmdk disk search" \
-    "get config file: '$_pv_vmware_vars'" \
-    "get disks files: '$_pv_vmware_disks'")
+    "get src: '$_pv_vmware_vars'" \
+    "get src: '$_pv_vmware_disks'")
 
     _cmd_args+=(\
     "ssh ${ssh_opt} ${hv_host} -p ${hv_port} cd \"${re_path}\" && find . -name \"*.vmx\" >> ${_pv_vmware_vars}" \
@@ -472,7 +472,7 @@ function VmCopy() {
 
     _msg_args+=(\
     "checking: '${vm_name}.ova'" \
-    "src: '${vm_name}.ova'")
+    "get src: '${vm_name}.ova'")
 
     _cmd_args+=(\
     "ssh ${ssh_opt} ${hv_host} -p ${hv_port} if [[ ! -e \"${hv_storage}/${vm_name}.ova\" ]] ; then exit 1 ; fi" \
@@ -484,7 +484,7 @@ function VmCopy() {
 
     _msg_args+=(\
     "checking: '${_fvmx}'" \
-    "config file: '${_fvmx}'")
+    "get src: '${_fvmx}'")
 
     _cmd_args+=(\
     "ssh ${ssh_opt} ${hv_host} -p ${hv_port} if [[ ! -e \"${re_path}/${_fvmx}\" ]] ; then exit 1 ; fi" \
@@ -497,7 +497,7 @@ function VmCopy() {
 
       _msg_args+=(\
       "checking: '${_fname}'" \
-      "src: '${_fname}'")
+      "get src: '${_fname}'")
 
       _cmd_args+=(\
       "ssh ${ssh_opt} ${hv_host} -p ${hv_port} if [[ ! -e \"${re_path}/${_fname}\" ]] ; then exit 1 ; fi" \
