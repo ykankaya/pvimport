@@ -40,13 +40,13 @@ function InitEnv() {
   # shellcheck disable=SC2154
   if [[ "$hv_type" == "xen" ]] ; then
 
-    local _function_stack=(CheckConn InitRemoteEnv CheckRemoteEnv \
-                           VmExport VmCopy VmExtract VmConvertDisks)
+    _function_stack=(CheckConn InitRemoteEnv CheckRemoteEnv \
+                     VmExport VmCopy VmExtract VmConvertDisks)
 
   elif [[ "$hv_type" == "vmware" ]] ; then
 
-    local _function_stack=(CheckConn InitRemoteEnv CheckRemoteEnv \
-                           GetRemoteEnv VmCopy VmConvertDisks)
+    _function_stack=(CheckConn InitRemoteEnv CheckRemoteEnv \
+                     GetRemoteEnv VmCopy VmConvertDisks)
 
   else
 
@@ -160,9 +160,6 @@ function InitEnv() {
     mkdir -p "$lo_path"
 
   fi
-
-  # Launch all functions.
-  InitPv
 
   return $_STATE
 
@@ -594,6 +591,7 @@ function VmConvertDisks() {
     "${_FUNCTION_ID}()" \
     "converting disks to $pve_format format"
 
+  local _dir
   local _fda
   local _fdb
   local _fdc
@@ -614,37 +612,40 @@ function VmConvertDisks() {
     # shellcheck disable=SC2044
     for _fname in $(find ./* -type d -name "Ref:*" | cut -d "/" -f2) ; do
 
-      _fda=$(echo "$_fname" | tr ":" "_")
+      # _fname=Ref:20, _fdd
+      _dir="$_fname"
+      # _fda=Ref_20
+      _fda=$(echo "$_dir" | tr ":" "_")
 
       _msg_args+=(\
-      "src: '${_fda}', dst: '${_x}-${_fda}.img'")
+      "src: '${_dir}', dst: '${_x}-${_fda}.img'")
 
       _cmd_args+=(\
-      "xenmigrate --convert=${_fda} ${_x}-${_fda}.img")
+      "xenmigrate --convert=${_fdx} ${_x}-${_fda}.img")
 
       if [[ "$pve_format" == "qcow2" ]] ; then
 
-        _fdb="${_fda}.img"
+        _fdb="${_x}-${_fda}.img"
         _fdc="${_fdb%.*}"
 
         _msg_args+=(\
-        "src: '${_fdb}', dst: '${_x}-${_fdc}.qcow2'")
+        "src: '${_fdb}', dst: '${_fdc}.qcow2'")
 
         _cmd_args+=(\
-        "qemu-img convert -f raw -O qcow2 ${_fdb} ${_x}-${_fdc}.qcow2")
+        "qemu-img convert -f raw -O qcow2 ${_fdb} ${_fdc}.qcow2")
 
       fi
 
       if [[ "$remove_unused" == "yes" ]] ; then
 
         # We're checking to make sure there is.
-        if [[ -e "$_fda" ]] ; then
+        if [[ -e "$_fdx" ]] ; then
 
           _msg_args+=(\
-          "remove: '${_fda}'")
+          "remove: '${_fdx}'")
 
           _cmd_args+=(\
-          "rm -fr ${_fda}")
+          "rm -fr ${_fdx}")
 
           if [[ -e "$_fdb" ]] ; then
 
