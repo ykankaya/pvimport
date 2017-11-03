@@ -633,17 +633,21 @@ function VmConvertDisks() {
       "src: '${_fdx}', dst: '${_fdb}'")
 
       _cmd_args+=(\
-      "eval if [[ ! -e ${_fdx} ]] ; then exit 1 ; fi" \
+      "eval if [[ ! -d ${_fdx} ]] ; then exit 1 ; fi" \
       "xenmigrate --convert=${_fdx} ${_fdb}")
 
-      # We're checking to make sure there is.
-      if [[ -e "$_fdx" ]] ; then
+      if [[ "$remove_unused" == "yes" ]] ; then
 
-        _msg_args+=(\
-        "remove: '${_fdx}'")
+        # We're checking to make sure there is.
+        if [[ -d "$_fdx" ]] ; then
 
-        _cmd_args+=(\
-        "rm -fr ${_fdx}")
+          _msg_args+=(\
+          "remove: '${_fdx}'")
+
+          _cmd_args+=(\
+          "rm -fr ${_fdx}")
+
+        fi
 
       fi
 
@@ -660,18 +664,18 @@ function VmConvertDisks() {
         "eval if [[ ! -e ${_fdb} ]] ; then exit 1 ; fi" \
         "qemu-img convert -f raw -O qcow2 ${_fdb} ${_fdc}")
 
-      fi
+        if [[ "$remove_unused" == "yes" ]] ; then
 
-      if [[ "$remove_unused" == "yes" ]] ; then
+          # We're checking to make sure there is.
+          if [[ -e "$_fdb" ]] ; then
 
-        # We're checking to make sure there is.
-        if [[ -e "$_fdb" ]] ; then
+            _msg_args+=(\
+            "remove: '${_fdb}'")
 
-          _msg_args+=(\
-          "remove: '${_fdb}'")
+            _cmd_args+=(\
+            "rm -fr ${_fdb}")
 
-          _cmd_args+=(\
-          "rm -fr ${_fdb}")
+          fi
 
         fi
 
