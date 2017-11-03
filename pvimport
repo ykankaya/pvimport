@@ -473,7 +473,7 @@ function _load() {
     . "$_filename" && \
     _logger "info" \
       "${_FUNCTION_ID}()" \
-      "loading configuration file: $_filename"
+      "loading configuration file: '$_filename'"
 
   elif [ -z "$_filename" ] ; then
 
@@ -579,7 +579,7 @@ function _before_init() {
   cd "$_init_directory" || \
   _logger "stop" \
     "${_FUNCTION_ID}()" \
-    "directory change error: $_init_directory"
+    "directory change error: '$_init_directory'"
 
   : >"$_log_stdout"
 
@@ -610,7 +610,7 @@ function _after_init() {
   cd "$_init_directory" || \
   _logger "stop" \
     "${_FUNCTION_ID}()" \
-    "directory change error: $_init_directory"
+    "directory change error: '$_init_directory'"
 
   return $_STATE
 
@@ -627,7 +627,7 @@ function __main__() {
   local _STATE=0
 
   _logger "init" \
-    "init '${_init_name}' in ${_init_directory}" && \
+    "init '${_init_name}' in '${_init_directory}'" && \
   _logger "info" \
     "__init_params[] = (${__init_params[*]})," \
     "__script_params[] = (${__script_params[*]})"

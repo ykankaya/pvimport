@@ -187,7 +187,7 @@ function InitPv() {
 
     _logger "info" \
       "${_FUNCTION_ID}()" \
-      "init function: $_function"
+      "init function: '$_function'"
 
     # In these two variables we store the message to display
     # and the command to execute.
@@ -462,12 +462,12 @@ function VmCopy() {
   local _fvmx
   local _fda
 
-  _sprintf "info" "set directory: $lo_path"
+  _sprintf "info" "set directory: '$lo_path'"
 
   cd "$lo_path" || \
   _logger "stop" \
     "${_FUNCTION_ID}()" \
-    "directory change error: $lo_path"
+    "directory change error: '$lo_path'"
 
   if [[ "$hv_type" == "xen" ]] ; then
 
@@ -538,12 +538,12 @@ function VmExtract() {
     "${_FUNCTION_ID}()" \
     "extracting ova files"
 
-  _sprintf "info" "set directory: $lo_path"
+  _sprintf "info" "set directory: '$lo_path'"
 
   cd "$lo_path" || \
   _logger "stop" \
     "${_FUNCTION_ID}()" \
-    "directory change error: $lo_path"
+    "directory change error: '$lo_path'"
 
   _msg_args+=(\
   "checking: '${vm_name}.ova'" \
@@ -600,12 +600,12 @@ function VmConvertDisks() {
   local _fvmx
   local _x=1
 
-  _sprintf "info" "set directory: $lo_path"
+  _sprintf "info" "set directory: '$lo_path'"
 
   cd "$lo_path" || \
   _logger "stop" \
     "${_FUNCTION_ID}()" \
-    "directory change error: $lo_path"
+    "directory change error: '$lo_path'"
 
   if [[ "$hv_type" == "xen" ]] ; then
 
@@ -783,12 +783,12 @@ function VmImport() {
 
   local _x=1
 
-  _sprintf "info" "set directory: $lo_path"
+  _sprintf "info" "set directory: '$lo_path'"
 
   cd "$lo_path" || \
   _logger "stop" \
     "${_FUNCTION_ID}()" \
-    "directory change error: $lo_path"
+    "directory change error: '$lo_path'"
 
   _fname=""
   for _fname in $(find ./* -type f -name "*.$pve_format" | cut -d "/" -f2 | sort -V) ; do
