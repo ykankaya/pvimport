@@ -636,6 +636,17 @@ function VmConvertDisks() {
       "eval if [[ ! -e ${_fdx} ]] ; then exit 1 ; fi" \
       "xenmigrate --convert=${_fdx} ${_fdb}")
 
+      # We're checking to make sure there is.
+      if [[ -e "$_fdx" ]] ; then
+
+        _msg_args+=(\
+        "remove: '${_fdx}'")
+
+        _cmd_args+=(\
+        "rm -fr ${_fdx}")
+
+      fi
+
       if [[ "$pve_format" == "qcow2" ]] ; then
 
         # Store 'qcow2' file name (eg. 1-Ref_20.qcow2).
@@ -654,23 +665,13 @@ function VmConvertDisks() {
       if [[ "$remove_unused" == "yes" ]] ; then
 
         # We're checking to make sure there is.
-        if [[ -e "$_fdx" ]] ; then
+        if [[ -e "$_fdb" ]] ; then
 
           _msg_args+=(\
-          "remove: '${_fdx}'")
+          "remove: '${_fdb}'")
 
           _cmd_args+=(\
-          "rm -fr ${_fdx}")
-
-          if [[ -e "$_fdb" ]] ; then
-
-            _msg_args+=(\
-            "remove: '${_fdb}'")
-
-            _cmd_args+=(\
-            "rm -fr ${_fdb}")
-
-          fi
+          "rm -fr ${_fdb}")
 
         fi
 
