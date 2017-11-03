@@ -4,18 +4,6 @@
 ######################## Definitions of user variables #########################
 ################################################################################
 
-# shellcheck disable=SC2154
-# Full path to the remote virtual machine directory.
-re_path="${hv_storage}/${vm_name}"
-
-# shellcheck disable=SC2154
-# Full path to the local virtual machine directory (working directory).
-lo_path="${local_storage}/${hv_host}/${vm_name}"
-
-# shellcheck disable=SC2154
-# Full path to the local virtual machine directory (proxmox directory).
-pv_path="${pve_storage}/${pve_id}"
-
 
 ################################################################################
 ######################## Definitions of user functions #########################
