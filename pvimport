@@ -795,8 +795,13 @@ function __main__() {
   # shellcheck disable=SC2154
   if [[ "$hv_type" == "xen" ]] ; then
 
-    InitPv "CheckConn $hv_host $hv_port"
+    _sprintf "head" "checking connection to remote host(s)"
 
+    _logger "head" \
+      "${_FUNCTION_ID}()" \
+      "checking connection to remote host(s)"
+    
+    InitPv "CheckConn $hv_host $hv_port"
     InitPv "CheckConn $pve_host $hv_port"
 
     #                 InitRemoteEnv CheckRemoteEnv \
@@ -804,8 +809,13 @@ function __main__() {
 
   elif [[ "$hv_type" == "vmware" ]] ; then
 
-    InitPv "CheckConn $hv_host $hv_port"
+    _sprintf "head" "checking connection to remote host(s)"
 
+    _logger "head" \
+      "${_FUNCTION_ID}()" \
+      "checking connection to remote host(s)"
+    
+    InitPv "CheckConn $hv_host $hv_port"
     InitPv "CheckConn $pve_host $hv_port"
 
     #                 InitRemoteEnv CheckRemoteEnv \

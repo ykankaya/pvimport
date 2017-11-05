@@ -204,12 +204,6 @@ function CheckConn() {
   local _host="$1"
   local _port="$2"
 
-  _sprintf "head" "checking connection to remote host(s)"
-
-  _logger "head" \
-    "${_FUNCTION_ID}()" \
-    "checking connection to remote host(s)"
-
   # We test two types of connections that will be used.
   _msg_args+=(\
   "host (tcp): '${_host}'" \
