@@ -819,7 +819,12 @@ function __main__() {
     "checking connection to remote host(s)"
     
   InitPv "CheckConn ${hv_host} ${port}"
-  InitPv "CheckConn ${pve_host} ${port}"
+
+  if [[ "$pve_import" == "true" ]] ; then
+
+    InitPv "CheckConn ${pve_host} ${port}"
+
+  fi
 
   # shellcheck disable=SC2154
   if [[ "$hv_type" == "xen" ]] ; then
