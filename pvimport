@@ -795,18 +795,18 @@ function __main__() {
   # shellcheck disable=SC2154
   if [[ "$hv_type" == "xen" ]] ; then
 
-    InitPv CheckConn $_hv_host $_hv_port
+    InitPv "CheckConn $hv_host $hv_port"
 
-    InitPv CheckConn $pve_host $_hv_port
+    InitPv "CheckConn $pve_host $hv_port"
 
     #                 InitRemoteEnv CheckRemoteEnv \
     #                 VmExport VmCopy VmExtract VmConvertDisks)
 
   elif [[ "$hv_type" == "vmware" ]] ; then
 
-    InitPv CheckConn $_hv_host $_hv_port
+    InitPv "CheckConn $hv_host $hv_port"
 
-    InitPv CheckConn $pve_host $_hv_port
+    InitPv "CheckConn $pve_host $hv_port"
 
     #                 InitRemoteEnv CheckRemoteEnv \
     #                 GetRemoteEnv VmCopy VmConvertDisks)
