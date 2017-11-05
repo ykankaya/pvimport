@@ -1,4 +1,4 @@
-# shellcheck shell=bash
+#!/usr/bin/env bash
 
 ################################################################################
 ######################## Definitions of user variables #########################
@@ -27,16 +27,6 @@ function InitEnv() {
   local _FUNCTION_ID="InitEnv"
   local _STATE=0
 
-  # Functions stack description:
-  #   CheckConn       - check the connection to the server (xen/vmware)
-  #   InitRemoteFiles   - creates a remote environment (xen/vmware)
-  #   CheckRemoteEnv  - checks a remote environment (xen/vmware)
-  #   VmExport        - export Virtual Machine (xen)
-  #   VmCopy          - copy Virtual Machine (xen/vmware)
-  #   VmExtract       - extract Virtual Machine disks (xen)
-  #   VmConvertDisks  - convert Virtual Machine (xen/vmware)
-  #   VmImport        - import Virtual Machine (xen/vmware)
-
   _sprintf "head" "creating and checking configuration of local environment"
 
   _logger "head" \
@@ -44,18 +34,20 @@ function InitEnv() {
     "creating and checking configuration of local environment"
 
   # Display of variable values without checking them.
-  for i in "hv_host" \
-           "hv_type" \
+  for i in "hv_type" \
+           "hv_host" \
            "vm_id" \
            "vm_name" \
            "pve_id" \
            "pve_format" \
+           "hv_storage" \
+           "local_storage" \
+           "pve_storage" \
+           "pve_lvm" \
            "pve_import" \
            "pve_host" \
            "re_path" \
            "lo_path" \
-           "pve_storage" \
-           "pve_lvm" \
            "port" \
            "ssh_opt" \
            "dd_opt" ; do
@@ -286,37 +278,7 @@ function CheckConn() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: InitRemote()
-#
-# Description:
-#   Initialization of the remote environment.
-#
-# Usage:
-#   InitRemote
-#
-# Examples:
-#   InitRemote
-#
-
-function InitRemote() {
-
-  local _FUNCTION_ID="InitRemote"
-  local _STATE=0
-
-  local _file="$1"
-
-  _msg_args+=(\
-  "src: '${_file}")
-
-  _cmd_args+=(\
-  "ssh ${ssh_opt} ${hv_host} -p ${port} >${_file}")
-
-  return $_STATE
-
-}
-
-# ``````````````````````````````````````````````````````````````````````````````
-# Function name: CheckRemote()
+# Function name: CheckStorage()
 #
 # Description:
 #   Checks of the remote environment:
@@ -324,15 +286,15 @@ function InitRemote() {
 #     - remote storage
 #
 # Usage:
-#   CheckRemote
+#   CheckStorage
 #
 # Examples:
-#   CheckRemote
+#   CheckStorage
 #
 
-function CheckRemote() {
+function CheckStorage() {
 
-  local _FUNCTION_ID="CheckRemote"
+  local _FUNCTION_ID="CheckStorage"
   local _STATE=0
 
   local _storage="$1"
@@ -342,6 +304,38 @@ function CheckRemote() {
 
   _cmd_args+=(\
   "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -d \"${_storage}\" ]] ; then exit 1 ; fi")
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: GetRemote()
+#
+# Description:
+#   Dump of the remote environment to local.
+#
+# Usage:
+#   GetRemote
+#
+# Examples:
+#   GetRemote
+#
+
+function GetRemote() {
+
+  local _FUNCTION_ID="GetRemote"
+  local _STATE=0
+
+  local _file="$1"
+
+  _msg_args+=(\
+  "checking: '$_file'" \
+  "get src: '$_file'")
+
+  _cmd_args+=(\
+  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -e \"${_file}\" ]] ; then exit 1 ; fi" \
+  "scp ${ssh_opt} -P ${port} ${hv_host}:${_file} ${_file}")
 
   return $_STATE
 
