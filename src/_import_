@@ -152,8 +152,6 @@ function InitPv() {
 
   local _args=("$@")
 
-  IFS="$IFS_HACK"
-
   _logger "info" \
     "${_FUNCTION_ID}()" \
     "init function: '${_args[@]}'"
@@ -180,8 +178,6 @@ function InitPv() {
     _init_cmd "$_full_command" ; if [ ! $? ] ; then _exit_ 255 ; fi
 
   done
-
-  IFS="$IFS_ORIG"
 
   return $_STATE
 
