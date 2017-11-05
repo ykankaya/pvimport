@@ -124,12 +124,6 @@ function VmCopyXen() {
   local _FUNCTION_ID="VmCopyXen"
   local _STATE=0
 
-  _sprintf "head" "copying a virtual machine stack"
-
-  _logger "info" \
-    "${_FUNCTION_ID}()" \
-    "copying a virtual machine stack"
-
   local _fvmx
   local _fda
 
@@ -140,15 +134,13 @@ function VmCopyXen() {
     "${_FUNCTION_ID}()" \
     "directory change error: '$lo_path'"
 
-  if [[ "$hv_type" == "xen" ]] ; then
+  _msg_args+=(\
+  "checking: '${vm_name}.ova'" \
+  "get src: '${vm_name}.ova'")
 
-    _msg_args+=(\
-    "checking: '${vm_name}.ova'" \
-    "get src: '${vm_name}.ova'")
-
-    _cmd_args+=(\
-    "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -e \"${hv_storage}/${vm_name}.ova\" ]] ; then exit 1 ; fi" \
-    "scp ${ssh_opt} -P ${port} ${hv_host}:${hv_storage}/${vm_name}.ova ${lo_path}")
+  _cmd_args+=(\
+  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -e \"${hv_storage}/${vm_name}.ova\" ]] ; then exit 1 ; fi" \
+  "scp ${ssh_opt} -P ${port} ${hv_host}:${hv_storage}/${vm_name}.ova ${lo_path}")
 
   return $_STATE
 
