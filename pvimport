@@ -521,18 +521,19 @@ function _help_() {
     $_init_name <option|long-option>
 
   Examples:
-    $_init_name -c xen.cfg -h 172.20.50.31 -i ac06d737 -n VM_PROD -p 200 -f qcow2 --pve-import local --verbose
-    $_init_name -c vmware.cfg -h pv01 -i gitlab_01 -n gitlab_01 -p 300 -f img
+    $_init_name -c xen.cfg -t xen -h 172.20.50.31 -i ac06d737 -n VM_PROD -p 200 -f qcow2 --pve-import local --verbose
+    $_init_name -c vmware.cfg -t vmware -h pv01 -i gitlab_01 -n gitlab_01 -p 300 -f img
 
   Options:
         --help                      show this message
         --debug                     display information on the screen (debug mode)
         --verbose                   display 'info' messages on the screen (verbose mode)
     -c, --config <file>             attach an external config file to the script
+    -t, --type <xen/vmware>         specifies the type of hypervisor (VMware ESXi or Xen).
     -h, --host <host>               sets the ip address or hostname of the remote hypervisor
-    -i, --id <vm_id|vm_name>        sets the remote id (xen) or name (vmware) of the imported vm
+    -i, --id <vm_id|vm_name>        sets the remote id (Xen) or name (VMware ESXi) of the imported vm
     -n, --name <vm_name>            sets the name for the new files/directories
-                                    and remote vm directory in datastore (vmware)
+                                    and remote vm directory in datastore (VMware ESXi)
     -p, --pve-id <num>              sets the vm id created in proxmox
     -f, --pve-format <img|qcow2>    sets the disk output format
         --pve-import <local|host>   import disks into any proxmox node (optional)
@@ -637,8 +638,8 @@ function __main__() {
 
   # Specifies the call parameters of the script, the exact description
   # can be found in _help_ and file README.md.
-  local _short_opt="c:h:i:n:p:f:"
-  local _long_opt="help,debug,verbose,config:,host:,id:,name:,pve-id:,pve-format:,pve-import:"
+  local _short_opt="c:t:h:i:n:p:f:"
+  local _long_opt="help,debug,verbose,config:,type:,host:,id:,name:,pve-id:,pve-format:,pve-import:"
 
   _GETOPT_PARAMS=$(getopt -o "${_short_opt}" --long "${_long_opt}" \
                    -n "${_init_name}" -- "${__script_params[@]}")
@@ -679,6 +680,13 @@ function __main__() {
         config=${2:-"$config"}
 
         shift 2 ;;
+
+      -t|--type)
+
+        export hv_type=${2}
+
+        shift 2 ;;
+
 
       -h|--host)
 
@@ -743,8 +751,8 @@ function __main__() {
   # Checking variable values (if they are unset or empty).
   # The variables from the additional configuration file
   # (example: src/configs/template.cfg) are also checked.
-  for i in "hv_host" \
-           "hv_type" \
+  for i in "hv_type" \
+           "hv_host" \
            "vm_id" \
            "vm_name" \
            "pve_id" \

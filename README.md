@@ -30,18 +30,19 @@ The tool provides the following options:
     pvimport <option|long-option>
 
   Examples:
-    pvimport -c xen.cfg -h 172.20.50.31 -i ac06d737 -n VM_PROD -p 200 -f qcow2 --pve-import local --verbose
-    pvimport -c vmware.cfg -h pv01 -i gitlab_01 -n gitlab_01 -p 300 -f img
+    pvimport -c xen.cfg -t xen -h 172.20.50.31 -i ac06d737 -n VM_PROD -p 200 -f qcow2 --pve-import local --verbose
+    pvimport -c vmware.cfg -t vmware -h pv01 -i gitlab_01 -n gitlab_01 -p 300 -f img
 
   Options:
         --help                      show this message
         --debug                     display information on the screen (debug mode)
         --verbose                   display 'info' messages on the screen (verbose mode)
     -c, --config <file>             attach an external config file to the script
+    -t, --type <xen/vmware>         specifies the type of hypervisor (VMware ESXi or Xen).
     -h, --host <host>               sets the ip address or hostname of the remote hypervisor
-    -i, --id <vm_id|vm_name>        sets the remote id (xen) or name (vmware) of the imported vm
+    -i, --id <vm_id|vm_name>        sets the remote id (Xen) or name (VMware ESXi) of the imported vm
     -n, --name <vm_name>            sets the name for the new files/directories
-                                    and remote vm directory in datastore (vmware)
+                                    and remote vm directory in datastore (VMware ESXi)
     -p, --pve-id <num>              sets the vm id created in proxmox
     -f, --pve-format <img|qcow2>    sets the disk output format
         --pve-import <local|host>   import disks into any proxmox node (optional)
@@ -52,25 +53,21 @@ The tool provides the following options:
 The configuration file (appended with the `-c|--config` parameter) has the following structure:
 
 ``````
-# Specifies the type of hypervisor (VMware ESXi or Xen).
-#   Example: hv_type="vmware"
-readonly hv_type="type"
-
 # Specifies the port number through which the ssh connection
 # to the remote server is established (ssh/scp). The ip address
 # or hostname is determined by the parameter (-h|--host).
-#   Example: hv_port="22"
-readonly hv_port="port"
+#   Example: port="22"
+readonly port="22"
 
 # Specifies the parameters for the ssh protocol. Before setting
 # test whether the server accepts it.
 #   Example: ssh_opt="-C -c arcfour -vv"
-readonly ssh_opt=""
+readonly ssh_opt="-vv"
 
-# Specifies the parameters for the dd. Before setting
+# Specifies the parameters for the dd command. Before setting
 # test whether the server accepts it.
-#   Example: dd="bs=16M"
-readonly dd_opt=""
+#   Example: dd_opt="bs=16M"
+readonly dd_opt="bs=16M"
 
 # Specifies the remote path (remember to create it) on the remote machine
 # where files (such as snapshots) will be placed (only for Xen).
@@ -90,7 +87,7 @@ readonly pve_lvm="/path/to/lvm/vg"
 # Specifies the local path (remember to create it) on the proxmox machine
 # where the virtual machine files from the remote host will be copied.
 #   Example: local_storage="/xfs900/vmware"
-readonly local_storage="/xfs900/path/to/local/vm/dump"
+readonly local_storage="/path/to/local/vm/dump"
 
 # Specifies whether to delete unneeded files/directories (only local).
 #   Example: remove_unused="yes"
