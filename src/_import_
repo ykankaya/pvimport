@@ -104,19 +104,40 @@ function InitEnv() {
     # Checking variable values (if they are incorrect values).
     if [[ "$i" == "pve_storage" ]] || \
        [[ "$i" == "pve_lvm" ]] || \
-       [[ "$i" ==  "hv_type" ]] || \
+       [[ "$i" == "hv_type" ]] || \
        [[ "$i" == "pve_format" ]] ; then
 
-      if [[ ! -d "$pve_storage" ]] || \
-         [[ ! -e "$pve_lvm" ]] || \
-         [[ "$hv_type" != "vmware" ]] && [[ "$hv_type" != "xen" ]] || \
-         [[ "$pve_format" != "img" ]] && [[ "$pve_format" != "qcow2" ]] ; then
+      if [[ ! -d "$pve_storage" ]] ; then
 
-        _sprintf "stop" "incorrect value: '${i}'"
+        _sprintf "stop" "incorrectly set storage"
 
         _logger "stop" \
           "${_FUNCTION_ID}()" \
-          "incorrect value: '${i}'"
+          "incorrectly set storage"
+
+      elif [[ ! -e "$pve_lvm" ]] ; then
+
+        _sprintf "stop" "incorrectly set lvm"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "incorrectly set lvm"
+
+      elif [[ "$hv_type" != "vmware" ]] && [[ "$hv_type" != "xen" ]] ; then
+
+        _sprintf "stop" "incorrectly set hypervisor type (properly: xen or vmware)"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "incorrectly set hypervisor type (properly: xen or vmware)"
+
+      elif [[ "$pve_format" != "img" ]] && [[ "$pve_format" != "qcow2" ]] ; then
+
+        _sprintf "stop" "incorrectly set format type (properly: img or qcow2)"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "incorrectly set format type (properly: img or qcow2)"
 
       fi
 
