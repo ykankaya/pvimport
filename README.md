@@ -30,15 +30,14 @@ The tool provides the following options:
     pvimport <option|long-option>
 
   Examples:
-    pvimport -c xen.cfg -t xen -h 172.20.50.31 -i ac06d737 -n VM_PROD -p 200 -f qcow2 --pve-import local --verbose
-    pvimport -c vmware.cfg -t vmware -h pv01 -i gitlab_01 -n gitlab_01 -p 300 -f img
+    pvimport -c vmware.cfg -h pv01 -i gitlab_01 -n gitlab_01 -p 300 -f img --verbose
+    pvimport -c xen.cfg -h 172.20.50.31 -i ac06d737 -n VM_PROD -p 200 -f qcow2 --pve-import local
 
   Options:
         --help                      show this message
         --debug                     display information on the screen (debug mode)
         --verbose                   display 'info' messages on the screen (verbose mode)
     -c, --config <file>             attach an external config file to the script
-    -t, --type <xen/vmware>         specifies the type of hypervisor (VMware ESXi or Xen).
     -h, --host <host>               sets the ip address or hostname of the remote hypervisor
     -i, --id <vm_id|vm_name>        sets the remote id (Xen) or name (VMware ESXi) of the imported vm
     -n, --name <vm_name>            sets the name for the new files/directories
@@ -53,6 +52,11 @@ The tool provides the following options:
 The configuration file (appended with the `-c|--config` parameter) has the following structure:
 
 ``````
+# shellcheck shell=bash
+
+# Specifies the type of hypervisor (VMware ESXi or Xen).
+readonly hv_type="type"
+
 # Specifies the port number through which the ssh connection
 # to the remote server is established (ssh/scp). The ip address
 # or hostname is determined by the parameter (-h|--host).
@@ -62,7 +66,7 @@ readonly port="22"
 # Specifies the parameters for the ssh protocol. Before setting
 # test whether the server accepts it.
 #   Example: ssh_opt="-C -c arcfour -vv"
-readonly ssh_opt="-vv"
+readonly ssh_opt=""
 
 # Specifies the parameters for the dd command. Before setting
 # test whether the server accepts it.
