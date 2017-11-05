@@ -64,13 +64,13 @@ function CheckRemoteVmware() {
 
   local _host="$1"
   local _port="$2"
-  local _id="$3"
+  local _vmid="$3"
 
   _msg_args+=(\
-  "vm id: '${_id}'")
+  "vm id: '${_vmid}'")
 
   _cmd_args+=(\
-  "ssh ${ssh_opt} ${_host} -p ${_port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${_id}) ]] ; then exit 1 ; fi")
+  "ssh ${ssh_opt} ${_host} -p ${_port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${_vmid}) ]] ; then exit 1 ; fi")
 
   return $_STATE
 
