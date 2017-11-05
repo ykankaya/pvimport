@@ -161,7 +161,11 @@ function InitPv() {
   export _msg_args=()
   export _cmd_args=()
 
-  eval ${_args[@]} ; if [ ! $? ] ; then _exit_ 255 ; fi
+  IFS="$IFS_HACK"
+
+  eval "${_args[@]}" ; if [ ! $? ] ; then _exit_ 255 ; fi
+
+  IFS="$IFS_ORIG"
 
   _num=${#_msg_args[@]}
   for (( _xa=0 ; _xa<=((_num - 1)) ; _xa++ )) ; do
