@@ -29,7 +29,7 @@ function InitEnv() {
 
   # Functions stack description:
   #   CheckConn       - check the connection to the server (xen/vmware)
-  #   InitRemoteEnv   - creates a remote environment (xen/vmware)
+  #   InitRemoteFiles   - creates a remote environment (xen/vmware)
   #   CheckRemoteEnv  - checks a remote environment (xen/vmware)
   #   VmExport        - export Virtual Machine (xen)
   #   VmCopy          - copy Virtual Machine (xen/vmware)
@@ -219,37 +219,39 @@ function CheckConn() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: InitRemoteEnv()
+# Function name: InitRemote()
 #
 # Description:
 #   Initialization of the remote environment.
 #
 # Usage:
-#   InitRemoteEnv
+#   InitRemote
 #
 # Examples:
-#   InitRemoteEnv
+#   InitRemote
 #
 
-function InitRemoteEnv() {
+function InitRemote() {
 
-  local _FUNCTION_ID="InitRemoteEnv"
+  local _FUNCTION_ID="InitRemote"
   local _STATE=0
 
-  local _file="$1"
+  local _host="$1"
+  local _port="$2"
+  local _file="$3"
 
   _msg_args+=(\
   "src: '${_file}")
 
   _cmd_args+=(\
-  "ssh ${ssh_opt} ${hv_host} -p ${port} >${_file}")
+  "ssh ${ssh_opt} ${_host} -p ${_port} >${_file}")
 
   return $_STATE
 
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: CheckRemoteEnv()
+# Function name: CheckRemote()
 #
 # Description:
 #   Checks of the remote environment:
@@ -257,85 +259,26 @@ function InitRemoteEnv() {
 #     - remote storage
 #
 # Usage:
-#   CheckRemoteEnv
+#   CheckRemote
 #
 # Examples:
-#   CheckRemoteEnv
+#   CheckRemote
 #
 
-function CheckRemoteEnv() {
+function CheckRemote() {
 
-  local _FUNCTION_ID="CheckRemoteEnv"
+  local _FUNCTION_ID="CheckRemote"
   local _STATE=0
 
   local _host="$1"
   local _port="$2"
-  local _id="$3"
-  local _storage="$4"
+  local _storage="$3"
 
   _msg_args+=(\
-  "vm id: '${_id}'" \
   "directory: '${_storage}'")
-
-  # shellcheck disable=SC2154
-  if [[ "$hv_type" == "xen" ]] ; then
-
-    _cmd_args+=(\
-    "ssh ${ssh_opt} ${_host} -p ${_port} if [[ ! \$(xe vm-list | grep ${_id}) ]] ; then exit 1 ; fi")
-
-  elif [[ "$hv_type" == "vmware" ]] ; then
-
-    _cmd_args+=(\
-    "ssh ${ssh_opt} ${_host} -p ${_port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${_id}) ]] ; then exit 1 ; fi")
-
-  fi
 
   _cmd_args+=(\
   "ssh ${ssh_opt} ${_host} -p ${_port} if [[ ! -d \"${_storage}\" ]] ; then exit 1 ; fi")
-
-  return $_STATE
-
-}
-
-# ``````````````````````````````````````````````````````````````````````````````
-# Function name: GetRemoteEnv()
-#
-# Description:
-#   Dump of the remote environment to local.
-#
-# Usage:
-#   GetRemoteEnv
-#
-# Examples:
-#   GetRemoteEnv
-#
-
-function GetRemoteEnv() {
-
-  local _FUNCTION_ID="GetRemoteEnv"
-  local _STATE=0
-
-  _sprintf "head" "downloading configuration of remote environment"
-
-  _logger "head" \
-    "${_FUNCTION_ID}()" \
-    "downloading configuration of remote environment"
-
-  if [[ "$hv_type" == "vmware" ]] ; then
-
-    _msg_args+=(\
-    "vmx configuration search" \
-    "vmdk disk search" \
-    "get src: '$_pv_vmware_vars'" \
-    "get src: '$_pv_vmware_disks'")
-
-    _cmd_args+=(\
-    "ssh ${ssh_opt} ${hv_host} -p ${port} cd \"${re_path}\" && find . -name \"*.vmx\" >> ${_pv_vmware_vars}" \
-    "ssh ${ssh_opt} ${hv_host} -p ${port} cd \"${re_path}\" && find . -name \"*.vmdk\" >> ${_pv_vmware_disks}" \
-    "scp ${ssh_opt} -P ${port} ${hv_host}:${_pv_vmware_vars} ${_pv_vmware_vars}" \
-    "scp ${ssh_opt} -P ${port} ${hv_host}:${_pv_vmware_disks} ${_pv_vmware_disks}")
-
-  fi
 
   return $_STATE
 
