@@ -885,14 +885,6 @@ function __main__() {
 
     InitPv "GetRemoteVmware ${hv_host} ${port} ${_pv_vmware_vars}"
 
-  else
-
-    _sprintf "stop" "incorrectly set hypervisor type (properly: xen or vmware)"
-
-    _logger "stop" \
-      "${_FUNCTION_ID}()" \
-      "incorrectly set hypervisor type (properly: xen or vmware)"
-
   fi
 
   # We start the import when calling the --import option.
