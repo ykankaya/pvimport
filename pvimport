@@ -792,8 +792,46 @@ function __main__() {
   # Init environment.
   InitEnv
 
-  # Init all functions.
-  InitPv
+  # shellcheck disable=SC2154
+  if [[ "$hv_type" == "xen" ]] ; then
+
+    InitPv CheckConn $_hv_host $_hv_port
+
+    InitPv CheckConn $pve_host $_hv_port
+
+    #                 InitRemoteEnv CheckRemoteEnv \
+    #                 VmExport VmCopy VmExtract VmConvertDisks)
+
+  elif [[ "$hv_type" == "vmware" ]] ; then
+
+    InitPv CheckConn $_hv_host $_hv_port
+
+    InitPv CheckConn $pve_host $_hv_port
+
+    #                 InitRemoteEnv CheckRemoteEnv \
+    #                 GetRemoteEnv VmCopy VmConvertDisks)
+
+  else
+
+    _sprintf "stop" "incorrectly set hypervisor type (properly: xen or vmware)"
+
+    _logger "stop" \
+      "${_FUNCTION_ID}()" \
+      "incorrectly set hypervisor type (properly: xen or vmware)"
+
+  fi
+
+  # We start the import when calling the --import option.
+  if [[ "$pve_import" == "true" ]] ; then
+
+    _function_stack+=(VmImport)
+
+  else
+
+    pve_import="false"
+    pve_host="local"
+
+  fi
 
   # ````````````````````````````````````````````````````````````````````````````
 

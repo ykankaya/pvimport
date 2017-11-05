@@ -37,43 +37,6 @@ function InitEnv() {
   #   VmConvertDisks  - convert Virtual Machine (xen/vmware)
   #   VmImport        - import Virtual Machine (xen/vmware)
 
-  # shellcheck disable=SC2154
-  if [[ "$hv_type" == "xen" ]] ; then
-
-    _function_stack=("CheckConn $_hv_host $_hv_port" \
-                     "CheckConn $pve_host $_hv_port" \
-                     InitRemoteEnv CheckRemoteEnv \
-                     VmExport VmCopy VmExtract VmConvertDisks)
-
-  elif [[ "$hv_type" == "vmware" ]] ; then
-
-    _function_stack=("CheckConn $_hv_host $_hv_port" \
-                     "CheckConn $pve_host $_hv_port" \
-                     InitRemoteEnv CheckRemoteEnv \
-                     GetRemoteEnv VmCopy VmConvertDisks)
-
-  else
-
-    _sprintf "stop" "incorrectly set hypervisor type (properly: xen or vmware)"
-
-    _logger "stop" \
-      "${_FUNCTION_ID}()" \
-      "incorrectly set hypervisor type (properly: xen or vmware)"
-
-  fi
-
-  # We start the import when calling the --import option.
-  if [[ "$pve_import" == "true" ]] ; then
-
-    _function_stack+=(VmImport)
-
-  else
-
-    pve_import="false"
-    pve_host="local"
-
-  fi
-
   _sprintf "head" "creating and checking configuration of local environment"
 
   _logger "head" \
@@ -187,6 +150,8 @@ function InitPv() {
   local _FUNCTION_ID="InitPv"
   local _STATE=0
 
+  local _function_stack=("${!1}")
+
   IFS="$IFS_HACK"
 
   for _function in "${_function_stack[@]}" ; do
@@ -200,7 +165,7 @@ function InitPv() {
     export _msg_args=()
     export _cmd_args=()
 
-    $_function ; if [ ! $? ] ; then _exit_ 255 ; fi
+    eval $_function ; if [ ! $? ] ; then _exit_ 255 ; fi
 
     _num=${#_msg_args[@]}
     for (( _xa=0 ; _xa<=((_num - 1)) ; _xa++ )) ; do
