@@ -822,13 +822,27 @@ function __main__() {
   # shellcheck disable=SC2154
   if [[ "$hv_type" == "xen" ]] ; then
 
-    true
+    _sprintf "head" "checking configuration of remote environment"
+
+    _logger "head" \
+      "${_FUNCTION_ID}()" \
+      "checking configuration of remote environment"
+
+    InitPv "CheckRemoteEnv $hv_host $port $vm_id $hv_storage"
+
     #                 InitRemoteEnv CheckRemoteEnv \
     #                 VmExport VmCopy VmExtract VmConvertDisks)
 
   elif [[ "$hv_type" == "vmware" ]] ; then
 
-    true
+    _sprintf "head" "checking configuration of remote environment"
+
+    _logger "head" \
+      "${_FUNCTION_ID}()" \
+      "checking configuration of remote environment"
+
+    InitPv "CheckRemoteEnv $hv_host $port $vm_id $re_path"
+
     #                 InitRemoteEnv CheckRemoteEnv \
     #                 GetRemoteEnv VmCopy VmConvertDisks)
 

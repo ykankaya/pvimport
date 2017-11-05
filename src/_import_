@@ -251,7 +251,9 @@ function InitRemoteEnv() {
 # Function name: CheckRemoteEnv()
 #
 # Description:
-#   Checks of the remote environment.
+#   Checks of the remote environment:
+#     - virtual machine id/name
+#     - remote storage
 #
 # Usage:
 #   CheckRemoteEnv
@@ -265,33 +267,29 @@ function CheckRemoteEnv() {
   local _FUNCTION_ID="CheckRemoteEnv"
   local _STATE=0
 
-  _sprintf "head" "checking configuration of remote environment"
+  local _host="$1"
+  local _port="$2"
+  local _id="$3"
+  local _storage="$4"
 
-  _logger "head" \
-    "${_FUNCTION_ID}()" \
-    "checking configuration of remote environment"
+  _msg_args+=(\
+  "vm id: '${_id}'" \
+  "directory: '${_storage}'")
 
+  # shellcheck disable=SC2154
   if [[ "$hv_type" == "xen" ]] ; then
 
-    _msg_args+=(\
-    "vm id: '${vm_id}'" \
-    "directory: '${hv_storage}'")
-
     _cmd_args+=(\
-    "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! \$(xe vm-list | grep ${vm_id}) ]] ; then exit 1 ; fi" \
-    "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -d \"${hv_storage}\" ]] ; then exit 1 ; fi")
+    "ssh ${ssh_opt} ${_host} -p ${_port} if [[ ! \$(xe vm-list | grep ${_id}) ]] ; then exit 1 ; fi")
 
   elif [[ "$hv_type" == "vmware" ]] ; then
 
-    _msg_args+=(\
-    "vm id: '${vm_id}'" \
-    "vm directory: '${re_path}'")
-
     _cmd_args+=(\
-    "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${vm_id}) ]] ; then exit 1 ; fi" \
-    "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -d \"${re_path}\" ]] ; then exit 1 ; fi")
+    "ssh ${ssh_opt} ${_host} -p ${_port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${_id}) ]] ; then exit 1 ; fi")
 
   fi
+
+  "ssh ${ssh_opt} ${_host} -p ${_port} if [[ ! -d \"${_storage}\" ]] ; then exit 1 ; fi")
 
   return $_STATE
 
