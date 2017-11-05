@@ -849,8 +849,6 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "preparing configuration of remote environment"
 
-    InitPv "InitRemote ${hv_host} ${port} ${_pv_xen_vars}"
-
     InitPv "InitRemoteVmware ${hv_host} ${port} ${_pv_vmware_vars} *.vmx"
     InitPv "InitRemoteVmware ${hv_host} ${port} ${_pv_vmware_disks} *.vmdk"
 
