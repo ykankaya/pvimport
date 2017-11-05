@@ -207,7 +207,7 @@ function CheckConn() {
   # We test two types of connections that will be used.
   _msg_args+=(\
   "host (tcp): '${_host}'" \
-  "host (ssh): '${_port}'")
+  "host (ssh): '${_host}'")
 
   _cmd_args+=(\
   "eval timeout 1 bash -c \"</dev/tcp/${_host}/${_port}\"" \
