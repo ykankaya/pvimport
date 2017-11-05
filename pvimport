@@ -849,6 +849,14 @@ function __main__() {
 
     InitPv "GetRemoteXen ${hv_host} ${port} ${_pv_xen_vars}"
 
+    _sprintf "head" "exporting $vm_id"
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "exporting $vm_id"
+
+    InitPv "VmExportXen ${hv_host} ${port} ${vm_id}"
+
   elif [[ "$hv_type" == "vmware" ]] ; then
 
     _sprintf "head" "preparing configuration of remote environment"
