@@ -290,6 +290,7 @@ function CheckRemoteEnv() {
 
   fi
 
+  _cmd_args+=(\
   "ssh ${ssh_opt} ${_host} -p ${_port} if [[ ! -d \"${_storage}\" ]] ; then exit 1 ; fi")
 
   return $_STATE
