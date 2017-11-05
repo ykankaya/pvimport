@@ -212,12 +212,6 @@ function VmConvertDisks() {
   local _FUNCTION_ID="VmConvertDisks"
   local _STATE=0
 
-  _sprintf "head" "converting disks to $pve_format format"
-
-  _logger "info" \
-    "${_FUNCTION_ID}()" \
-    "converting disks to $pve_format format"
-
   local _fdx
   local _fda
   local _fdb
