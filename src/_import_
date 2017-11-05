@@ -303,15 +303,13 @@ function InitRemote() {
   local _FUNCTION_ID="InitRemote"
   local _STATE=0
 
-  local _host="$1"
-  local _port="$2"
-  local _file="$3"
+  local _file="$1"
 
   _msg_args+=(\
   "src: '${_file}")
 
   _cmd_args+=(\
-  "ssh ${ssh_opt} ${_host} -p ${_port} >${_file}")
+  "ssh ${ssh_opt} ${hv_host} -p ${port} >${_file}")
 
   return $_STATE
 
@@ -337,15 +335,13 @@ function CheckRemote() {
   local _FUNCTION_ID="CheckRemote"
   local _STATE=0
 
-  local _host="$1"
-  local _port="$2"
-  local _storage="$3"
+  local _storage="$1"
 
   _msg_args+=(\
   "directory: '${_storage}'")
 
   _cmd_args+=(\
-  "ssh ${ssh_opt} ${_host} -p ${_port} if [[ ! -d \"${_storage}\" ]] ; then exit 1 ; fi")
+  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -d \"${_storage}\" ]] ; then exit 1 ; fi")
 
   return $_STATE
 
