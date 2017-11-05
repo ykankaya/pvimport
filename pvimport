@@ -749,7 +749,7 @@ function __main__() {
     # Include src/_import_ file.
     _load "head" "${_src_directory}/xen"
 
-  if [[ "$hv_type" == "vmware" ]] ; then
+  elif [[ "$hv_type" == "vmware" ]] ; then
 
     # Include src/_import_ file.
     _load "head" "${_src_directory}/vmware"
