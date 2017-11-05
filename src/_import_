@@ -235,21 +235,13 @@ function InitRemoteEnv() {
   local _FUNCTION_ID="InitRemoteEnv"
   local _STATE=0
 
-  _sprintf "head" "preparing configuration of remote environment"
-
-  _logger "head" \
-    "${_FUNCTION_ID}()" \
-    "preparing configuration of remote environment"
+  local _file="$1"
 
   _msg_args+=(\
-  "src: '${_pv_xen_vars}'" \
-  "src: '${_pv_vmware_vars}'" \
-  "src: '${_pv_vmware_disks}")
+  "src: '${_file}")
 
   _cmd_args+=(\
-  "ssh ${ssh_opt} ${hv_host} -p ${port} >${_pv_xen_vars}" \
-  "ssh ${ssh_opt} ${hv_host} -p ${port} >${_pv_vmware_vars}" \
-  "ssh ${ssh_opt} ${hv_host} -p ${port} >${_pv_vmware_disks}")
+  "ssh ${ssh_opt} ${hv_host} -p ${port} >${_file}")
 
   return $_STATE
 

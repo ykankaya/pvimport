@@ -800,31 +800,32 @@ function __main__() {
   # Init environment.
   InitEnv
 
+  _sprintf "head" "checking connection to remote host(s)"
+
+  _logger "head" \
+    "${_FUNCTION_ID}()" \
+    "checking connection to remote host(s)"
+    
+  InitPv "CheckConn $hv_host $port"
+  InitPv "CheckConn $pve_host $port"
+
+  _sprintf "head" "preparing configuration of remote environment"
+
+  _logger "head" \
+    "${_FUNCTION_ID}()" \
+    "preparing configuration of remote environment"
+
+  InitPv "InitRemoteEnv ${_pv_xen_vars}"
+  InitPv "InitRemoteEnv ${_pv_vmware_vars}"
+  InitPv "InitRemoteEnv ${_pv_vmware_disks}"
+
   # shellcheck disable=SC2154
   if [[ "$hv_type" == "xen" ]] ; then
-
-    _sprintf "head" "checking connection to remote host(s)"
-
-    _logger "head" \
-      "${_FUNCTION_ID}()" \
-      "checking connection to remote host(s)"
-    
-    InitPv "CheckConn $hv_host $port"
-    InitPv "CheckConn $pve_host $port"
 
     #                 InitRemoteEnv CheckRemoteEnv \
     #                 VmExport VmCopy VmExtract VmConvertDisks)
 
   elif [[ "$hv_type" == "vmware" ]] ; then
-
-    _sprintf "head" "checking connection to remote host(s)"
-
-    _logger "head" \
-      "${_FUNCTION_ID}()" \
-      "checking connection to remote host(s)"
-    
-    InitPv "CheckConn $hv_host $port"
-    InitPv "CheckConn $pve_host $port"
 
     #                 InitRemoteEnv CheckRemoteEnv \
     #                 GetRemoteEnv VmCopy VmConvertDisks)
