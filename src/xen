@@ -1,0 +1,44 @@
+# shellcheck shell=bash
+
+################################################################################
+######################## Definitions of user variables #########################
+################################################################################
+
+
+################################################################################
+######################## Definitions of user functions #########################
+################################################################################
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: CheckRemoteXen()
+#
+# Description:
+#   Checks of the remote environment:
+#     - virtual machine id/name
+#     - remote storage
+#
+# Usage:
+#   CheckRemoteXen
+#
+# Examples:
+#   CheckRemoteXen
+#
+
+function CheckRemoteXen() {
+
+  local _FUNCTION_ID="CheckRemoteXen"
+  local _STATE=0
+
+  local _host="$1"
+  local _port="$2"
+  local _id="$3"
+
+  _msg_args+=(\
+  "vm id: '${_id}'")
+
+  _cmd_args+=(\
+  "ssh ${ssh_opt} ${_host} -p ${_port} if [[ ! \$(xe vm-list | grep ${_id}) ]] ; then exit 1 ; fi")
+
+  return $_STATE
+
+}

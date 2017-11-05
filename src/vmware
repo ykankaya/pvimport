@@ -1,0 +1,111 @@
+# shellcheck shell=bash
+
+################################################################################
+######################## Definitions of user variables #########################
+################################################################################
+
+
+################################################################################
+######################## Definitions of user functions #########################
+################################################################################
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: InitRemoteVmware()
+#
+# Description:
+#   Initialization of the remote environment.
+#
+# Usage:
+#   InitRemoteVmware
+#
+# Examples:
+#   InitRemoteVmware
+#
+
+function InitRemoteVmware() {
+
+  local _FUNCTION_ID="InitRemoteVmware"
+  local _STATE=0
+
+  local _host="$1"
+  local _port="$2"
+  local _file="$3"
+  local _larg="$4"
+
+  _msg_args+=(\
+  "src: '${_file}")
+
+  _cmd_args+=(\
+  "ssh ${ssh_opt} ${_host} -p ${_port} cd \"${re_path}\" && find . -name \"${_larg}\" >>${_file}")
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: CheckRemoteVmware()
+#
+# Description:
+#   Checks of the remote environment:
+#     - virtual machine id/name
+#     - remote storage
+#
+# Usage:
+#   CheckRemoteVmware
+#
+# Examples:
+#   CheckRemoteVmware
+#
+
+function CheckRemoteVmware() {
+
+  local _FUNCTION_ID="CheckRemoteVmware"
+  local _STATE=0
+
+  local _host="$1"
+  local _port="$2"
+  local _id="$3"
+
+  _msg_args+=(\
+  "vm id: '${_id}'")
+
+  _cmd_args+=(\
+  "ssh ${ssh_opt} ${_host} -p ${_port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${_id}) ]] ; then exit 1 ; fi")
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: GetRemoteVmware()
+#
+# Description:
+#   Dump of the remote environment to local.
+#
+# Usage:
+#   GetRemoteVmware
+#
+# Examples:
+#   GetRemoteVmware
+#
+
+function GetRemoteVmware() {
+
+  local _FUNCTION_ID="GetRemoteVmware"
+  local _STATE=0
+
+  local _host="$1"
+  local _port="$2"
+  local _file="$3"
+
+  _msg_args+=(\
+  "checking: '$_file'" \
+  "get src: '$_file'")
+
+  _cmd_args+=(\
+  "ssh ${ssh_opt} ${_host} -p ${_port} if [[ ! -e \"${_file}\" ]] ; then exit 1 ; fi" \
+  "scp ${ssh_opt} -P ${_port} ${_host}:${_file} ${_file}")
+
+  return $_STATE
+
+}
