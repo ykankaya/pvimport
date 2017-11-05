@@ -46,8 +46,8 @@
 set -o pipefail
 
 # Internal field separator (more flexible):
-#   IFS_ORIG="$IFS"
-#   IFS_HACK=$'\n\t'
+IFS_ORIG="$IFS"
+IFS_HACK=$'\n\t'
 #   IFS="$IFS_HACK"
 
 # PATH env variable setup:
