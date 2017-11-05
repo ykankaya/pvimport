@@ -736,15 +736,15 @@ function __main__() {
   # In this section we add external file (for -c|--config script param).
   if [[ "$load_state" -eq 1 ]] ; then _load "head" "$config" ; fi
 
-  if [[ "$hv_type" == "xen" ]] ; then
+  if [[ "$hv_type" == "vmware" ]] ; then
 
-    # Include src/_import_ file.
-    _load "head" "${_src_directory}/xen"
-
-  elif [[ "$hv_type" == "vmware" ]] ; then
-
-    # Include src/_import_ file.
+    # Include src/vmware file which contains functions for vmware.
     _load "head" "${_src_directory}/vmware"
+
+  elif [[ "$hv_type" == "xen" ]] ; then
+
+    # Include src/xen file which contains functions for xen.
+    _load "head" "${_src_directory}/xen"
 
   fi
 
@@ -804,6 +804,9 @@ function __main__() {
   # Init environment.
   InitEnv
 
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+  #                  Init checking connection to remote hosts.                 #
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   _sprintf "head" "checking connection to remote host(s)"
 
   _logger "head" \
@@ -818,112 +821,152 @@ function __main__() {
 
   fi
 
-  # shellcheck disable=SC2154
-  if [[ "$hv_type" == "xen" ]] ; then
+  if [[ "$hv_type" == "vmware" ]] ; then
 
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+    #              Preparing configuration of remote environment.              #
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     _sprintf "head" "preparing configuration of remote environment"
 
     _logger "head" \
       "${_FUNCTION_ID}()" \
       "preparing configuration of remote environment"
 
-    InitPv "InitRemote ${_pv_xen_vars}"
+    InitPv "VmwareInit ${_pv_vmware_vars} *.vmx"
+    InitPv "VmwareInit ${_pv_vmware_disks} *.vmdk"
 
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+    #              Checking configuration of remote environment.               #
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     _sprintf "head" "checking configuration of remote environment"
 
     _logger "head" \
       "${_FUNCTION_ID}()" \
       "checking configuration of remote environment"
 
-    InitPv "CheckRemote ${hv_storage}"
-    InitPv "CheckRemoteXen ${vm_id}"
+    InitPv "CheckStorage ${hv_storage}"
+    InitPv "VmwareCheck ${vm_id}"
 
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+    #             Downloading configuration of remote environment.             #
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     _sprintf "head" "downloading configuration of remote environment"
 
     _logger "head" \
       "${_FUNCTION_ID}()" \
       "downloading configuration of remote environment"
 
-    InitPv "GetRemoteXen ${_pv_xen_vars}"
+    InitPv "GetRemote ${_pv_vmware_vars}"
+    InitPv "GetRemote ${_pv_vmware_disks}"
 
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+    #                     Copying a virtual machine stack.                     #
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+    _sprintf "head" "copying a virtual machine stack"
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "copying a virtual machine stack"
+
+    InitPv "VmwareCopy"
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+    #                 Converting disks to $pve_format format.                  #
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+    _sprintf "head" "converting disks to $pve_format format"
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "converting disks to $pve_format format"
+
+    InitPv "VmwareConvert"
+
+  # shellcheck disable=SC2154
+  elif [[ "$hv_type" == "xen" ]] ; then
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+    #              Preparing configuration of remote environment.              #
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+    _sprintf "head" "preparing configuration of remote environment"
+
+    _logger "head" \
+      "${_FUNCTION_ID}()" \
+      "preparing configuration of remote environment"
+
+    InitPv "XenInit ${_pv_xen_vars}"
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+    #              Checking configuration of remote environment.               #
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+    _sprintf "head" "checking configuration of remote environment"
+
+    _logger "head" \
+      "${_FUNCTION_ID}()" \
+      "checking configuration of remote environment"
+
+    InitPv "CheckStorage ${hv_storage}"
+    InitPv "XenCheck ${vm_id}"
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+    #             Downloading configuration of remote environment.             #
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+    _sprintf "head" "downloading configuration of remote environment"
+
+    _logger "head" \
+      "${_FUNCTION_ID}()" \
+      "downloading configuration of remote environment"
+
+    InitPv "GetRemote ${_pv_xen_vars}"
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+    #                            Exporting $vm_id.                             #
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     _sprintf "head" "exporting $vm_id"
 
     _logger "info" \
       "${_FUNCTION_ID}()" \
       "exporting $vm_id"
 
-    InitPv "VmExportXen ${vm_id}"
+    InitPv "XenExport ${vm_id}"
 
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+    #                     Copying a virtual machine stack.                     #
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     _sprintf "head" "copying a virtual machine stack"
 
     _logger "info" \
       "${_FUNCTION_ID}()" \
       "copying a virtual machine stack"
 
-    InitPv "VmCopyXen"
+    InitPv "XenCopy"
 
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+    #                           Extracting ova files.                          #
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     _sprintf "head" "extracting ova files"
 
     _logger "info" \
       "${_FUNCTION_ID}()" \
       "extracting ova files"
 
-    InitPv "VmExtractXen"
+    InitPv "XenExtract"
 
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+    #                 Converting disks to $pve_format format.                  #
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     _sprintf "head" "converting disks to $pve_format format"
 
     _logger "info" \
       "${_FUNCTION_ID}()" \
       "converting disks to $pve_format format"
 
-    InitPv "VmConvertDisksXen"
-
-  elif [[ "$hv_type" == "vmware" ]] ; then
-
-    _sprintf "head" "preparing configuration of remote environment"
-
-    _logger "head" \
-      "${_FUNCTION_ID}()" \
-      "preparing configuration of remote environment"
-
-    InitPv "InitRemoteVmware ${_pv_vmware_vars} *.vmx"
-    InitPv "InitRemoteVmware ${_pv_vmware_disks} *.vmdk"
-
-    _sprintf "head" "checking configuration of remote environment"
-
-    _logger "head" \
-      "${_FUNCTION_ID}()" \
-      "checking configuration of remote environment"
-
-    InitPv "CheckRemote ${hv_storage}"
-    InitPv "CheckRemoteVmware ${vm_id}"
-
-    _sprintf "head" "downloading configuration of remote environment"
-
-    _logger "head" \
-      "${_FUNCTION_ID}()" \
-      "downloading configuration of remote environment"
-
-    InitPv "GetRemoteVmware ${_pv_vmware_vars}"
-
-    _sprintf "head" "copying a virtual machine stack"
-
-    _logger "info" \
-      "${_FUNCTION_ID}()" \
-      "copying a virtual machine stack"
-
-    InitPv "VmCopyVmware"
-
-    _sprintf "head" "converting disks to $pve_format format"
-
-    _logger "info" \
-      "${_FUNCTION_ID}()" \
-      "converting disks to $pve_format format"
-
-    InitPv "VmConvertDisksVmware"
+    InitPv "XenConvert"
 
   fi
 
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+  #                     Importing a virtual machine disks.                     #
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   # We start the import when calling the --import option.
   if [[ "$pve_import" == "true" ]] ; then
 
