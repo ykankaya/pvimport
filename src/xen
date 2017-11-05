@@ -31,13 +31,13 @@ function CheckRemoteXen() {
 
   local _host="$1"
   local _port="$2"
-  local _id="$3"
+  local _vmid="$3"
 
   _msg_args+=(\
-  "vm id: '${_id}'")
+  "vm id: '${_vmid}'")
 
   _cmd_args+=(\
-  "ssh ${ssh_opt} ${_host} -p ${_port} if [[ ! \$(xe vm-list | grep ${_id}) ]] ; then exit 1 ; fi")
+  "ssh ${ssh_opt} ${_host} -p ${_port} if [[ ! \$(xe vm-list | grep ${_vmid}) ]] ; then exit 1 ; fi")
 
   return $_STATE
 
@@ -72,6 +72,41 @@ function GetRemoteXen() {
   _cmd_args+=(\
   "ssh ${ssh_opt} ${_host} -p ${_port} if [[ ! -e \"${_file}\" ]] ; then exit 1 ; fi" \
   "scp ${ssh_opt} -P ${_port} ${_host}:${_file} ${_file}")
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: VmExportXen()
+#
+# Description:
+#   Exports the virtual machine.
+#
+# Usage:
+#   VmExportXen
+#
+# Examples:
+#   VmExportXen
+#
+
+function VmExportXen() {
+
+  local _FUNCTION_ID="VmExportXen"
+  local _STATE=0
+
+  local _host="$1"
+  local _port="$2"
+  local _vmid="$3"
+  local _file="$3"
+
+  _msg_args+=(\
+  "creating snapshot: '${_vmid}-${_random}'" \
+  "exporting snapshot: '${_vmid}.ova'")
+
+  _cmd_args+=(\
+  "ssh ${ssh_opt} ${_host} -p ${_port} _id=\$(xe vm-snapshot vm=${_vmid} new-name-label=${_vmid}-${_random}) ; echo \$_id >>${_pv_xen_vars}" \
+  "ssh ${ssh_opt} ${_host} -p ${_port} _id=\$(cat ${_pv_xen_vars}) ; xe vm-export vm=\${_id} filename=${hv_storage}/${_vmid}.ova")
 
   return $_STATE
 
