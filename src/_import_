@@ -285,42 +285,6 @@ function CheckRemote() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: VmExport()
-#
-# Description:
-#   Exports the virtual machine.
-#
-# Usage:
-#   VmExport
-#
-# Examples:
-#   VmExport
-#
-
-function VmExport() {
-
-  local _FUNCTION_ID="VmExport"
-  local _STATE=0
-
-  _sprintf "head" "exporting $vm_id"
-
-  _logger "info" \
-    "${_FUNCTION_ID}()" \
-    "exporting $vm_id"
-
-  _msg_args+=(\
-  "creating snapshot: '${vm_name}-${_random}'" \
-  "exporting snapshot: '${vm_name}.ova'")
-
-  _cmd_args+=(\
-  "ssh ${ssh_opt} ${hv_host} -p ${port} _id=\$(xe vm-snapshot vm=${vm_id} new-name-label=${vm_name}-${_random}) ; echo \$_id >> ${_pv_xen_vars}" \
-  "ssh ${ssh_opt} ${hv_host} -p ${port} _id=\$(cat ${_pv_xen_vars}) ; xe vm-export vm=\${_id} filename=${hv_storage}/${vm_name}.ova")
-
-  return $_STATE
-
-}
-
-# ``````````````````````````````````````````````````````````````````````````````
 # Function name: VmCopy()
 #
 # Description:
