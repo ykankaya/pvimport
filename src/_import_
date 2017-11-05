@@ -40,12 +40,16 @@ function InitEnv() {
   # shellcheck disable=SC2154
   if [[ "$hv_type" == "xen" ]] ; then
 
-    _function_stack=(CheckConn InitRemoteEnv CheckRemoteEnv \
+    _function_stack=("CheckConn $_hv_host $_hv_port" \
+                     "CheckConn $pve_host $_hv_port" \
+                     InitRemoteEnv CheckRemoteEnv \
                      VmExport VmCopy VmExtract VmConvertDisks)
 
   elif [[ "$hv_type" == "vmware" ]] ; then
 
-    _function_stack=(CheckConn InitRemoteEnv CheckRemoteEnv \
+    _function_stack=("CheckConn $_hv_host $_hv_port" \
+                     "CheckConn $pve_host $_hv_port" \
+                     InitRemoteEnv CheckRemoteEnv \
                      GetRemoteEnv VmCopy VmConvertDisks)
 
   else
@@ -183,6 +187,8 @@ function InitPv() {
   local _FUNCTION_ID="InitPv"
   local _STATE=0
 
+  IFS="$IFS_HACK"
+
   for _function in "${_function_stack[@]}" ; do
 
     _logger "info" \
@@ -214,6 +220,8 @@ function InitPv() {
 
   done
 
+  IFS="$IFS_ORIG"
+
   return $_STATE
 
 }
@@ -236,6 +244,9 @@ function CheckConn() {
   local _FUNCTION_ID="CheckConn"
   local _STATE=0
 
+  local _host="$1"
+  local _port="$2"
+
   _sprintf "head" "checking connection to remote host(s)"
 
   _logger "head" \
@@ -244,24 +255,12 @@ function CheckConn() {
 
   # We test two types of connections that will be used.
   _msg_args+=(\
-  "host (tcp): '${hv_host}'" \
-  "host (ssh): '${hv_host}'")
+  "host (tcp): '${_host}'" \
+  "host (ssh): '${_port}'")
 
   _cmd_args+=(\
-  "eval timeout 1 bash -c \"</dev/tcp/${hv_host}/${hv_port}\"" \
-  "ssh ${ssh_opt} ${hv_host} -p ${hv_port} exit 0")
-
-  if [[ "$pve_host" != "local" ]] ; then
-
-    _msg_args+=(\
-    "host (tcp): '${pve_host}'" \
-    "host (ssh): '${pve_host}'")
-
-    _cmd_args+=(\
-    "eval timeout 1 bash -c \"</dev/tcp/${pve_host}/${hv_port}\"" \
-    "ssh ${ssh_opt} ${pve_host} -p ${hv_port} exit 0")
-
-  fi
+  "eval timeout 1 bash -c \"</dev/tcp/${_host}/${_port}\"" \
+  "ssh ${ssh_opt} ${_host} -p ${_port} exit 0")
 
   return $_STATE
 
