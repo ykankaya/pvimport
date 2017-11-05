@@ -195,21 +195,21 @@ function VmExtractXen() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: VmConvertDisks()
+# Function name: VmConvertDisksXen()
 #
 # Description:
 #   Converts the virtual machine disks.
 #
 # Usage:
-#   VmConvertDisks
+#   VmConvertDisksXen
 #
 # Examples:
-#   VmConvertDisks
+#   VmConvertDisksXen
 #
 
-function VmConvertDisks() {
+function VmConvertDisksXen() {
 
-  local _FUNCTION_ID="VmConvertDisks"
+  local _FUNCTION_ID="VmConvertDisksXen"
   local _STATE=0
 
   local _fdx

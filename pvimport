@@ -878,6 +878,8 @@ function __main__() {
 
     InitPv "VmExtractXen"
 
+    _sprintf "head" "converting disks to $pve_format format"
+
     _logger "info" \
       "${_FUNCTION_ID}()" \
       "converting disks to $pve_format format"
