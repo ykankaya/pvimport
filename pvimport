@@ -806,8 +806,8 @@ function __main__() {
     "${_FUNCTION_ID}()" \
     "checking connection to remote host(s)"
     
-  InitPv "CheckConn $hv_host $port"
-  InitPv "CheckConn $pve_host $port"
+  InitPv "CheckConn ${hv_host} ${port}"
+  InitPv "CheckConn ${pve_host} ${port}"
 
   _sprintf "head" "preparing configuration of remote environment"
 
@@ -828,7 +828,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "checking configuration of remote environment"
 
-    InitPv "CheckRemoteEnv $hv_host $port $vm_id $hv_storage"
+    InitPv "CheckRemoteEnv ${hv_host} ${port} ${vm_id} ${hv_storage}"
 
     #                 InitRemoteEnv CheckRemoteEnv \
     #                 VmExport VmCopy VmExtract VmConvertDisks)
@@ -841,7 +841,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "checking configuration of remote environment"
 
-    InitPv "CheckRemoteEnv $hv_host $port $vm_id $re_path"
+    InitPv "CheckRemoteEnv ${hv_host} ${port} ${vm_id} ${re_path}"
 
     #                 InitRemoteEnv CheckRemoteEnv \
     #                 GetRemoteEnv VmCopy VmConvertDisks)
