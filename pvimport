@@ -841,6 +841,14 @@ function __main__() {
     InitPv "CheckRemote ${hv_host} ${port} ${hv_storage}"
     InitPv "CheckRemoteXen ${hv_host} ${port} ${vm_id}"
 
+    _sprintf "head" "downloading configuration of remote environment"
+
+    _logger "head" \
+      "${_FUNCTION_ID}()" \
+      "downloading configuration of remote environment"
+
+    InitPv "GetRemoteXen ${hv_host} ${port} ${_pv_xen_vars}"
+
   elif [[ "$hv_type" == "vmware" ]] ; then
 
     _sprintf "head" "preparing configuration of remote environment"
