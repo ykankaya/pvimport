@@ -102,10 +102,10 @@ function InitEnv() {
 
     # shellcheck disable=SC2154
     # Checking variable values (if they are incorrect values).
-    if [[ "$_i" == "pve_storage" ]] || \
-       [[ "$_i" == "pve_lvm" ]] || \
-       [[ "$_i" ==  "hv_type" ]] || \
-       [[ "$_i" == "pve_format" ]] ; then
+    if [[ "$i" == "pve_storage" ]] || \
+       [[ "$i" == "pve_lvm" ]] || \
+       [[ "$i" ==  "hv_type" ]] || \
+       [[ "$i" == "pve_format" ]] ; then
 
       if [[ ! -d "$pve_storage" ]] || \
          [[ ! -e "$pve_lvm" ]] || \
