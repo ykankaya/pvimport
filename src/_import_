@@ -150,7 +150,7 @@ function InitPv() {
   local _FUNCTION_ID="InitPv"
   local _STATE=0
 
-  local _args="$1"
+  local _args=("$@")
 
   IFS="$IFS_HACK"
 
