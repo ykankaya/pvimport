@@ -10,21 +10,21 @@
 ################################################################################
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: InitRemoteVmware()
+# Function name: InitRemote()
 #
 # Description:
 #   Initialization of the remote environment.
 #
 # Usage:
-#   InitRemoteVmware
+#   InitRemote
 #
 # Examples:
-#   InitRemoteVmware
+#   InitRemote
 #
 
-function InitRemoteVmware() {
+function InitRemote() {
 
-  local _FUNCTION_ID="InitRemoteVmware"
+  local _FUNCTION_ID="InitRemote"
   local _STATE=0
 
   local _file="$1"
@@ -41,7 +41,7 @@ function InitRemoteVmware() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: CheckRemoteVmware()
+# Function name: CheckRemote()
 #
 # Description:
 #   Checks of the remote environment:
@@ -49,15 +49,15 @@ function InitRemoteVmware() {
 #     - remote storage
 #
 # Usage:
-#   CheckRemoteVmware
+#   CheckRemote
 #
 # Examples:
-#   CheckRemoteVmware
+#   CheckRemote
 #
 
-function CheckRemoteVmware() {
+function CheckRemote() {
 
-  local _FUNCTION_ID="CheckRemoteVmware"
+  local _FUNCTION_ID="CheckRemote"
   local _STATE=0
 
   local _vmid="$1"
@@ -73,21 +73,21 @@ function CheckRemoteVmware() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: GetRemoteVmware()
+# Function name: GetRemote()
 #
 # Description:
 #   Dump of the remote environment to local.
 #
 # Usage:
-#   GetRemoteVmware
+#   GetRemote
 #
 # Examples:
-#   GetRemoteVmware
+#   GetRemote
 #
 
-function GetRemoteVmware() {
+function GetRemote() {
 
-  local _FUNCTION_ID="GetRemoteVmware"
+  local _FUNCTION_ID="GetRemote"
   local _STATE=0
 
   local _file="$1"
@@ -105,21 +105,21 @@ function GetRemoteVmware() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: VmCopyVmware()
+# Function name: VmCopy()
 #
 # Description:
 #   Copies the virtual machine from remote hv_host to local (target) hv_host.
 #
 # Usage:
-#   VmCopyVmware
+#   VmCopy
 #
 # Examples:
-#   VmCopyVmware
+#   VmCopy
 #
 
-function VmCopyVmware() {
+function VmCopy() {
 
-  local _FUNCTION_ID="VmCopyVmware"
+  local _FUNCTION_ID="VmCopy"
   local _STATE=0
 
   local _fvmx
@@ -164,21 +164,21 @@ function VmCopyVmware() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: VmConvertDisksVmware()
+# Function name: VmConvertDisks()
 #
 # Description:
 #   Converts the virtual machine disks.
 #
 # Usage:
-#   VmConvertDisksVmware
+#   VmConvertDisks
 #
 # Examples:
-#   VmConvertDisksVmware
+#   VmConvertDisks
 #
 
-function VmConvertDisksVmware() {
+function VmConvertDisks() {
 
-  local _FUNCTION_ID="VmConvertDisksVmware"
+  local _FUNCTION_ID="VmConvertDisks"
   local _STATE=0
 
   local _fdx

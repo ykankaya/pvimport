@@ -10,7 +10,7 @@
 ################################################################################
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: CheckRemoteXen()
+# Function name: CheckRemote()
 #
 # Description:
 #   Checks of the remote environment:
@@ -18,15 +18,15 @@
 #     - remote storage
 #
 # Usage:
-#   CheckRemoteXen
+#   CheckRemote
 #
 # Examples:
-#   CheckRemoteXen
+#   CheckRemote
 #
 
-function CheckRemoteXen() {
+function CheckRemote() {
 
-  local _FUNCTION_ID="CheckRemoteXen"
+  local _FUNCTION_ID="CheckRemote"
   local _STATE=0
 
   local _vmid="$1"
@@ -42,21 +42,21 @@ function CheckRemoteXen() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: GetRemoteXen()
+# Function name: GetRemote()
 #
 # Description:
 #   Dump of the remote environment to local.
 #
 # Usage:
-#   GetRemoteXen
+#   GetRemote
 #
 # Examples:
-#   GetRemoteXen
+#   GetRemote
 #
 
-function GetRemoteXen() {
+function GetRemote() {
 
-  local _FUNCTION_ID="GetRemoteXen"
+  local _FUNCTION_ID="GetRemote"
   local _STATE=0
 
   local _file="$1"
@@ -74,21 +74,21 @@ function GetRemoteXen() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: VmExportXen()
+# Function name: VmExport()
 #
 # Description:
 #   Exports the virtual machine.
 #
 # Usage:
-#   VmExportXen
+#   VmExport
 #
 # Examples:
-#   VmExportXen
+#   VmExport
 #
 
-function VmExportXen() {
+function VmExport() {
 
-  local _FUNCTION_ID="VmExportXen"
+  local _FUNCTION_ID="VmExport"
   local _STATE=0
 
   local _vmid="$1"
@@ -107,21 +107,21 @@ function VmExportXen() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: VmCopyXen()
+# Function name: VmCopy()
 #
 # Description:
 #   Copies the virtual machine from remote host to local (target) host.
 #
 # Usage:
-#   VmCopyXen
+#   VmCopy
 #
 # Examples:
-#   VmCopyXen
+#   VmCopy
 #
 
-function VmCopyXen() {
+function VmCopy() {
 
-  local _FUNCTION_ID="VmCopyXen"
+  local _FUNCTION_ID="VmCopy"
   local _STATE=0
 
   local _fvmx
@@ -147,21 +147,21 @@ function VmCopyXen() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: VmExtractXen()
+# Function name: VmExtract()
 #
 # Description:
 #   Extracts the virtual machine disks.
 #
 # Usage:
-#   VmExtractXen
+#   VmExtract
 #
 # Examples:
-#   VmExtractXen
+#   VmExtract
 #
 
-function VmExtractXen() {
+function VmExtract() {
 
-  local _FUNCTION_ID="VmExtractXen"
+  local _FUNCTION_ID="VmExtract"
   local _STATE=0
 
   _sprintf "info" "set directory: '$lo_path'"
@@ -195,21 +195,21 @@ function VmExtractXen() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: VmConvertDisksXen()
+# Function name: VmConvertDisks()
 #
 # Description:
 #   Converts the virtual machine disks.
 #
 # Usage:
-#   VmConvertDisksXen
+#   VmConvertDisks
 #
 # Examples:
-#   VmConvertDisksXen
+#   VmConvertDisks
 #
 
-function VmConvertDisksXen() {
+function VmConvertDisks() {
 
-  local _FUNCTION_ID="VmConvertDisksXen"
+  local _FUNCTION_ID="VmConvertDisks"
   local _STATE=0
 
   local _fdx
