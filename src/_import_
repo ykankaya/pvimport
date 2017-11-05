@@ -102,16 +102,23 @@ function InitEnv() {
 
     # shellcheck disable=SC2154
     # Checking variable values (if they are incorrect values).
-    if [[ ! -d "$pve_storage" ]] || \
-       [[ ! -e "$pve_lvm" ]] || \
-       [[ "$hv_type" != "vmware" ]] && [[ "$hv_type" != "xen" ]] || \
-       [[ "$pve_format" != "img" ]] && [[ "$pve_format" != "qcow2" ]] ; then
+    if [[ "$_i" == "pve_storage" ]] || \
+       [[ "$_i" == "pve_lvm" ]] || \
+       [[ "$_i" ==  "hv_type" ]] || \
+       [[ "$_i" == "pve_format" ]] ; then
 
-      _sprintf "stop" "value: incorrect"
+      if [[ ! -d "$pve_storage" ]] || \
+         [[ ! -e "$pve_lvm" ]] || \
+         [[ "$hv_type" != "vmware" ]] && [[ "$hv_type" != "xen" ]] || \
+         [[ "$pve_format" != "img" ]] && [[ "$pve_format" != "qcow2" ]] ; then
 
-      _logger "stop" \
-        "${_FUNCTION_ID}()" \
-        "value: incorrect"
+        _sprintf "stop" "incorrect value: '${i}'"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "incorrect value: '${i}'"
+
+      fi
 
     fi
 
