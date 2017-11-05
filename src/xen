@@ -10,36 +10,6 @@
 ################################################################################
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: XenInit()
-#
-# Description:
-#   Initialization of the remote environment.
-#
-# Usage:
-#   XenInit
-#
-# Examples:
-#   XenInit
-#
-
-function XenInit() {
-
-  local _FUNCTION_ID="XenInit"
-  local _STATE=0
-
-  local _file="$1"
-
-  _msg_args+=(\
-  "src: '${_file}")
-
-  _cmd_args+=(\
-  "ssh ${ssh_opt} ${hv_host} -p ${port} >${_file}")
-
-  return $_STATE
-
-}
-
-# ``````````````````````````````````````````````````````````````````````````````
 # Function name: XenCheck()
 #
 # Description:
