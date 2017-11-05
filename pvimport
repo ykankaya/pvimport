@@ -744,16 +744,16 @@ function __main__() {
   # The variables from the additional configuration file
   # (example: src/configs/template.cfg) are also checked.
   for i in "hv_host" \
-           "hv_port" \
            "hv_type" \
-           "hv_storage" \
            "vm_id" \
            "vm_name" \
+           "pve_id" \
+           "pve_format" \
+           "hv_storage" \
            "local_storage" \
            "pve_storage" \
            "pve_lvm" \
-           "pve_id" \
-           "pve_format" ; do
+           "port" ; do
 
     _i="" ; eval _i='$'$i
 
@@ -801,8 +801,8 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "checking connection to remote host(s)"
     
-    InitPv "CheckConn $hv_host $hv_port"
-    InitPv "CheckConn $pve_host $hv_port"
+    InitPv "CheckConn $hv_host $port"
+    InitPv "CheckConn $pve_host $port"
 
     #                 InitRemoteEnv CheckRemoteEnv \
     #                 VmExport VmCopy VmExtract VmConvertDisks)
@@ -815,8 +815,8 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "checking connection to remote host(s)"
     
-    InitPv "CheckConn $hv_host $hv_port"
-    InitPv "CheckConn $pve_host $hv_port"
+    InitPv "CheckConn $hv_host $port"
+    InitPv "CheckConn $pve_host $port"
 
     #                 InitRemoteEnv CheckRemoteEnv \
     #                 GetRemoteEnv VmCopy VmConvertDisks)
