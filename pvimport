@@ -822,11 +822,13 @@ function __main__() {
   # shellcheck disable=SC2154
   if [[ "$hv_type" == "xen" ]] ; then
 
+    true
     #                 InitRemoteEnv CheckRemoteEnv \
     #                 VmExport VmCopy VmExtract VmConvertDisks)
 
   elif [[ "$hv_type" == "vmware" ]] ; then
 
+    true
     #                 InitRemoteEnv CheckRemoteEnv \
     #                 GetRemoteEnv VmCopy VmConvertDisks)
 
