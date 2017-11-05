@@ -27,16 +27,14 @@ function InitRemoteVmware() {
   local _FUNCTION_ID="InitRemoteVmware"
   local _STATE=0
 
-  local _host="$1"
-  local _port="$2"
-  local _file="$3"
-  local _larg="$4"
+  local _file="$1"
+  local _larg="$2"
 
   _msg_args+=(\
   "src: '${_file}")
 
   _cmd_args+=(\
-  "ssh ${ssh_opt} ${_host} -p ${_port} cd \"${re_path}\" && find . -name \"${_larg}\" >>${_file}")
+  "ssh ${ssh_opt} ${hv_host} -p ${port} cd \"${re_path}\" && find . -name \"${_larg}\" >>${_file}")
 
   return $_STATE
 
@@ -62,15 +60,13 @@ function CheckRemoteVmware() {
   local _FUNCTION_ID="CheckRemoteVmware"
   local _STATE=0
 
-  local _host="$1"
-  local _port="$2"
-  local _vmid="$3"
+  local _vmid="$1"
 
   _msg_args+=(\
   "vm id: '${_vmid}'")
 
   _cmd_args+=(\
-  "ssh ${ssh_opt} ${_host} -p ${_port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${_vmid}) ]] ; then exit 1 ; fi")
+  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${_vmid}) ]] ; then exit 1 ; fi")
 
   return $_STATE
 
@@ -94,17 +90,189 @@ function GetRemoteVmware() {
   local _FUNCTION_ID="GetRemoteVmware"
   local _STATE=0
 
-  local _host="$1"
-  local _port="$2"
-  local _file="$3"
+  local _file="$1"
 
   _msg_args+=(\
   "checking: '$_file'" \
   "get src: '$_file'")
 
   _cmd_args+=(\
-  "ssh ${ssh_opt} ${_host} -p ${_port} if [[ ! -e \"${_file}\" ]] ; then exit 1 ; fi" \
-  "scp ${ssh_opt} -P ${_port} ${_host}:${_file} ${_file}")
+  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -e \"${_file}\" ]] ; then exit 1 ; fi" \
+  "scp ${ssh_opt} -P ${port} ${hv_host}:${_file} ${_file}")
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: VmCopyVmware()
+#
+# Description:
+#   Copies the virtual machine from remote hv_host to local (target) hv_host.
+#
+# Usage:
+#   VmCopyVmware
+#
+# Examples:
+#   VmCopyVmware
+#
+
+function VmCopyVmware() {
+
+  local _FUNCTION_ID="VmCopyVmware"
+  local _STATE=0
+
+  local _fvmx
+  local _fda
+
+  _sprintf "info" "set directory: '$lo_path'"
+
+  cd "$lo_path" || \
+  _logger "stop" \
+    "${_FUNCTION_ID}()" \
+    "directory change error: '$lo_path'"
+
+  _fvmx=$(grep ".vmx" "$_pv_vmware_vars" | cut -d "/" -f2)
+
+  _msg_args+=(\
+  "checking: '${_fvmx}'" \
+  "get src: '${_fvmx}'")
+
+  _cmd_args+=(\
+  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -e \"${re_path}/${_fvmx}\" ]] ; then exit 1 ; fi" \
+  "scp ${ssh_opt} -P ${port} ${hv_host}:${re_path}/${_fvmx} ${lo_path}")
+
+  # Issue to solve:
+  # shellcheck disable=SC2013
+  _fname=""
+  for _fname in $(grep ".vmdk" "$_pv_vmware_disks" | cut -d "/" -f2) ; do
+
+    _fda="$_fname"
+
+    _msg_args+=(\
+    "checking: '${_fda}'" \
+    "get src: '${_fda}'")
+
+    _cmd_args+=(\
+    "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -e \"${re_path}/${_fda}\" ]] ; then exit 1 ; fi" \
+    "scp ${ssh_opt} -P ${port} ${hv_host}:${re_path}/${_fda} ${lo_path}")
+
+  done
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: VmConvertDisksVmware()
+#
+# Description:
+#   Converts the virtual machine disks.
+#
+# Usage:
+#   VmConvertDisksVmware
+#
+# Examples:
+#   VmConvertDisksVmware
+#
+
+function VmConvertDisksVmware() {
+
+  local _FUNCTION_ID="VmConvertDisksVmware"
+  local _STATE=0
+
+  local _fdx
+  local _fda
+  local _fdb
+  local _fdc
+
+  local _fvmx
+  local _x=1
+
+  _sprintf "info" "set directory: '$lo_path'"
+
+  cd "$lo_path" || \
+  _logger "stop" \
+    "${_FUNCTION_ID}()" \
+    "directory change error: '$lo_path'"
+
+  _fvmx=$(grep ".vmx" "$_pv_vmware_vars" | cut -d "/" -f2)
+
+  # Issue to solve:
+  # shellcheck disable=SC2013
+  _fname=""
+  for _fname in $(grep ".vmdk" "$_pv_vmware_disks" | cut -d "/" -f2) ; do
+
+    # Store 'vmdk' file name (eg. vm.vmdk).
+    _fdx="$_fname"
+
+    # Store file name without extension (eg. vm).
+    _fda=${_fname%.*}
+
+    if [[ "$_fdx" != *"flat"* ]] ; then
+
+      if [[ "$pve_format" == "qcow2" ]] ; then
+
+        # Store 'qcow2' file name (eg. 1-vm.qcow2).
+        _fdb="${_x}-${_fdx%.*}.qcow2"
+
+        _msg_args+=(\
+        "checking: '${_fdx}'" \
+        "src: '${_fdx}', dst: '${_fdb}'")
+
+        _cmd_args+=(\
+        "eval if [[ ! -e ${_fdx} ]] ; then exit 1 ; fi" \
+        "qemu-img convert -f vmdk -O qcow2 ${_fdx} ${_fdb}")
+
+      elif [[ "$pve_format" == "img" ]] ; then
+
+        # Store 'img' file name (eg. 1-vm.img).
+        _fdb="${_x}-${_fdx%.*}.img"
+
+        _msg_args+=(\
+        "checking: '${_fdx}'" \
+        "src: '${_fdx}', dst: '${_fdb}'")
+
+        _cmd_args+=(\
+        "eval if [[ ! -e ${_fdx} ]] ; then exit 1 ; fi" \
+        "qemu-img convert -f vmdk -O raw ${_fdx} ${_fdb}")
+
+      fi
+
+      if [[ "$remove_unused" == "yes" ]] ; then
+
+        _msg_args+=(\
+        "remove: '${_fdx}'")
+        _cmd_args+=(\
+        "rm -fr ${_fdx}")
+
+        if [[ -e "${_fda}-flat.vmdk" ]] ; then
+
+          _msg_args+=(\
+          "remove: '${_fda}-flat.vmdk")
+
+          _cmd_args+=(\
+          "rm -fr ${_fda}-flat.vmdk")
+
+        fi
+
+       fi
+
+      _x=$((_x + 1))
+
+    fi
+
+  done
+
+  if [[ -e "${_fvmx}" ]] ; then
+
+    _msg_args+=(\
+    "remove: '${_fvmx}'")
+
+    _cmd_args+=(\
+    "rm -fr ${_fvmx}")
+
+  fi
 
   return $_STATE
 

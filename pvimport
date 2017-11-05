@@ -830,7 +830,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "preparing configuration of remote environment"
 
-    InitPv "InitRemote ${hv_host} ${port} ${_pv_xen_vars}"
+    InitPv "InitRemote ${_pv_xen_vars}"
 
     _sprintf "head" "checking configuration of remote environment"
 
@@ -838,8 +838,8 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "checking configuration of remote environment"
 
-    InitPv "CheckRemote ${hv_host} ${port} ${hv_storage}"
-    InitPv "CheckRemoteXen ${hv_host} ${port} ${vm_id}"
+    InitPv "CheckRemote ${hv_storage}"
+    InitPv "CheckRemoteXen ${vm_id}"
 
     _sprintf "head" "downloading configuration of remote environment"
 
@@ -847,7 +847,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "downloading configuration of remote environment"
 
-    InitPv "GetRemoteXen ${hv_host} ${port} ${_pv_xen_vars}"
+    InitPv "GetRemoteXen ${_pv_xen_vars}"
 
     _sprintf "head" "exporting $vm_id"
 
@@ -855,7 +855,29 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "exporting $vm_id"
 
-    InitPv "VmExportXen ${hv_host} ${port} ${vm_id}"
+    InitPv "VmExportXen ${vm_id}"
+
+    _sprintf "head" "copying a virtual machine stack"
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "copying a virtual machine stack"
+
+    InitPv "VmCopyXen"
+
+    _sprintf "head" "extracting ova files"
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "extracting ova files"
+
+    InitPv "VmExtractXen"
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "converting disks to $pve_format format"
+
+    InitPv "VmConvertDisksXen"
 
   elif [[ "$hv_type" == "vmware" ]] ; then
 
@@ -865,8 +887,8 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "preparing configuration of remote environment"
 
-    InitPv "InitRemoteVmware ${hv_host} ${port} ${_pv_vmware_vars} *.vmx"
-    InitPv "InitRemoteVmware ${hv_host} ${port} ${_pv_vmware_disks} *.vmdk"
+    InitPv "InitRemoteVmware ${_pv_vmware_vars} *.vmx"
+    InitPv "InitRemoteVmware ${_pv_vmware_disks} *.vmdk"
 
     _sprintf "head" "checking configuration of remote environment"
 
@@ -874,8 +896,8 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "checking configuration of remote environment"
 
-    InitPv "CheckRemote ${hv_host} ${port} ${hv_storage}"
-    InitPv "CheckRemoteVmware ${hv_host} ${port} ${vm_id}"
+    InitPv "CheckRemote ${hv_storage}"
+    InitPv "CheckRemoteVmware ${vm_id}"
 
     _sprintf "head" "downloading configuration of remote environment"
 
@@ -883,19 +905,34 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "downloading configuration of remote environment"
 
-    InitPv "GetRemoteVmware ${hv_host} ${port} ${_pv_vmware_vars}"
+    InitPv "GetRemoteVmware ${_pv_vmware_vars}"
+
+    _sprintf "head" "copying a virtual machine stack"
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "copying a virtual machine stack"
+
+    InitPv "VmCopyVmware"
+
+    _sprintf "head" "converting disks to $pve_format format"
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "converting disks to $pve_format format"
+
+    InitPv "VmConvertDisksVmware"
 
   fi
 
   # We start the import when calling the --import option.
   if [[ "$pve_import" == "true" ]] ; then
 
-    _function_stack+=(VmImport)
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "importing a virtual machine disks"
 
-  else
-
-    pve_import="false"
-    pve_host="local"
+    InitPv "VmImport"
 
   fi
 

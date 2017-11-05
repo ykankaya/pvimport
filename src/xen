@@ -29,15 +29,13 @@ function CheckRemoteXen() {
   local _FUNCTION_ID="CheckRemoteXen"
   local _STATE=0
 
-  local _host="$1"
-  local _port="$2"
-  local _vmid="$3"
+  local _vmid="$1"
 
   _msg_args+=(\
   "vm id: '${_vmid}'")
 
   _cmd_args+=(\
-  "ssh ${ssh_opt} ${_host} -p ${_port} if [[ ! \$(xe vm-list | grep ${_vmid}) ]] ; then exit 1 ; fi")
+  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! \$(xe vm-list | grep ${_vmid}) ]] ; then exit 1 ; fi")
 
   return $_STATE
 
@@ -61,17 +59,15 @@ function GetRemoteXen() {
   local _FUNCTION_ID="GetRemoteXen"
   local _STATE=0
 
-  local _host="$1"
-  local _port="$2"
-  local _file="$3"
+  local _file="$1"
 
   _msg_args+=(\
   "checking: '$_file'" \
   "get src: '$_file'")
 
   _cmd_args+=(\
-  "ssh ${ssh_opt} ${_host} -p ${_port} if [[ ! -e \"${_file}\" ]] ; then exit 1 ; fi" \
-  "scp ${ssh_opt} -P ${_port} ${_host}:${_file} ${_file}")
+  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -e \"${_file}\" ]] ; then exit 1 ; fi" \
+  "scp ${ssh_opt} -P ${port} ${hv_host}:${_file} ${_file}")
 
   return $_STATE
 
@@ -95,18 +91,226 @@ function VmExportXen() {
   local _FUNCTION_ID="VmExportXen"
   local _STATE=0
 
-  local _host="$1"
-  local _port="$2"
-  local _vmid="$3"
-  local _file="$3"
+  local _vmid="$1"
+  local _file="$2"
 
   _msg_args+=(\
   "creating snapshot: '${_vmid}-${_random}'" \
   "exporting snapshot: '${_vmid}.ova'")
 
   _cmd_args+=(\
-  "ssh ${ssh_opt} ${_host} -p ${_port} _id=\$(xe vm-snapshot vm=${_vmid} new-name-label=${_vmid}-${_random}) ; echo \$_id >>${_pv_xen_vars}" \
-  "ssh ${ssh_opt} ${_host} -p ${_port} _id=\$(cat ${_pv_xen_vars}) ; xe vm-export vm=\${_id} filename=${hv_storage}/${_vmid}.ova")
+  "ssh ${ssh_opt} ${hv_host} -p ${port} _id=\$(xe vm-snapshot vm=${_vmid} new-name-label=${_vmid}-${_random}) ; echo \$_id >>${_pv_xen_vars}" \
+  "ssh ${ssh_opt} ${hv_host} -p ${port} _id=\$(cat ${_pv_xen_vars}) ; xe vm-export vm=\${_id} filename=${hv_storage}/${_vmid}.ova")
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: VmCopyXen()
+#
+# Description:
+#   Copies the virtual machine from remote host to local (target) host.
+#
+# Usage:
+#   VmCopyXen
+#
+# Examples:
+#   VmCopyXen
+#
+
+function VmCopyXen() {
+
+  local _FUNCTION_ID="VmCopyXen"
+  local _STATE=0
+
+  _sprintf "head" "copying a virtual machine stack"
+
+  _logger "info" \
+    "${_FUNCTION_ID}()" \
+    "copying a virtual machine stack"
+
+  local _fvmx
+  local _fda
+
+  _sprintf "info" "set directory: '$lo_path'"
+
+  cd "$lo_path" || \
+  _logger "stop" \
+    "${_FUNCTION_ID}()" \
+    "directory change error: '$lo_path'"
+
+  if [[ "$hv_type" == "xen" ]] ; then
+
+    _msg_args+=(\
+    "checking: '${vm_name}.ova'" \
+    "get src: '${vm_name}.ova'")
+
+    _cmd_args+=(\
+    "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -e \"${hv_storage}/${vm_name}.ova\" ]] ; then exit 1 ; fi" \
+    "scp ${ssh_opt} -P ${port} ${hv_host}:${hv_storage}/${vm_name}.ova ${lo_path}")
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: VmExtractXen()
+#
+# Description:
+#   Extracts the virtual machine disks.
+#
+# Usage:
+#   VmExtractXen
+#
+# Examples:
+#   VmExtractXen
+#
+
+function VmExtractXen() {
+
+  local _FUNCTION_ID="VmExtractXen"
+  local _STATE=0
+
+  _sprintf "info" "set directory: '$lo_path'"
+
+  cd "$lo_path" || \
+  _logger "stop" \
+    "${_FUNCTION_ID}()" \
+    "directory change error: '$lo_path'"
+
+  _msg_args+=(\
+  "checking: '${vm_name}.ova'" \
+  "src: '${vm_name}.ova'")
+
+  _cmd_args+=(\
+  "eval if [[ ! -e ${vm_name}.ova ]] ; then exit 1 ; fi" \
+  "tar xf ${vm_name}.ova -C ${lo_path}")
+
+  # shellcheck disable=SC2154
+  if [[ "$remove_unused" == "yes" ]] ; then
+
+    _msg_args+=(\
+    "remove: '${vm_name}.ova'")
+
+    _cmd_args+=(\
+    "rm -fr ${vm_name}.ova")
+
+  fi
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: VmConvertDisks()
+#
+# Description:
+#   Converts the virtual machine disks.
+#
+# Usage:
+#   VmConvertDisks
+#
+# Examples:
+#   VmConvertDisks
+#
+
+function VmConvertDisks() {
+
+  local _FUNCTION_ID="VmConvertDisks"
+  local _STATE=0
+
+  _sprintf "head" "converting disks to $pve_format format"
+
+  _logger "info" \
+    "${_FUNCTION_ID}()" \
+    "converting disks to $pve_format format"
+
+  local _fdx
+  local _fda
+  local _fdb
+  local _fdc
+
+  local _fvmx
+  local _x=1
+
+  _sprintf "info" "set directory: '$lo_path'"
+
+  cd "$lo_path" || \
+  _logger "stop" \
+    "${_FUNCTION_ID}()" \
+    "directory change error: '$lo_path'"
+
+  # Issue to solve:
+  # shellcheck disable=SC2044
+  _fname=""
+  for _fname in $(find ./* -type d -name "Ref:*" | cut -d "/" -f2) ; do
+
+    # Store directory name (eg. Ref:20).
+    _fdx="$_fname"
+
+    # Store new directory/file name (eg. Ref_20).
+    _fda=$(echo "$_fdx" | tr ":" "_")
+
+    # Store new 'img' file (eg. 1-Ref_20.img).
+    _fdb="${_x}-${_fda}.img"
+
+    _msg_args+=(\
+    "checking: '${_fdx}'" \
+    "src: '${_fdx}', dst: '${_fdb}'")
+
+    _cmd_args+=(\
+    "eval if [[ ! -d ${_fdx} ]] ; then exit 1 ; fi" \
+    "xenmigrate --convert=${_fdx} ${_fdb}")
+
+    if [[ "$remove_unused" == "yes" ]] ; then
+
+      _msg_args+=(\
+      "remove: '${_fdx}'")
+
+      _cmd_args+=(\
+      "rm -fr ${_fdx}")
+
+    fi
+
+    if [[ "$pve_format" == "qcow2" ]] ; then
+
+      # Store 'qcow2' file name (eg. 1-Ref_20.qcow2).
+      _fdc="${_fdb%.*}.qcow2"
+
+      _msg_args+=(\
+      "checking: '${_fdb}'" \
+      "src: '${_fdb}', dst: '${_fdc}'")
+
+      _cmd_args+=(\
+      "eval if [[ ! -e ${_fdb} ]] ; then exit 1 ; fi" \
+      "qemu-img convert -f raw -O qcow2 ${_fdb} ${_fdc}")
+
+      if [[ "$remove_unused" == "yes" ]] ; then
+
+        _msg_args+=(\
+        "remove: '${_fdb}'")
+
+        _cmd_args+=(\
+        "rm -fr ${_fdb}")
+
+      fi
+
+    fi
+
+  _x=$((_x + 1))
+
+  done
+
+  if [[ -e "${_fvmx}" ]] ; then
+
+    _msg_args+=(\
+    "remove: '${_fvmx}'")
+
+    _cmd_args+=(\
+    "rm -fr ${_fvmx}")
+
+  fi
 
   return $_STATE
 
