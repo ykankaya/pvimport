@@ -42,3 +42,37 @@ function CheckRemoteXen() {
   return $_STATE
 
 }
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: GetRemoteXen()
+#
+# Description:
+#   Dump of the remote environment to local.
+#
+# Usage:
+#   GetRemoteXen
+#
+# Examples:
+#   GetRemoteXen
+#
+
+function GetRemoteXen() {
+
+  local _FUNCTION_ID="GetRemoteXen"
+  local _STATE=0
+
+  local _host="$1"
+  local _port="$2"
+  local _file="$3"
+
+  _msg_args+=(\
+  "checking: '$_file'" \
+  "get src: '$_file'")
+
+  _cmd_args+=(\
+  "ssh ${ssh_opt} ${_host} -p ${_port} if [[ ! -e \"${_file}\" ]] ; then exit 1 ; fi" \
+  "scp ${ssh_opt} -P ${_port} ${_host}:${_file} ${_file}")
+
+  return $_STATE
+
+}
