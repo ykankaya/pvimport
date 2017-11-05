@@ -1,4 +1,4 @@
-# shellcheck shell=bash
+#!/usr/bin/env bash
 
 ################################################################################
 ######################## Definitions of user variables #########################
@@ -10,21 +10,21 @@
 ################################################################################
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: InitRemote()
+# Function name: VmwareInit()
 #
 # Description:
 #   Initialization of the remote environment.
 #
 # Usage:
-#   InitRemote
+#   VmwareInit
 #
 # Examples:
-#   InitRemote
+#   VmwareInit
 #
 
-function InitRemote() {
+function VmwareInit() {
 
-  local _FUNCTION_ID="InitRemote"
+  local _FUNCTION_ID="VmwareInit"
   local _STATE=0
 
   local _file="$1"
@@ -41,7 +41,7 @@ function InitRemote() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: CheckRemote()
+# Function name: VmwareCheck()
 #
 # Description:
 #   Checks of the remote environment:
@@ -49,15 +49,15 @@ function InitRemote() {
 #     - remote storage
 #
 # Usage:
-#   CheckRemote
+#   VmwareCheck
 #
 # Examples:
-#   CheckRemote
+#   VmwareCheck
 #
 
-function CheckRemote() {
+function VmwareCheck() {
 
-  local _FUNCTION_ID="CheckRemote"
+  local _FUNCTION_ID="VmwareCheck"
   local _STATE=0
 
   local _vmid="$1"
@@ -73,53 +73,21 @@ function CheckRemote() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: GetRemote()
-#
-# Description:
-#   Dump of the remote environment to local.
-#
-# Usage:
-#   GetRemote
-#
-# Examples:
-#   GetRemote
-#
-
-function GetRemote() {
-
-  local _FUNCTION_ID="GetRemote"
-  local _STATE=0
-
-  local _file="$1"
-
-  _msg_args+=(\
-  "checking: '$_file'" \
-  "get src: '$_file'")
-
-  _cmd_args+=(\
-  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -e \"${_file}\" ]] ; then exit 1 ; fi" \
-  "scp ${ssh_opt} -P ${port} ${hv_host}:${_file} ${_file}")
-
-  return $_STATE
-
-}
-
-# ``````````````````````````````````````````````````````````````````````````````
-# Function name: VmCopy()
+# Function name: VmwareCopy()
 #
 # Description:
 #   Copies the virtual machine from remote hv_host to local (target) hv_host.
 #
 # Usage:
-#   VmCopy
+#   VmwareCopy
 #
 # Examples:
-#   VmCopy
+#   VmwareCopy
 #
 
-function VmCopy() {
+function VmwareCopy() {
 
-  local _FUNCTION_ID="VmCopy"
+  local _FUNCTION_ID="VmwareCopy"
   local _STATE=0
 
   local _fvmx
@@ -164,21 +132,21 @@ function VmCopy() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: VmConvertDisks()
+# Function name: VmwareConvert()
 #
 # Description:
 #   Converts the virtual machine disks.
 #
 # Usage:
-#   VmConvertDisks
+#   VmwareConvert
 #
 # Examples:
-#   VmConvertDisks
+#   VmwareConvert
 #
 
-function VmConvertDisks() {
+function VmwareConvert() {
 
-  local _FUNCTION_ID="VmConvertDisks"
+  local _FUNCTION_ID="VmwareConvert"
   local _STATE=0
 
   local _fdx

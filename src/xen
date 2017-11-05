@@ -1,4 +1,4 @@
-# shellcheck shell=bash
+#!/usr/bin/env bash
 
 ################################################################################
 ######################## Definitions of user variables #########################
@@ -10,7 +10,37 @@
 ################################################################################
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: CheckRemote()
+# Function name: XenInit()
+#
+# Description:
+#   Initialization of the remote environment.
+#
+# Usage:
+#   XenInit
+#
+# Examples:
+#   XenInit
+#
+
+function XenInit() {
+
+  local _FUNCTION_ID="XenInit"
+  local _STATE=0
+
+  local _file="$1"
+
+  _msg_args+=(\
+  "src: '${_file}")
+
+  _cmd_args+=(\
+  "ssh ${ssh_opt} ${hv_host} -p ${port} >${_file}")
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: XenCheck()
 #
 # Description:
 #   Checks of the remote environment:
@@ -18,15 +48,15 @@
 #     - remote storage
 #
 # Usage:
-#   CheckRemote
+#   XenCheck
 #
 # Examples:
-#   CheckRemote
+#   XenCheck
 #
 
-function CheckRemote() {
+function XenCheck() {
 
-  local _FUNCTION_ID="CheckRemote"
+  local _FUNCTION_ID="XenCheck"
   local _STATE=0
 
   local _vmid="$1"
@@ -42,53 +72,21 @@ function CheckRemote() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: GetRemote()
-#
-# Description:
-#   Dump of the remote environment to local.
-#
-# Usage:
-#   GetRemote
-#
-# Examples:
-#   GetRemote
-#
-
-function GetRemote() {
-
-  local _FUNCTION_ID="GetRemote"
-  local _STATE=0
-
-  local _file="$1"
-
-  _msg_args+=(\
-  "checking: '$_file'" \
-  "get src: '$_file'")
-
-  _cmd_args+=(\
-  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -e \"${_file}\" ]] ; then exit 1 ; fi" \
-  "scp ${ssh_opt} -P ${port} ${hv_host}:${_file} ${_file}")
-
-  return $_STATE
-
-}
-
-# ``````````````````````````````````````````````````````````````````````````````
-# Function name: VmExport()
+# Function name: XenExport()
 #
 # Description:
 #   Exports the virtual machine.
 #
 # Usage:
-#   VmExport
+#   XenExport
 #
 # Examples:
-#   VmExport
+#   XenExport
 #
 
-function VmExport() {
+function XenExport() {
 
-  local _FUNCTION_ID="VmExport"
+  local _FUNCTION_ID="XenExport"
   local _STATE=0
 
   local _vmid="$1"
@@ -107,21 +105,21 @@ function VmExport() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: VmCopy()
+# Function name: XenCopy()
 #
 # Description:
 #   Copies the virtual machine from remote host to local (target) host.
 #
 # Usage:
-#   VmCopy
+#   XenCopy
 #
 # Examples:
-#   VmCopy
+#   XenCopy
 #
 
-function VmCopy() {
+function XenCopy() {
 
-  local _FUNCTION_ID="VmCopy"
+  local _FUNCTION_ID="XenCopy"
   local _STATE=0
 
   local _fvmx
@@ -147,21 +145,21 @@ function VmCopy() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: VmExtract()
+# Function name: XenExtract()
 #
 # Description:
 #   Extracts the virtual machine disks.
 #
 # Usage:
-#   VmExtract
+#   XenExtract
 #
 # Examples:
-#   VmExtract
+#   XenExtract
 #
 
-function VmExtract() {
+function XenExtract() {
 
-  local _FUNCTION_ID="VmExtract"
+  local _FUNCTION_ID="XenExtract"
   local _STATE=0
 
   _sprintf "info" "set directory: '$lo_path'"
@@ -195,21 +193,21 @@ function VmExtract() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: VmConvertDisks()
+# Function name: XenConvert()
 #
 # Description:
 #   Converts the virtual machine disks.
 #
 # Usage:
-#   VmConvertDisks
+#   XenConvert
 #
 # Examples:
-#   VmConvertDisks
+#   XenConvert
 #
 
-function VmConvertDisks() {
+function XenConvert() {
 
-  local _FUNCTION_ID="VmConvertDisks"
+  local _FUNCTION_ID="XenConvert"
   local _STATE=0
 
   local _fdx
