@@ -68,94 +68,121 @@ function InitEnv() {
       "${_FUNCTION_ID}()" \
       "${i}: '$_i'"
 
-    # First, we check the virtual machine ID and its numeric value.
     local _num='^[0-9]+$'
-
-    if [[ "$i" == "pve_id" ]] ; then
-
-      if [[ "$pve_id" =~ $_num ]] ; then
-
-        # shellcheck disable=SC2143
-        # If the value is a number then we check whether
-        # the virtual machine with that identifier exists in the proxmox cluster.
-        if [[ ! $(grep "qemu" /etc/pve/.vmlist | cut -d ":" -f1 | grep "$pve_id") ]] ; then
-
-          _sprintf "stop" "vm with this id does not exist"
-
-          _logger "stop" \
-            "${_FUNCTION_ID}()" \
-            "vm with this id does not exist"
-
-        fi
-
-      else
-
-        _sprintf "stop" "vm id has no numeric value"
-
-        _logger "stop" \
-          "${_FUNCTION_ID}()" \
-          "vm id has no numeric value"
-
-      fi
-
-    fi
 
     # shellcheck disable=SC2154
     # Checking variable values (if they are incorrect values).
-    if [[ "$i" == "pve_storage" ]] || \
-       [[ "$i" == "pve_lvm" ]] || \
-       [[ "$i" == "hv_type" ]] || \
-       [[ "$i" == "pve_format" ]] ; then
+    case $i in
 
-      if [[ ! -d "$pve_storage" ]] ; then
+      hv_type)
 
-        _sprintf "stop" "incorrectly set storage"
+        if [[ "$hv_type" != "vmware" ]] && [[ "$hv_type" != "xen" ]] ; then
 
-        _logger "stop" \
-          "${_FUNCTION_ID}()" \
-          "incorrectly set storage"
+          _sprintf "stop" "incorrectly set hypervisor type (properly: 'xen' or 'vmware')"
 
-      elif [[ ! -e "$pve_lvm" ]] ; then
+          _logger "stop" \
+            "${_FUNCTION_ID}()" \
+            "incorrectly set hypervisor type (properly: 'xen' or 'vmware')"
 
-        _sprintf "stop" "incorrectly set lvm"
+        fi
 
-        _logger "stop" \
-          "${_FUNCTION_ID}()" \
-          "incorrectly set lvm"
+      ;;
 
-      elif [[ "$hv_type" != "vmware" ]] && [[ "$hv_type" != "xen" ]] ; then
+      pve_id)
 
-        _sprintf "stop" "incorrectly set hypervisor type (properly: xen or vmware)"
+        # We check the virtual machine ID and its numeric value.
+        if [[ "$i" == "pve_id" ]] ; then
 
-        _logger "stop" \
-          "${_FUNCTION_ID}()" \
-          "incorrectly set hypervisor type (properly: xen or vmware)"
+          if [[ "$pve_id" =~ $_num ]] ; then
 
-      elif [[ "$pve_format" != "img" ]] && [[ "$pve_format" != "qcow2" ]] ; then
+            # shellcheck disable=SC2143
+            # If the value is a number then we check whether
+            # the virtual machine with that identifier exists in the proxmox cluster.
+            if [[ ! $(grep "qemu" /etc/pve/.vmlist | cut -d ":" -f1 | grep "$pve_id") ]] ; then
 
-        _sprintf "stop" "incorrectly set format type (properly: img or qcow2)"
+              _sprintf "stop" "vm with this id does not exist"
 
-        _logger "stop" \
-          "${_FUNCTION_ID}()" \
-          "incorrectly set format type (properly: img or qcow2)"
+              _logger "stop" \
+                "${_FUNCTION_ID}()" \
+                "vm with this id does not exist"
 
-      fi
+            fi
 
-    fi
+          else
+
+            _sprintf "stop" "vm id has no numeric value"
+
+            _logger "stop" \
+              "${_FUNCTION_ID}()" \
+              "vm id has no numeric value"
+
+          fi
+
+        fi
+
+      ;;
+
+      pve_format)
+
+        if [[ "$pve_format" != "img" ]] && [[ "$pve_format" != "qcow2" ]] ; then
+
+          _sprintf "stop" "incorrectly set format type (properly: 'img' or 'qcow2')"
+
+          _logger "stop" \
+            "${_FUNCTION_ID}()" \
+            "incorrectly set format type (properly: img or qcow2)"
+
+        fi
+
+      ;;
+
+      lo_path)
+
+        if [[ ! -d "$lo_path" ]] ; then
+
+          _sprintf "info" "creating a local directory: '$lo_path'"
+
+          _logger "info" \
+            "${_FUNCTION_ID}()" \
+            "creating a local directory: '$lo_path'"
+
+          mkdir -p "$lo_path"
+
+        fi
+
+      ;;
+
+      pve_storage)
+
+        if [[ ! -d "$pve_storage" ]] ; then
+
+          _sprintf "stop" "incorrectly set storage (does not exist?)"
+
+          _logger "stop" \
+            "${_FUNCTION_ID}()" \
+            "incorrectly set storage (does not exist?)"
+
+        fi
+
+      ;;
+
+      pve_lvm)
+
+        if [[ ! -e "$pve_lvm" ]] ; then
+
+          _sprintf "stop" "incorrectly set lvm (does not exist?)"
+
+          _logger "stop" \
+            "${_FUNCTION_ID}()" \
+            "incorrectly set lvm (does not exist?)"
+
+        fi
+
+      ;;
+
+    esac
 
   done
-
-  if [[ ! -d "$lo_path" ]] ; then
-
-    _sprintf "info" "creating a local directory: '$lo_path'"
-
-    _logger "info" \
-      "${_FUNCTION_ID}()" \
-      "creating a local directory: '$lo_path'"
-
-    mkdir -p "$lo_path"
-
-  fi
 
   return $_STATE
 
