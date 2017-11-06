@@ -849,7 +849,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "checking configuration of remote environment"
 
-    InitFunction "CheckStorage ${hv_storage}"
+    InitFunction "CheckRemoteStorage ${hv_storage}"
     InitFunction "VmwareCheck ${vm_id}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
@@ -909,7 +909,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "checking configuration of remote environment"
 
-    InitFunction "CheckStorage ${hv_storage}"
+    InitFunction "CheckRemoteStorage ${hv_storage}"
     InitFunction "XenCheck ${vm_id}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #

@@ -274,7 +274,7 @@ function CheckConn() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: CheckStorage()
+# Function name: CheckRemoteStorage()
 #
 # Description:
 #   Checks of the remote environment:
@@ -282,15 +282,15 @@ function CheckConn() {
 #     - remote storage
 #
 # Usage:
-#   CheckStorage
+#   CheckRemoteStorage
 #
 # Examples:
-#   CheckStorage
+#   CheckRemoteStorage
 #
 
-function CheckStorage() {
+function CheckRemoteStorage() {
 
-  local _FUNCTION_ID="CheckStorage"
+  local _FUNCTION_ID="CheckRemoteStorage"
   local _STATE=0
 
   local _storage="$1"
