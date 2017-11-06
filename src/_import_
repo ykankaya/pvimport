@@ -387,13 +387,6 @@ function VmImport() {
   local _fda="$1"
   local _x=1
 
-  _sprintf "info" "set directory: '$lo_path'"
-
-  cd "$lo_path" || \
-  _logger "stop" \
-    "${_FUNCTION_ID}()" \
-    "directory change error: '$lo_path'"
-
   _msg_args+=(\
   "checking: '${_fda}'")
 

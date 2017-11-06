@@ -826,6 +826,13 @@ function __main__() {
 
   if [[ "$hv_type" == "vmware" ]] ; then
 
+    _sprintf "head" "set directory: '$lo_path'"
+
+    cd "$lo_path" || \
+    _logger "stop" \
+      "${_FUNCTION_ID}()" \
+      "directory change error: '$lo_path'"
+
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #              Preparing configuration of remote environment.              #
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
@@ -869,7 +876,7 @@ function __main__() {
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     _sprintf "head" "copying a virtual machine config file"
 
-    _logger "info" \
+    _logger "head" \
       "${_FUNCTION_ID}()" \
       "copying a virtual machine config file"
 
@@ -880,7 +887,7 @@ function __main__() {
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     _sprintf "head" "copying a virtual machine disks"
 
-    _logger "info" \
+    _logger "head" \
       "${_FUNCTION_ID}()" \
       "copying a virtual machine disks"
 
@@ -898,7 +905,7 @@ function __main__() {
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     _sprintf "head" "converting disks to $pve_format format"
 
-    _logger "info" \
+    _logger "head" \
       "${_FUNCTION_ID}()" \
       "converting disks to $pve_format format"
 
@@ -913,6 +920,13 @@ function __main__() {
 
   # shellcheck disable=SC2154
   elif [[ "$hv_type" == "xen" ]] ; then
+
+    _sprintf "head" "set directory: '$lo_path'"
+
+    cd "$lo_path" || \
+    _logger "stop" \
+      "${_FUNCTION_ID}()" \
+      "directory change error: '$lo_path'"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #              Preparing configuration of remote environment.              #
@@ -953,7 +967,7 @@ function __main__() {
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     _sprintf "head" "exporting virtual machine"
 
-    _logger "info" \
+    _logger "head" \
       "${_FUNCTION_ID}()" \
       "exporting virtual machine"
 
@@ -964,7 +978,7 @@ function __main__() {
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     _sprintf "head" "copying a virtual machine disks"
 
-    _logger "info" \
+    _logger "head" \
       "${_FUNCTION_ID}()" \
       "copying a virtual machine disks"
 
@@ -975,7 +989,7 @@ function __main__() {
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     _sprintf "head" "extracting ova files"
 
-    _logger "info" \
+    _logger "head" \
       "${_FUNCTION_ID}()" \
       "extracting ova files"
 
@@ -986,11 +1000,18 @@ function __main__() {
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     _sprintf "head" "converting disks to $pve_format format"
 
-    _logger "info" \
+    _logger "head" \
       "${_FUNCTION_ID}()" \
       "converting disks to $pve_format format"
 
-    InitFunction "XenConvert"
+    # Issue to solve:
+    # shellcheck disable=SC2044
+    _fname=""
+    for _fname in $(find ./* -type d -name "Ref:*" | cut -d "/" -f2) ; do
+    
+      InitFunction "XenVmConvert ${_fname}"
+
+    done
 
   fi
 
@@ -1000,7 +1021,9 @@ function __main__() {
   # We start the import when calling the --import option.
   if [[ "$pve_import" == "true" ]] ; then
 
-    _logger "info" \
+    _sprintf "importing a virtual machine disks"
+
+    _logger "head" \
       "${_FUNCTION_ID}()" \
       "importing a virtual machine disks"
 

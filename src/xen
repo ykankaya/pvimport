@@ -93,13 +93,6 @@ function XenVmCopy() {
 
   local _vmid="$1"
 
-  _sprintf "info" "set directory: '$lo_path'"
-
-  cd "$lo_path" || \
-  _logger "stop" \
-    "${_FUNCTION_ID}()" \
-    "directory change error: '$lo_path'"
-
   _msg_args+=(\
   "checking: '${_vmid}.ova'" \
   "get src: '${_vmid}.ova'")
@@ -132,13 +125,6 @@ function XenVmExtract() {
 
   local _vmid="$1"
 
-  _sprintf "info" "set directory: '$lo_path'"
-
-  cd "$lo_path" || \
-  _logger "stop" \
-    "${_FUNCTION_ID}()" \
-    "directory change error: '$lo_path'"
-
   _msg_args+=(\
   "checking: '${_vmid}.ova'" \
   "src: '${_vmid}.ova'")
@@ -163,98 +149,81 @@ function XenVmExtract() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: XenConvert()
+# Function name: XenVmConvert()
 #
 # Description:
 #   Converts the virtual machine disks.
 #
 # Usage:
-#   XenConvert
+#   XenVmConvert /path/to/local/xen/disk
 #
 # Examples:
-#   XenConvert
+#   XenVmConvert /xfs900/datastore/xen/PROD-web01.{img,qcow2}
 #
 
-function XenConvert() {
+function XenVmConvert() {
 
-  local _FUNCTION_ID="XenConvert"
+  local _FUNCTION_ID="XenVmConvert"
   local _STATE=0
 
-  local _fdx
+  local _fdx="$1"
+
   local _fda
   local _fdb
   local _fdc
 
-  local _fvmx
   local _x=1
 
-  _sprintf "info" "set directory: '$lo_path'"
+  # Store new directory/file name (eg. Ref_20).
+  _fda=$(echo "$_fdx" | tr ":" "_")
 
-  cd "$lo_path" || \
-  _logger "stop" \
-    "${_FUNCTION_ID}()" \
-    "directory change error: '$lo_path'"
+  # Store new 'img' file (eg. 1-Ref_20.img).
+  _fdb="${_x}-${_fda}.img"
 
-  # Issue to solve:
-  # shellcheck disable=SC2044
-  _fname=""
-  for _fname in $(find ./* -type d -name "Ref:*" | cut -d "/" -f2) ; do
+  _msg_args+=(\
+  "checking: '${_fdx}'" \
+  "src: '${_fdx}', dst: '${_fdb}'")
 
-    # Store directory name (eg. Ref:20).
-    _fdx="$_fname"
+  _cmd_args+=(\
+  "eval if [[ ! -d ${_fdx} ]] ; then exit 1 ; fi" \
+  "xenmigrate --convert=${_fdx} ${_fdb}")
 
-    # Store new directory/file name (eg. Ref_20).
-    _fda=$(echo "$_fdx" | tr ":" "_")
-
-    # Store new 'img' file (eg. 1-Ref_20.img).
-    _fdb="${_x}-${_fda}.img"
+  if [[ "$remove_unused" == "yes" ]] ; then
 
     _msg_args+=(\
-    "checking: '${_fdx}'" \
-    "src: '${_fdx}', dst: '${_fdb}'")
+    "remove: '${_fdx}'")
 
     _cmd_args+=(\
-    "eval if [[ ! -d ${_fdx} ]] ; then exit 1 ; fi" \
-    "xenmigrate --convert=${_fdx} ${_fdb}")
+    "rm -fr ${_fdx}")
+
+  fi
+
+  if [[ "$pve_format" == "qcow2" ]] ; then
+
+    # Store 'qcow2' file name (eg. 1-Ref_20.qcow2).
+    _fdc="${_fdb%.*}.qcow2"
+
+    _msg_args+=(\
+    "checking: '${_fdb}'" \
+    "src: '${_fdb}', dst: '${_fdc}'")
+
+    _cmd_args+=(\
+    "eval if [[ ! -e ${_fdb} ]] ; then exit 1 ; fi" \
+    "qemu-img convert -f raw -O qcow2 ${_fdb} ${_fdc}")
 
     if [[ "$remove_unused" == "yes" ]] ; then
 
       _msg_args+=(\
-      "remove: '${_fdx}'")
+      "remove: '${_fdb}'")
 
       _cmd_args+=(\
-      "rm -fr ${_fdx}")
+      "rm -fr ${_fdb}")
 
     fi
 
-    if [[ "$pve_format" == "qcow2" ]] ; then
-
-      # Store 'qcow2' file name (eg. 1-Ref_20.qcow2).
-      _fdc="${_fdb%.*}.qcow2"
-
-      _msg_args+=(\
-      "checking: '${_fdb}'" \
-      "src: '${_fdb}', dst: '${_fdc}'")
-
-      _cmd_args+=(\
-      "eval if [[ ! -e ${_fdb} ]] ; then exit 1 ; fi" \
-      "qemu-img convert -f raw -O qcow2 ${_fdb} ${_fdc}")
-
-      if [[ "$remove_unused" == "yes" ]] ; then
-
-        _msg_args+=(\
-        "remove: '${_fdb}'")
-
-        _cmd_args+=(\
-        "rm -fr ${_fdb}")
-
-      fi
-
-    fi
+  fi
 
   _x=$((_x + 1))
-
-  done
 
   if [[ -e "${_fvmx}" ]] ; then
 
