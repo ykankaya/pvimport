@@ -786,7 +786,7 @@ function __main__() {
   # shellcheck disable=SC2034
   local _pv_xen_vars="/tmp/.xen.vars"
   # shellcheck disable=SC2034
-  local _pv_vmware_vars="/tmp/.vmware.vars"
+  local _pv_vmware_config="/tmp/.vmware.vars"
   # shellcheck disable=SC2034
   local _pv_vmware_disks="/tmp/.vmware.disks"
 
@@ -835,9 +835,9 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "preparing configuration of remote environment"
 
-    InitFunction "FlushRemoteFiles ${_pv_vmware_vars}"
+    InitFunction "FlushRemoteFiles ${_pv_vmware_config}"
     InitFunction "FlushRemoteFiles ${_pv_vmware_disks}"
-    InitFunction "VmwareInit ${_pv_vmware_vars} *.vmx"
+    InitFunction "VmwareInit ${_pv_vmware_config} *.vmx"
     InitFunction "VmwareInit ${_pv_vmware_disks} *.vmdk"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
@@ -850,7 +850,7 @@ function __main__() {
       "checking configuration of remote environment"
 
     InitFunction "CheckRemoteStorage ${hv_storage}"
-    InitFunction "VmwareCheck ${vm_id}"
+    InitFunction "VmwareVmCheck ${vm_id}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #             Downloading configuration of remote environment.             #
@@ -861,19 +861,30 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "downloading configuration of remote environment"
 
-    InitFunction "GetRemoteFiles ${_pv_vmware_vars}"
+    InitFunction "GetRemoteFiles ${_pv_vmware_config}"
     InitFunction "GetRemoteFiles ${_pv_vmware_disks}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-    #                     Copying a virtual machine stack.                     #
+    #                  Copying a virtual machine config file.                  #
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-    _sprintf "head" "copying a virtual machine stack"
+    _sprintf "head" "copying a virtual machine config file"
 
     _logger "info" \
       "${_FUNCTION_ID}()" \
-      "copying a virtual machine stack"
+      "copying a virtual machine config file"
 
-    InitFunction "VmwareCopy"
+    InitFunction "VmwareGetRemoteVmConfig ${_pv_vmware_config}"
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+    #                     Copying a virtual machine disks.                     #
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+    _sprintf "head" "copying a virtual machine disks"
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "copying a virtual machine disks"
+
+    InitFunction "VmwareGetRemoteVmDisks"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #                 Converting disks to $pve_format format.                  #
