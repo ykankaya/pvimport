@@ -13,13 +13,13 @@
 # Function name: VmwareInit()
 #
 # Description:
-#   Initialization of the remote environment.
+#   Initialization of the remote VMware ESXi environment.
 #
 # Usage:
-#   VmwareInit
+#   VmwareInit /path/to/config/file filter
 #
 # Examples:
-#   VmwareInit
+#   VmwareInit /tmp/.vmware.vars *.vmx
 #
 
 function VmwareInit() {
