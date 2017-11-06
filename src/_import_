@@ -336,21 +336,21 @@ function CheckRemoteStorage() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: GetRemote()
+# Function name: GetRemoteFiles()
 #
 # Description:
 #   Dump of the remote environment to local.
 #
 # Usage:
-#   GetRemote
+#   GetRemoteFiles /path/to/file
 #
 # Examples:
-#   GetRemote
+#   GetRemoteFiles /tmp/.cache
 #
 
-function GetRemote() {
+function GetRemoteFiles() {
 
-  local _FUNCTION_ID="GetRemote"
+  local _FUNCTION_ID="GetRemoteFiles"
   local _STATE=0
 
   local _file="$1"

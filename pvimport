@@ -861,8 +861,8 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "downloading configuration of remote environment"
 
-    InitFunction "GetRemote ${_pv_vmware_vars}"
-    InitFunction "GetRemote ${_pv_vmware_disks}"
+    InitFunction "GetRemoteFiles ${_pv_vmware_vars}"
+    InitFunction "GetRemoteFiles ${_pv_vmware_disks}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #                     Copying a virtual machine stack.                     #
@@ -921,7 +921,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "downloading configuration of remote environment"
 
-    InitFunction "GetRemote ${_pv_xen_vars}"
+    InitFunction "GetRemoteFiles ${_pv_xen_vars}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #                            Exporting $vm_id.                             #
