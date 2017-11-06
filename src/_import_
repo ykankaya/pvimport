@@ -374,10 +374,10 @@ function GetRemoteFiles() {
 #   Imports the virtual machine.
 #
 # Usage:
-#   VmImport
+#   VmImport /path/to/local/disk
 #
 # Examples:
-#   VmImport
+#   VmImport /xfs900/datastore/vmware/PROD-web01.img
 #
 
 function VmImport() {
@@ -385,6 +385,7 @@ function VmImport() {
   local _FUNCTION_ID="VmImport"
   local _STATE=0
 
+  local _fda="$1"
   local _x=1
 
   _sprintf "info" "set directory: '$lo_path'"
@@ -394,94 +395,87 @@ function VmImport() {
     "${_FUNCTION_ID}()" \
     "directory change error: '$lo_path'"
 
-  _fname=""
-  for _fname in $(find ./* -type f -name "*.$pve_format" | cut -d "/" -f2 | sort -V) ; do
+  _msg_args+=(\
+  "checking: '${_fda}'")
 
-    _fda="$_fname"
+  _cmd_args+=(\
+  "eval if [[ ! -e ${_fda} ]] ; then exit 1 ; fi")
 
-    _msg_args+=(\
-    "checking: '${_fda}'")
+  if [[ "$pve_format" == "img" ]] ; then
 
-    _cmd_args+=(\
-    "eval if [[ ! -e ${_fda} ]] ; then exit 1 ; fi")
+    local _vm_pv_local="${pve_lvm}/vm-${pve_id}-disk-${_x}"
 
-    if [[ "$pve_format" == "img" ]] ; then
+    if [[ "$pve_host" == "local" ]] ; then
 
-      local _vm_pv_local="${pve_lvm}/vm-${pve_id}-disk-${_x}"
+      _msg_args+=(\
+      "checking: '${_vm_pv_local}'" \
+      "src: '${_fda}', dst path: '${_vm_pv_local}'")
 
-      if [[ "$pve_host" == "local" ]] ; then
+      _cmd_args+=(\
+      "eval if [[ ! -e ${_vm_pv_local} ]] ; then exit 1 ; fi" \
+      "dd if=${_fda} of=${_vm_pv_local} ${dd_opt}")
 
-        _msg_args+=(\
-        "checking: '${_vm_pv_local}'" \
-        "src: '${_fda}', dst path: '${_vm_pv_local}'")
+    elif [[ "$pve_host" != "local" ]] ; then
 
-        _cmd_args+=(\
-        "eval if [[ ! -e ${_vm_pv_local} ]] ; then exit 1 ; fi" \
-        "dd if=${_fda} of=${_vm_pv_local} ${dd_opt}")
+      _msg_args+=(\
+      "checking: '${pve_host}:${_vm_pv_local}'" \
+      "src: '${_fda}', dst path: '${pve_host}:${_vm_pv_local}'")
 
-      elif [[ "$pve_host" != "local" ]] ; then
-
-        _msg_args+=(\
-        "checking: '${pve_host}:${_vm_pv_local}'" \
-        "src: '${_fda}', dst path: '${pve_host}:${_vm_pv_local}'")
-
-        _cmd_args+=(\
-        "ssh ${ssh_opt} ${pve_host} -p ${port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
-        "eval dd if=${_fda} ${dd_opt} | ssh ${ssh_opt} ${pve_host} -p ${port} dd of=${_vm_pv_local} ${dd_opt}")
-
-      fi
-
-      if [[ "$remove_unused" == "yes" ]] ; then
-
-        _msg_args+=(\
-        "remove: '${_fda}'")
-
-        _cmd_args+=(\
-        "rm -fr ${_fda}")
-
-      fi
-
-    elif [[ "$pve_format" == "qcow2" ]] ; then
-
-      local _vm_pv_local="${pv_path}/vm-${pve_id}-disk-${_x}.qcow2"
-
-      if [[ "$pve_host" == "local" ]] ; then
-
-        _msg_args+=(\
-        "checking: '${_vm_pv_local}'" \
-        "src: '${_fda}'")
-
-        _cmd_args+=(\
-        "eval if [[ ! -e ${_vm_pv_local} ]] ; then exit 1 ; fi" \
-        "cp ${_fda} ${_vm_pv_local}")
-
-      elif [[ "$pve_host" != "local" ]] ; then
-
-        _msg_args+=(\
-        "checking: '${pve_host}:${_vm_pv_local}'" \
-        "src: '${_fda}'")
-
-        _cmd_args+=(\
-        "ssh ${ssh_opt} ${pve_host} -p ${port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
-        "scp ${ssh_opt} ${_fda} -P ${port} ${pve_host}:${_vm_pv_local}")
-
-      fi
-
-      if [[ "$remove_unused" == "yes" ]] ; then
-
-        _msg_args+=(\
-        "remove: '${_fda}'")
-
-        _cmd_args+=(\
-        "rm -fr ${_fda}")
-
-      fi
+      _cmd_args+=(\
+      "ssh ${ssh_opt} ${pve_host} -p ${port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
+      "eval dd if=${_fda} ${dd_opt} | ssh ${ssh_opt} ${pve_host} -p ${port} dd of=${_vm_pv_local} ${dd_opt}")
 
     fi
 
-    _x=$((_x + 1))
+    if [[ "$remove_unused" == "yes" ]] ; then
 
-  done
+      _msg_args+=(\
+      "remove: '${_fda}'")
+
+      _cmd_args+=(\
+      "rm -fr ${_fda}")
+
+    fi
+
+  elif [[ "$pve_format" == "qcow2" ]] ; then
+
+    local _vm_pv_local="${pv_path}/vm-${pve_id}-disk-${_x}.qcow2"
+
+    if [[ "$pve_host" == "local" ]] ; then
+
+      _msg_args+=(\
+      "checking: '${_vm_pv_local}'" \
+      "src: '${_fda}'")
+
+      _cmd_args+=(\
+      "eval if [[ ! -e ${_vm_pv_local} ]] ; then exit 1 ; fi" \
+      "cp ${_fda} ${_vm_pv_local}")
+
+    elif [[ "$pve_host" != "local" ]] ; then
+
+      _msg_args+=(\
+      "checking: '${pve_host}:${_vm_pv_local}'" \
+      "src: '${_fda}'")
+
+      _cmd_args+=(\
+      "ssh ${ssh_opt} ${pve_host} -p ${port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
+      "scp ${ssh_opt} ${_fda} -P ${port} ${pve_host}:${_vm_pv_local}")
+
+    fi
+
+    if [[ "$remove_unused" == "yes" ]] ; then
+
+      _msg_args+=(\
+      "remove: '${_fda}'")
+
+      _cmd_args+=(\
+      "rm -fr ${_fda}")
+
+    fi
+
+  fi
+
+  _x=$((_x + 1))
 
   return $_STATE
 
