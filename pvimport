@@ -872,17 +872,6 @@ function __main__() {
     InitFunction "GetRemoteFiles ${_pv_vmware_disks}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-    #                  Copying a virtual machine config file.                  #
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-    _sprintf "head" "copying a virtual machine config file"
-
-    _logger "head" \
-      "${_FUNCTION_ID}()" \
-      "copying a virtual machine config file"
-
-    InitFunction "VmwareGetRemoteVmConfig ${_pv_vmware_config}"
-
-    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #                     Copying a virtual machine disks.                     #
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     _sprintf "head" "copying a virtual machine disks"
@@ -971,7 +960,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "exporting virtual machine"
 
-    InitFunction "XenVmExport ${vm_id} ${_pv_xen_vars}"
+    InitFunction "XenVmExport ${vm_id}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #                     Copying a virtual machine disks.                     #
