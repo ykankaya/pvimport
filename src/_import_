@@ -312,10 +312,10 @@ function FlushRemoteFiles() {
 #     - remote storage
 #
 # Usage:
-#   CheckRemoteStorage
+#   CheckRemoteStorage /path/to/directory
 #
 # Examples:
-#   CheckRemoteStorage
+#   CheckRemoteStorage /var/log
 #
 
 function CheckRemoteStorage() {
