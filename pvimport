@@ -835,8 +835,8 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "preparing configuration of remote environment"
 
-    InitFunction "InitRemote ${_pv_vmware_vars}"
-    InitFunction "InitRemote ${_pv_vmware_disks}"
+    InitFunction "FlushRemoteFiles ${_pv_vmware_vars}"
+    InitFunction "FlushRemoteFiles ${_pv_vmware_disks}"
     InitFunction "VmwareInit ${_pv_vmware_vars} *.vmx"
     InitFunction "VmwareInit ${_pv_vmware_disks} *.vmdk"
 
@@ -898,7 +898,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "preparing configuration of remote environment"
 
-    InitFunction "InitRemote ${_pv_xen_vars}"
+    InitFunction "FlushRemoteFiles ${_pv_xen_vars}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #              Checking configuration of remote environment.               #

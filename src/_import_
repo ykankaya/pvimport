@@ -274,6 +274,36 @@ function CheckConn() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
+# Function name: FlushRemoteFiles()
+#
+# Description:
+#   Flush remote config files.
+#
+# Usage:
+#   FlushRemoteFiles param
+#
+# Examples:
+#   FlushRemoteFiles /tmp/.cache
+#
+
+function FlushRemoteFiles() {
+
+  local _FUNCTION_ID="FlushRemoteFiles"
+  local _STATE=0
+
+  local _file="$1"
+
+  _msg_args+=(\
+  "src: '${_file}")
+
+  _cmd_args+=(\
+  "ssh ${ssh_opt} ${hv_host} -p ${port} >${_file}")
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
 # Function name: CheckRemoteStorage()
 #
 # Description:
@@ -300,36 +330,6 @@ function CheckRemoteStorage() {
 
   _cmd_args+=(\
   "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -d \"${_storage}\" ]] ; then exit 1 ; fi")
-
-  return $_STATE
-
-}
-
-# ``````````````````````````````````````````````````````````````````````````````
-# Function name: InitRemote()
-#
-# Description:
-#   Initialization of the remote environment.
-#
-# Usage:
-#   InitRemote
-#
-# Examples:
-#   InitRemote
-#
-
-function InitRemote() {
-
-  local _FUNCTION_ID="InitRemote"
-  local _STATE=0
-
-  local _file="$1"
-
-  _msg_args+=(\
-  "src: '${_file}")
-
-  _cmd_args+=(\
-  "ssh ${ssh_opt} ${hv_host} -p ${port} >${_file}")
 
   return $_STATE
 
