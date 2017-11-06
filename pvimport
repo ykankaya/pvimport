@@ -826,7 +826,9 @@ function __main__() {
 
   if [[ "$hv_type" == "vmware" ]] ; then
 
-    _sprintf "head" "set directory: '$lo_path'"
+    _sprintf "head" "set working directory"
+
+    _sprintf "info" "path: '$lo_path'"
 
     cd "$lo_path" || \
     _logger "stop" \
@@ -914,7 +916,9 @@ function __main__() {
   # shellcheck disable=SC2154
   elif [[ "$hv_type" == "xen" ]] ; then
 
-    _sprintf "head" "set directory: '$lo_path'"
+    _sprintf "head" "set working directory"
+
+    _sprintf "info" "path: '$lo_path'"
 
     cd "$lo_path" || \
     _logger "stop" \
