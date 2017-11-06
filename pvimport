@@ -900,7 +900,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "converting disks to $pve_format format"
 
-    _x=1
+    _x=0
 
     # Issue to solve:
     # shellcheck disable=SC2013
@@ -1001,12 +1001,12 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "converting disks to $pve_format format"
 
-    _x=1
+    _x=0
 
     # Issue to solve:
     # shellcheck disable=SC2044
     _fname=""
-    for _fname in $(find ./* -type d -name "Ref:*" | cut -d "/" -f2) ; do
+    for _fname in $(find ./* -type d -name "Ref:*" | cut -d "/" -f2 | sort -V) ; do
     
       InitFunction "XenVmConvert ${_fname}"
 
@@ -1028,7 +1028,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "importing a virtual machine disks"
 
-    _x=1
+    _x=0
 
     _fname=""
     for _fname in $(find ./* -type f -name "*.$pve_format" | cut -d "/" -f2 | sort -V) ; do
