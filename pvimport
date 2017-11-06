@@ -902,7 +902,14 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "converting disks to $pve_format format"
 
-    InitFunction "VmwareConvert"
+    # Issue to solve:
+    # shellcheck disable=SC2013
+    _fname=""
+    for _fname in $(grep ".vmdk" "$_pv_vmware_disks" | cut -d "/" -f2) ; do
+
+      InitFunction "VmwareVmConvertDisks ${_fname}"
+
+    done
 
   # shellcheck disable=SC2154
   elif [[ "$hv_type" == "xen" ]] ; then
