@@ -1004,7 +1004,12 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "importing a virtual machine disks"
 
-    InitFunction "VmImport"
+    _fname=""
+    for _fname in $(find ./* -type f -name "*.$pve_format" | cut -d "/" -f2 | sort -V) ; do
+
+      InitFunction "VmImport ${_fname}"
+
+    done
 
   fi
 
