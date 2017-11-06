@@ -755,6 +755,7 @@ function __main__() {
   # Checking variable values (if they are unset or empty).
   # The variables from the additional configuration file
   # (example: src/configs/template.cfg) are also checked.
+  # The given variables can not be unset or empty.
   for i in "hv_type" \
            "hv_host" \
            "vm_id" \
@@ -762,9 +763,9 @@ function __main__() {
            "pve_id" \
            "pve_format" \
            "hv_storage" \
-           "local_storage" \
            "pve_storage" \
            "pve_lvm" \
+           "local_storage" \
            "port" ; do
 
     _i="" ; eval _i='$'$i
@@ -801,7 +802,9 @@ function __main__() {
   # Full path to the local virtual machine directory (proxmox directory).
   pv_path="${pve_storage}/${pve_id}"
 
-  # Init environment.
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+  #                             Init environment.                              #
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   InitEnv
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
@@ -813,11 +816,11 @@ function __main__() {
     "${_FUNCTION_ID}()" \
     "checking connection to remote host(s)"
     
-  InitPv "CheckConn ${hv_host} ${port}"
+  InitFunction "CheckConn ${hv_host} ${port}"
 
   if [[ "$pve_import" == "true" ]] ; then
 
-    InitPv "CheckConn ${pve_host} ${port}"
+    InitFunction "CheckConn ${pve_host} ${port}"
 
   fi
 
@@ -832,10 +835,10 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "preparing configuration of remote environment"
 
-    InitPv "InitRemote ${_pv_vmware_vars}"
-    InitPv "InitRemote ${_pv_vmware_disks}"
-    InitPv "VmwareInit ${_pv_vmware_vars} *.vmx"
-    InitPv "VmwareInit ${_pv_vmware_disks} *.vmdk"
+    InitFunction "InitRemote ${_pv_vmware_vars}"
+    InitFunction "InitRemote ${_pv_vmware_disks}"
+    InitFunction "VmwareInit ${_pv_vmware_vars} *.vmx"
+    InitFunction "VmwareInit ${_pv_vmware_disks} *.vmdk"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #              Checking configuration of remote environment.               #
@@ -846,8 +849,8 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "checking configuration of remote environment"
 
-    InitPv "CheckStorage ${hv_storage}"
-    InitPv "VmwareCheck ${vm_id}"
+    InitFunction "CheckStorage ${hv_storage}"
+    InitFunction "VmwareCheck ${vm_id}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #             Downloading configuration of remote environment.             #
@@ -858,8 +861,8 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "downloading configuration of remote environment"
 
-    InitPv "GetRemote ${_pv_vmware_vars}"
-    InitPv "GetRemote ${_pv_vmware_disks}"
+    InitFunction "GetRemote ${_pv_vmware_vars}"
+    InitFunction "GetRemote ${_pv_vmware_disks}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #                     Copying a virtual machine stack.                     #
@@ -870,7 +873,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "copying a virtual machine stack"
 
-    InitPv "VmwareCopy"
+    InitFunction "VmwareCopy"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #                 Converting disks to $pve_format format.                  #
@@ -881,7 +884,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "converting disks to $pve_format format"
 
-    InitPv "VmwareConvert"
+    InitFunction "VmwareConvert"
 
   # shellcheck disable=SC2154
   elif [[ "$hv_type" == "xen" ]] ; then
@@ -895,7 +898,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "preparing configuration of remote environment"
 
-    InitPv "InitRemote ${_pv_xen_vars}"
+    InitFunction "InitRemote ${_pv_xen_vars}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #              Checking configuration of remote environment.               #
@@ -906,8 +909,8 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "checking configuration of remote environment"
 
-    InitPv "CheckStorage ${hv_storage}"
-    InitPv "XenCheck ${vm_id}"
+    InitFunction "CheckStorage ${hv_storage}"
+    InitFunction "XenCheck ${vm_id}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #             Downloading configuration of remote environment.             #
@@ -918,7 +921,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "downloading configuration of remote environment"
 
-    InitPv "GetRemote ${_pv_xen_vars}"
+    InitFunction "GetRemote ${_pv_xen_vars}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #                            Exporting $vm_id.                             #
@@ -929,7 +932,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "exporting $vm_id"
 
-    InitPv "XenExport ${vm_id}"
+    InitFunction "XenExport ${vm_id}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #                     Copying a virtual machine stack.                     #
@@ -940,7 +943,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "copying a virtual machine stack"
 
-    InitPv "XenCopy"
+    InitFunction "XenCopy"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #                           Extracting ova files.                          #
@@ -951,7 +954,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "extracting ova files"
 
-    InitPv "XenExtract"
+    InitFunction "XenExtract"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #                 Converting disks to $pve_format format.                  #
@@ -962,7 +965,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "converting disks to $pve_format format"
 
-    InitPv "XenConvert"
+    InitFunction "XenConvert"
 
   fi
 
@@ -976,7 +979,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "importing a virtual machine disks"
 
-    InitPv "VmImport"
+    InitFunction "VmImport"
 
   fi
 
