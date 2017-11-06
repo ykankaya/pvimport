@@ -13,8 +13,7 @@
 # Function name: XenVmCheck()
 #
 # Description:
-#   Checks of the Xen remote vm:
-#     - virtual machine id/name
+#   Checks of the Xen remote virtual machine exist.
 #
 # Usage:
 #   XenVmCheck vm_id
@@ -44,13 +43,15 @@ function XenVmCheck() {
 # Function name: XenVmExport()
 #
 # Description:
-#   Exports the Xen virtual machine.
+#   Exports the Xen virtual machine:
+#     - takes a virtual machine snapshot
+#     - exports snapshot to file with extension 'ova'
 #
 # Usage:
-#   XenVmExport vm_id /path/to/file
+#   XenVmExport vm_id
 #
 # Examples:
-#   XenVmExport PROD-web01 /tmp/.xen.vars
+#   XenVmExport PROD-web01
 #
 
 function XenVmExport() {
@@ -59,7 +60,6 @@ function XenVmExport() {
   local _STATE=0
 
   local _vmid="$1"
-  local _file="$2"
 
   _msg_args+=(\
   "creating snapshot: '${_vmid}-${_random}'" \
@@ -77,7 +77,7 @@ function XenVmExport() {
 # Function name: XenVmCopy()
 #
 # Description:
-#   Copies the virtual machine from remote host to local (target) host.
+#   Copies the Xen virtual machine from remote host to local host.
 #
 # Usage:
 #   XenVmCopy vm_id
@@ -109,13 +109,13 @@ function XenVmCopy() {
 # Function name: XenVmExtract()
 #
 # Description:
-#   Extracts the virtual machine disks.
+#   Extracts the Xen virtual machine disks.
 #
 # Usage:
-#   XenVmExtract
+#   XenVmExtract vm_id
 #
 # Examples:
-#   XenVmExtract
+#   XenVmExtract PROD-web01
 #
 
 function XenVmExtract() {
@@ -152,7 +152,7 @@ function XenVmExtract() {
 # Function name: XenVmConvert()
 #
 # Description:
-#   Converts the virtual machine disks.
+#   Converts the Xen virtual machine disks.
 #
 # Usage:
 #   XenVmConvert /path/to/local/xen/disk
@@ -224,16 +224,6 @@ function XenVmConvert() {
   fi
 
   _x=$((_x + 1))
-
-  if [[ -e "${_fvmx}" ]] ; then
-
-    _msg_args+=(\
-    "remove: '${_fvmx}'")
-
-    _cmd_args+=(\
-    "rm -fr ${_fvmx}")
-
-  fi
 
   return $_STATE
 
