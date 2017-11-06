@@ -246,10 +246,10 @@ function InitFunction() {
 #   Validates the connection to the remote server.
 #
 # Usage:
-#   CheckConn
+#   CheckConn host port
 #
 # Examples:
-#   CheckConn
+#   CheckConn 172.20.20.50 22
 #
 
 function CheckConn() {
@@ -280,7 +280,7 @@ function CheckConn() {
 #   Flush remote config files.
 #
 # Usage:
-#   FlushRemoteFiles param
+#   FlushRemoteFiles /path/to/file
 #
 # Examples:
 #   FlushRemoteFiles /tmp/.cache
