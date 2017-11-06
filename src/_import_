@@ -192,7 +192,9 @@ function InitEnv() {
 # Function name: InitFunction()
 #
 # Description:
-#   Validates the connection to the remote server.
+#   It deals with launching functions:
+#     - creates a simple environment for the functions you perform
+#     - operates on message to display and command to execute
 #
 # Usage:
 #   InitFunction function_name params
@@ -370,7 +372,7 @@ function GetRemoteFiles() {
 # Function name: VmImport()
 #
 # Description:
-#   Imports the virtual machine.
+#   Imports the virtual machine disks to any Proxmox node.
 #
 # Usage:
 #   VmImport /path/to/local/disk
