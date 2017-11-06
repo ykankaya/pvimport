@@ -72,21 +72,64 @@ function VmwareVmCheck() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: VmwareCopy()
+# Function name: VmwareGetRemoteVmConfig()
 #
 # Description:
-#   Copies the virtual machine from remote hv_host to local (target) hv_host.
+#   Dump of the VMware ESXi remote environment to local.
 #
 # Usage:
-#   VmwareCopy
+#   VmwareGetRemoteVmConfig /path/to/config/file
 #
 # Examples:
-#   VmwareCopy
+#   VmwareGetRemoteVmConfig /tmp/.vmware.vars
 #
 
-function VmwareCopy() {
+function VmwareGetRemoteVmConfig() {
 
-  local _FUNCTION_ID="VmwareCopy"
+  local _FUNCTION_ID="VmwareGetRemoteVmConfig"
+  local _STATE=0
+
+  local _file="$1"
+
+  export _fvmx
+
+  _sprintf "info" "set directory: '$lo_path'"
+
+  cd "$lo_path" || \
+  _logger "stop" \
+    "${_FUNCTION_ID}()" \
+    "directory change error: '$lo_path'"
+
+  _fvmx=$(grep ".vmx" "$_file" | cut -d "/" -f2)
+
+  _msg_args+=(\
+  "checking: '${_fvmx}'" \
+  "get src: '${_fvmx}'")
+
+  _cmd_args+=(\
+  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -e \"${re_path}/${_file}\" ]] ; then exit 1 ; fi" \
+  "scp ${ssh_opt} -P ${port} ${hv_host}:${re_path}/${_file} ${lo_path}")
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: VmwareGetRemoteVmDisks()
+#
+# Description:
+#   Copies the virtual machine from remote hv_host to local (target).
+#
+# Usage:
+#   VmwareGetRemoteVmDisks
+#
+# Examples:
+#   VmwareGetRemoteVmDisks
+#
+
+function VmwareGetRemoteVmDisks() {
+
+  local _FUNCTION_ID="VmwareGetRemoteVmDisks"
   local _STATE=0
 
   local _fvmx
@@ -98,16 +141,6 @@ function VmwareCopy() {
   _logger "stop" \
     "${_FUNCTION_ID}()" \
     "directory change error: '$lo_path'"
-
-  _fvmx=$(grep ".vmx" "$_pv_vmware_vars" | cut -d "/" -f2)
-
-  _msg_args+=(\
-  "checking: '${_fvmx}'" \
-  "get src: '${_fvmx}'")
-
-  _cmd_args+=(\
-  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -e \"${re_path}/${_fvmx}\" ]] ; then exit 1 ; fi" \
-  "scp ${ssh_opt} -P ${port} ${hv_host}:${re_path}/${_fvmx} ${lo_path}")
 
   # Issue to solve:
   # shellcheck disable=SC2013
@@ -163,7 +196,7 @@ function VmwareConvert() {
     "${_FUNCTION_ID}()" \
     "directory change error: '$lo_path'"
 
-  _fvmx=$(grep ".vmx" "$_pv_vmware_vars" | cut -d "/" -f2)
+  _fvmx=$(grep ".vmx" "$_pv_vmware_config" | cut -d "/" -f2)
 
   # Issue to solve:
   # shellcheck disable=SC2013
