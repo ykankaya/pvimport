@@ -41,23 +41,22 @@ function VmwareInit() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: VmwareCheck()
+# Function name: VmwareVmCheck()
 #
 # Description:
 #   Checks of the remote environment:
 #     - virtual machine id/name
-#     - remote storage
 #
 # Usage:
-#   VmwareCheck
+#   VmwareVmCheck vm_id
 #
 # Examples:
-#   VmwareCheck
+#   VmwareVmCheck PROD-web01
 #
 
-function VmwareCheck() {
+function VmwareVmCheck() {
 
-  local _FUNCTION_ID="VmwareCheck"
+  local _FUNCTION_ID="VmwareVmCheck"
   local _STATE=0
 
   local _vmid="$1"
