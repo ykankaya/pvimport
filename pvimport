@@ -951,24 +951,24 @@ function __main__() {
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #                            Exporting $vm_id.                             #
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-    _sprintf "head" "exporting $vm_id"
+    _sprintf "head" "exporting virtual machine"
 
     _logger "info" \
       "${_FUNCTION_ID}()" \
-      "exporting $vm_id"
+      "exporting virtual machine"
 
-    InitFunction "XenExport ${vm_id}"
+    InitFunction "XenVmExport ${vm_id} ${_pv_xen_vars}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-    #                     Copying a virtual machine stack.                     #
+    #                     Copying a virtual machine disks.                     #
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-    _sprintf "head" "copying a virtual machine stack"
+    _sprintf "head" "copying a virtual machine disks"
 
     _logger "info" \
       "${_FUNCTION_ID}()" \
-      "copying a virtual machine stack"
+      "copying a virtual machine disks"
 
-    InitFunction "XenCopy"
+    InitFunction "XenVmCopy ${vm_id}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #                           Extracting ova files.                          #

@@ -308,7 +308,6 @@ function FlushRemoteFiles() {
 #
 # Description:
 #   Checks of the remote environment:
-#     - virtual machine id/name
 #     - remote storage
 #
 # Usage:
