@@ -221,6 +221,8 @@ function XenVmConvert() {
 
   fi
 
+  _x=$((_x + 1))
+
   return $_STATE
 
 }

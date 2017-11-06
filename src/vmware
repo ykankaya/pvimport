@@ -178,6 +178,8 @@ function VmwareVmConvertDisks() {
 
     fi
 
+    _x=$((_x + 1))
+
   fi
 
   return $_STATE
