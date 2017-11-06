@@ -898,12 +898,16 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "converting disks to $pve_format format"
 
+    _x=1
+
     # Issue to solve:
     # shellcheck disable=SC2013
     _fname=""
     for _fname in $(grep ".vmdk" "$_pv_vmware_disks" | cut -d "/" -f2) ; do
 
       InitFunction "VmwareVmConvertDisks ${_fname}"
+
+      _x=$((_x + 1))
 
     done
 
@@ -993,12 +997,16 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "converting disks to $pve_format format"
 
+    _x=1
+
     # Issue to solve:
     # shellcheck disable=SC2044
     _fname=""
     for _fname in $(find ./* -type d -name "Ref:*" | cut -d "/" -f2) ; do
     
       InitFunction "XenVmConvert ${_fname}"
+
+      _x=$((_x + 1))
 
     done
 
@@ -1010,16 +1018,20 @@ function __main__() {
   # We start the import when calling the --import option.
   if [[ "$pve_import" == "true" ]] ; then
 
-    _sprintf "importing a virtual machine disks"
+    _sprintf "head" "importing a virtual machine disks"
 
     _logger "head" \
       "${_FUNCTION_ID}()" \
       "importing a virtual machine disks"
 
+    _x=1
+
     _fname=""
     for _fname in $(find ./* -type f -name "*.$pve_format" | cut -d "/" -f2 | sort -V) ; do
 
       InitFunction "VmImport ${_fname}"
+
+      _x=$((_x + 1))
 
     done
 

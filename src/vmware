@@ -127,8 +127,6 @@ function VmwareVmConvertDisks() {
   local _fdb
   local _fdc
 
-  local _x=1
-
   # Store file name without extension (eg. vm).
   _fda=${_fdx%.*}
 
@@ -179,8 +177,6 @@ function VmwareVmConvertDisks() {
       fi
 
     fi
-
-    _x=$((_x + 1))
 
   fi
 

@@ -387,7 +387,6 @@ function VmImport() {
   local _STATE=0
 
   local _fda="$1"
-  local _x=1
 
   _msg_args+=(\
   "checking: '${_fda}'")
@@ -468,8 +467,6 @@ function VmImport() {
     fi
 
   fi
-
-  _x=$((_x + 1))
 
   return $_STATE
 
