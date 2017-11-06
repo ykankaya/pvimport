@@ -195,10 +195,10 @@ function InitEnv() {
 #   Validates the connection to the remote server.
 #
 # Usage:
-#   InitFunction
+#   InitFunction function_name params
 #
 # Examples:
-#   InitFunction
+#   InitFunction "CheckConn 172.20.20.50 22"
 #
 
 function InitFunction() {
