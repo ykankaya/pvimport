@@ -96,12 +96,12 @@ function VmwareGetRemoteVmConfig() {
   _fvmx=$(grep ".vmx" "$_file" | cut -d "/" -f2)
 
   _msg_args+=(\
-  "checking: '${_fvmx}'" \
-  "get src: '${_fvmx}'")
+  "checking: '${_file}'" \
+  "get src: '${_file}'")
 
   _cmd_args+=(\
-  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -e \"${re_path}/${_file}\" ]] ; then exit 1 ; fi" \
-  "scp ${ssh_opt} -P ${port} ${hv_host}:${re_path}/${_file} ${lo_path}")
+  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -e \"${re_path}/${_fvmx}\" ]] ; then exit 1 ; fi" \
+  "scp ${ssh_opt} -P ${port} ${hv_host}:${re_path}/${_fvmx} ${lo_path}")
 
   return $_STATE
 
