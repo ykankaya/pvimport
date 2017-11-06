@@ -77,32 +77,28 @@ function InitEnv() {
       pve_id)
 
         # We check the virtual machine ID and its numeric value.
-        if [[ "$i" == "pve_id" ]] ; then
+        if [[ "$pve_id" =~ $_num ]] ; then
 
-          if [[ "$pve_id" =~ $_num ]] ; then
+          # shellcheck disable=SC2143
+          # If the value is a number then we check whether
+          # the virtual machine with that identifier exists in the proxmox cluster.
+          if [[ ! $(grep "qemu" /etc/pve/.vmlist | cut -d ":" -f1 | grep "$pve_id") ]] ; then
 
-            # shellcheck disable=SC2143
-            # If the value is a number then we check whether
-            # the virtual machine with that identifier exists in the proxmox cluster.
-            if [[ ! $(grep "qemu" /etc/pve/.vmlist | cut -d ":" -f1 | grep "$pve_id") ]] ; then
-
-              _sprintf "stop" "pve_id: vm with this id does not exist"
-
-              _logger "stop" \
-                "${_FUNCTION_ID}()" \
-                "pve_id: vm with this id does not exist"
-
-            fi
-
-          else
-
-            _sprintf "stop" "pve_id: vm id has no numeric value"
+            _sprintf "stop" "pve_id: vm with this id does not exist"
 
             _logger "stop" \
               "${_FUNCTION_ID}()" \
-              "pve_id: vm id has no numeric value"
+              "pve_id: vm with this id does not exist"
 
           fi
+
+        else
+
+          _sprintf "stop" "pve_id: vm id has no numeric value"
+
+          _logger "stop" \
+            "${_FUNCTION_ID}()" \
+            "pve_id: vm id has no numeric value"
 
         fi
 
@@ -193,21 +189,21 @@ function InitEnv() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: InitPv()
+# Function name: InitFunction()
 #
 # Description:
 #   Validates the connection to the remote server.
 #
 # Usage:
-#   InitPv
+#   InitFunction
 #
 # Examples:
-#   InitPv
+#   InitFunction
 #
 
-function InitPv() {
+function InitFunction() {
 
-  local _FUNCTION_ID="InitPv"
+  local _FUNCTION_ID="InitFunction"
   local _STATE=0
 
   local _args=("$@")
