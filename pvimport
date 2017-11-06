@@ -935,7 +935,7 @@ function __main__() {
       "checking configuration of remote environment"
 
     InitFunction "CheckRemoteStorage ${hv_storage}"
-    InitFunction "XenCheck ${vm_id}"
+    InitFunction "XenVmCheck ${vm_id}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #             Downloading configuration of remote environment.             #

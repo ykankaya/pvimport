@@ -10,23 +10,22 @@
 ################################################################################
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: XenCheck()
+# Function name: XenVmCheck()
 #
 # Description:
-#   Checks of the remote environment:
+#   Checks of the Xen remote vm:
 #     - virtual machine id/name
-#     - remote storage
 #
 # Usage:
-#   XenCheck
+#   XenVmCheck vm_id
 #
 # Examples:
-#   XenCheck
+#   XenVmCheck PROD-web01
 #
 
-function XenCheck() {
+function XenVmCheck() {
 
-  local _FUNCTION_ID="XenCheck"
+  local _FUNCTION_ID="XenVmCheck"
   local _STATE=0
 
   local _vmid="$1"

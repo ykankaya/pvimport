@@ -44,7 +44,7 @@ function VmwareInit() {
 # Function name: VmwareVmCheck()
 #
 # Description:
-#   Checks of the remote environment:
+#   Checks of the VMware ESXi remote vm:
 #     - virtual machine id/name
 #
 # Usage:
