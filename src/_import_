@@ -33,7 +33,7 @@ function _init() {
 
   _logger "info" \
     "${_FUNCTION_ID}()" \
-    "init function: '${_args[@]}'"
+    "init function: '${_args[*]}'"
 
   # In these two variables we store the message to display
   # and the command to execute.
