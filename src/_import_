@@ -56,23 +56,22 @@ function CheckingVariables() {
 
     local _num='^[0-9]+$'
 
+    # Filtering the length of variable values.
+    if [[ "${#_i}" -gt 128 ]] ; then
+
+      _sprintf "stop" "$i: too long value"
+
+      _logger "stop" \
+        "${_FUNCTION_ID}()" \
+        "$i: too long value"
+
+    fi
+
     # shellcheck disable=SC2154
     # Checking variable values (if they are incorrect values).
     case $i in
 
-      hv_host|vm_id|vm_name)
-
-        if [[ "${#hv_host}" -gt 64 ]] ; then
-
-          _sprintf "stop" "hv_host: too long value"
-
-          _logger "stop" \
-            "${_FUNCTION_ID}()" \
-            "hv_host: too long value"
-
-        fi
-
-      ;;
+      hv_host|vm_id|vm_name) true ;;
 
       pve_id)
 
