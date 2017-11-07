@@ -789,6 +789,8 @@ function __main__() {
   local _pv_vmware_config="/tmp/.vmware.vars"
   # shellcheck disable=SC2034
   local _pv_vmware_disks="/tmp/.vmware.disks"
+  # shellcheck disable=SC2034
+  local _pv_vmware_storage="/tmp/.vmware.storage"
 
   # shellcheck disable=SC2154
   # Full path to the remote virtual machine directory.
