@@ -728,6 +728,7 @@ function __main__() {
   # In this section we add external file (for -c|--config script param).
   if [[ "$load_state" -eq 1 ]] ; then _load "head" "$config" ; fi
 
+  # shellcheck disable=SC2154
   if [[ "$hv_type" == "vmware" ]] ; then
 
     # Include src/vmware file which contains functions for vmware.
@@ -783,7 +784,7 @@ function __main__() {
   # shellcheck disable=SC2034
   local _pv_vmware_storage="/tmp/.vmware.storage"
 
-  # shellcheck disable=SC2154
+  # shellcheck disable=SC2034,SC2154
   # Full path to the remote virtual machine directory.
   re_path="${hv_storage}/${vm_id}"
 
@@ -791,7 +792,7 @@ function __main__() {
   # Full path to the local virtual machine directory (working directory).
   lo_path="${local_storage}/${hv_host}/${vm_id}"
 
-  # shellcheck disable=SC2154
+  # shellcheck disable=SC2034,SC2154
   # Full path to the local or remote virtual machine directory (proxmox directory).
   pv_path="${pve_storage}/${pve_id}"
 
@@ -841,7 +842,8 @@ function __main__() {
   _logger "head" \
     "${_FUNCTION_ID}()" \
     "check connection to remote host(s)"
-    
+
+  # shellcheck disable=SC2154
   _init "CheckConn ${hv_host} ${port}"
 
   if [[ "$pve_import" == "true" ]] ; then
@@ -878,6 +880,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "import a virtual machine disks"
 
+    # shellcheck disable=SC2034
     _x=1
 
     _fname=""
