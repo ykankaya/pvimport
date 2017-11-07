@@ -753,11 +753,11 @@ function __main__() {
 
     if [[ -z "$_i" ]] ; then
 
-      _sprintf "stop" "$i is unset or empty"
+      _sprintf "stop" "error of argument value: '$i' is unset or empty"
 
       _logger "stop" \
         "${_FUNCTION_ID}()" \
-        "$i is unset or empty"
+        "error of argument value: '$i' is unset or empty"
 
     fi
 
