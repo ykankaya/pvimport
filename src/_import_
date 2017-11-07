@@ -211,7 +211,7 @@ function CheckVar() {
 
     ;;
 
-    pv_import)
+    pve_import)
 
       # We start the import when calling the --import option.
       if [[ "$pve_import" != "true" ]] ; then
@@ -226,8 +226,6 @@ function CheckVar() {
     lo_path)
 
       if [[ ! -d "$lo_path" ]] ; then
-
-        _sprintf "info" "lo_path: creating a local directory: '$lo_path'"
 
         _logger "info" \
           "${_FUNCTION_ID}()" \
