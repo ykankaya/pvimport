@@ -799,8 +799,38 @@ function __main__() {
   lo_path="${local_storage}/${hv_host}/${vm_name}"
 
   # shellcheck disable=SC2154
-  # Full path to the local virtual machine directory (proxmox directory).
+  # Full path to the local or remote virtual machine directory (proxmox directory).
   pv_path="${pve_storage}/${pve_id}"
+
+  # Checking the value of the variables (if they are incorrect values).
+  _sprintf "head" "checking configuration of local environment"
+
+  _logger "head" \
+    "${_FUNCTION_ID}()" \
+    "checking configuration of local environment"
+
+  for i in "hv_host" \
+           "vm_id" \
+           "vm_name" \
+           "pve_id" \
+           "pve_format" \
+           "hv_type" \
+           "port" \
+           "hv_storage" \
+           "pve_storage" \
+           "pve_lvm" \
+           "local_storage"
+           "pve_import" \
+           "pve_host" \
+           "re_path" \
+           "lo_path" \
+           "pv_path" \
+           "ssh_opt" \
+           "dd_opt" ; do
+
+    CheckVar "$i"
+
+  done
 
   # Initialization of the environment for other functions.
   InitEnv
