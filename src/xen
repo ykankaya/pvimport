@@ -27,40 +27,31 @@ function XenInit() {
   local _FUNCTION_ID="XenInit"
   local _STATE=0
 
-  # Prepare configuration of remote environment.
-  _sprintf "head" "prepare configuration of remote environment"
+  _sprintf "head" "flush configuration of remote environment"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "prepare configuration of remote environment"
+    "flush configuration of remote environment"
 
   _init "FlushRemoteFiles ${_pv_xen_vars}"
 
-  # Check configuration of remote environment.
   _sprintf "head" "check configuration of remote environment"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
     "check configuration of remote environment"
 
-
   _init "CheckRemoteStorage ${hv_storage}"
   _init "XenVmCheck ${vm_id}"
 
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-  #             Downloading configuration of remote environment.             #
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-  _sprintf "head" "downloading configuration of remote environment"
+  _sprintf "head" "dump configuration of remote environment"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "downloading configuration of remote environment"
+    "dump configuration of remote environment"
 
   _init "GetRemoteFiles ${_pv_xen_vars}"
 
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-  #                            Exporting $vm_id.                             #
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   _sprintf "head" "exporting virtual machine"
 
   _logger "head" \
@@ -69,9 +60,6 @@ function XenInit() {
 
   _init "XenVmExport ${vm_id}"
 
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-  #                     Copying a virtual machine disks.                     #
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   _sprintf "head" "copying a virtual machine disks"
 
   _logger "head" \
@@ -80,9 +68,6 @@ function XenInit() {
 
   _init "XenVmCopy ${vm_id}"
 
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-  #                           Extracting ova files.                          #
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   _sprintf "head" "extracting ova files"
 
   _logger "head" \
@@ -91,9 +76,6 @@ function XenInit() {
 
   _init "XenVmExtract ${vm_id}"
 
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-  #                 Converting disks to $pve_format format.                  #
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   _sprintf "head" "converting disks to $pve_format format"
 
   _logger "head" \
