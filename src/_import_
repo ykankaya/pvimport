@@ -87,7 +87,7 @@ function CheckVar() {
   local _num='^[0-9]+$'
 
   # Filtering the length of variable values.
-  if [[ "${#_i}" -gt 128 ]] ; then
+  if [[ "${#_i}" -gt 512 ]] ; then
 
     # shellcheck disable=SC2154
     _sprintf "stop" "$i: too long value"
