@@ -314,37 +314,6 @@ function FlushRemoteFiles() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: CheckRemoteStorage()
-#
-# Description:
-#   Checks of the remote environment:
-#     - remote storage
-#
-# Usage:
-#   CheckRemoteStorage /path/to/directory
-#
-# Examples:
-#   CheckRemoteStorage /var/log
-#
-
-function CheckRemoteStorage() {
-
-  local _FUNCTION_ID="CheckRemoteStorage"
-  local _STATE=0
-
-  local _storage="$1"
-
-  _msg_args+=(\
-  "directory: '${_storage}'")
-
-  _cmd_args+=(\
-  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -d \"${_storage}\" ]] ; then exit 1 ; fi")
-
-  return $_STATE
-
-}
-
-# ``````````````````````````````````````````````````````````````````````````````
 # Function name: GetRemoteFiles()
 #
 # Description:
@@ -371,6 +340,37 @@ function GetRemoteFiles() {
   _cmd_args+=(\
   "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -e \"${_file}\" ]] ; then exit 1 ; fi" \
   "scp ${ssh_opt} -P ${port} ${hv_host}:${_file} ${_file}")
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: CheckRemoteStorage()
+#
+# Description:
+#   Checks of the remote environment:
+#     - remote storage
+#
+# Usage:
+#   CheckRemoteStorage /path/to/directory
+#
+# Examples:
+#   CheckRemoteStorage /var/log
+#
+
+function CheckRemoteStorage() {
+
+  local _FUNCTION_ID="CheckRemoteStorage"
+  local _STATE=0
+
+  local _storage="$1"
+
+  _msg_args+=(\
+  "directory: '${_storage}'")
+
+  _cmd_args+=(\
+  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -d \"${_storage}\" ]] ; then exit 1 ; fi")
 
   return $_STATE
 
