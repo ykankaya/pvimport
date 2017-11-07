@@ -844,11 +844,11 @@ function __main__() {
     "${_FUNCTION_ID}()" \
     "checking connection to remote host(s)"
     
-  InitFunction "CheckConn ${hv_host} ${port}"
+  _init "CheckConn ${hv_host} ${port}"
 
   if [[ "$pve_import" == "true" ]] ; then
 
-    InitFunction "CheckConn ${pve_host} ${port}"
+    _init "CheckConn ${pve_host} ${port}"
 
   fi
 
@@ -872,10 +872,10 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "preparing configuration of remote environment"
 
-    InitFunction "FlushRemoteFiles ${_pv_vmware_config}"
-    InitFunction "FlushRemoteFiles ${_pv_vmware_disks}"
-    InitFunction "VmwareInit ${_pv_vmware_config} *.vmx"
-    InitFunction "VmwareInit ${_pv_vmware_disks} *.vmdk"
+    _init "FlushRemoteFiles ${_pv_vmware_config}"
+    _init "FlushRemoteFiles ${_pv_vmware_disks}"
+    _init "VmwareInit ${_pv_vmware_config} *.vmx"
+    _init "VmwareInit ${_pv_vmware_disks} *.vmdk"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #              Checking configuration of remote environment.               #
@@ -886,8 +886,8 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "checking configuration of remote environment"
 
-    InitFunction "CheckRemoteStorage ${hv_storage}"
-    InitFunction "VmwareVmCheck ${vm_id}"
+    _init "CheckRemoteStorage ${hv_storage}"
+    _init "VmwareVmCheck ${vm_id}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #             Downloading configuration of remote environment.             #
@@ -898,8 +898,8 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "downloading configuration of remote environment"
 
-    InitFunction "GetRemoteFiles ${_pv_vmware_config}"
-    InitFunction "GetRemoteFiles ${_pv_vmware_disks}"
+    _init "GetRemoteFiles ${_pv_vmware_config}"
+    _init "GetRemoteFiles ${_pv_vmware_disks}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #                     Copying a virtual machine disks.                     #
@@ -915,7 +915,7 @@ function __main__() {
     _fname=""
     for _fname in $(grep ".vmdk" "$_pv_vmware_disks" | cut -d "/" -f2) ; do
 
-      InitFunction "VmwareGetRemoteVmDisks ${_fname}"
+      _init "VmwareGetRemoteVmDisks ${_fname}"
 
     done
 
@@ -935,7 +935,7 @@ function __main__() {
     _fname=""
     for _fname in $(grep ".vmdk" "$_pv_vmware_disks" | cut -d "/" -f2) ; do
 
-      InitFunction "VmwareVmConvertDisks ${_fname}"
+      _init "VmwareVmConvertDisks ${_fname}"
 
     done
 
@@ -960,7 +960,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "preparing configuration of remote environment"
 
-    InitFunction "FlushRemoteFiles ${_pv_xen_vars}"
+    _init "FlushRemoteFiles ${_pv_xen_vars}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #              Checking configuration of remote environment.               #
@@ -971,8 +971,8 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "checking configuration of remote environment"
 
-    InitFunction "CheckRemoteStorage ${hv_storage}"
-    InitFunction "XenVmCheck ${vm_id}"
+    _init "CheckRemoteStorage ${hv_storage}"
+    _init "XenVmCheck ${vm_id}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #             Downloading configuration of remote environment.             #
@@ -983,7 +983,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "downloading configuration of remote environment"
 
-    InitFunction "GetRemoteFiles ${_pv_xen_vars}"
+    _init "GetRemoteFiles ${_pv_xen_vars}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #                            Exporting $vm_id.                             #
@@ -994,7 +994,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "exporting virtual machine"
 
-    InitFunction "XenVmExport ${vm_id}"
+    _init "XenVmExport ${vm_id}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #                     Copying a virtual machine disks.                     #
@@ -1005,7 +1005,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "copying a virtual machine disks"
 
-    InitFunction "XenVmCopy ${vm_id}"
+    _init "XenVmCopy ${vm_id}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #                           Extracting ova files.                          #
@@ -1016,7 +1016,7 @@ function __main__() {
       "${_FUNCTION_ID}()" \
       "extracting ova files"
 
-    InitFunction "XenVmExtract ${vm_id}"
+    _init "XenVmExtract ${vm_id}"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #                 Converting disks to $pve_format format.                  #
@@ -1034,7 +1034,7 @@ function __main__() {
     _fname=""
     for _fname in $(find ./* -type d -name "Ref:*" | cut -d "/" -f2 | sort -V) ; do
     
-      InitFunction "XenVmConvert ${_fname}"
+      _init "XenVmConvert ${_fname}"
 
     done
 
@@ -1057,7 +1057,7 @@ function __main__() {
     _fname=""
     for _fname in $(find ./* -type f -name "*.$pve_format" | cut -d "/" -f2 | sort -V) ; do
 
-      InitFunction "VmImport ${_fname}"
+      _init "VmImport ${_fname}"
 
     done
 

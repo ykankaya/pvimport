@@ -10,6 +10,59 @@
 ################################################################################
 
 # ``````````````````````````````````````````````````````````````````````````````
+# Function name: _init()
+#
+# Description:
+#   It deals with launching functions:
+#     - creates a simple environment for the functions you perform
+#     - operates on message to display and command to execute
+#
+# Usage:
+#   _init function_name params
+#
+# Examples:
+#   _init "CheckConn 172.20.20.50 22"
+#
+
+function _init() {
+
+  local _FUNCTION_ID="_init"
+  local _STATE=0
+
+  local _args=("$@")
+
+  _logger "info" \
+    "${_FUNCTION_ID}()" \
+    "init function: '${_args[@]}'"
+
+  # In these two variables we store the message to display
+  # and the command to execute.
+  export _msg_args=()
+  export _cmd_args=()
+
+  eval "${_args[@]}" ; if [ ! $? ] ; then _exit_ 255 ; fi
+
+  _num=${#_msg_args[@]}
+  for (( _xa=0 ; _xa<=((_num - 1)) ; _xa++ )) ; do
+
+    _msg="${_msg_args[$_xa]}"
+    _full_command="${_cmd_args[$_xa]}"
+
+    _sprintf "info" "$_msg"
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "$_msg"
+
+    _init_cmd "$_full_command" ; if [ ! $? ] ; then _exit_ 255 ; fi
+
+  done
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
 # Function name: CheckVar()
 #
 # Description:
@@ -216,59 +269,6 @@ function InitEnv() {
 
   local _FUNCTION_ID="InitEnv"
   local _STATE=0
-
-  return $_STATE
-
-}
-
-# ``````````````````````````````````````````````````````````````````````````````
-# Function name: InitFunction()
-#
-# Description:
-#   It deals with launching functions:
-#     - creates a simple environment for the functions you perform
-#     - operates on message to display and command to execute
-#
-# Usage:
-#   InitFunction function_name params
-#
-# Examples:
-#   InitFunction "CheckConn 172.20.20.50 22"
-#
-
-function InitFunction() {
-
-  local _FUNCTION_ID="InitFunction"
-  local _STATE=0
-
-  local _args=("$@")
-
-  _logger "info" \
-    "${_FUNCTION_ID}()" \
-    "init function: '${_args[@]}'"
-
-  # In these two variables we store the message to display
-  # and the command to execute.
-  export _msg_args=()
-  export _cmd_args=()
-
-  eval "${_args[@]}" ; if [ ! $? ] ; then _exit_ 255 ; fi
-
-  _num=${#_msg_args[@]}
-  for (( _xa=0 ; _xa<=((_num - 1)) ; _xa++ )) ; do
-
-    _msg="${_msg_args[$_xa]}"
-    _full_command="${_cmd_args[$_xa]}"
-
-    _sprintf "info" "$_msg"
-
-    _logger "info" \
-      "${_FUNCTION_ID}()" \
-      "$_msg"
-
-    _init_cmd "$_full_command" ; if [ ! $? ] ; then _exit_ 255 ; fi
-
-  done
 
   return $_STATE
 
