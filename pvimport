@@ -756,17 +756,17 @@ function __main__() {
   # The variables from the additional configuration file
   # (example: src/configs/template.cfg) are also checked.
   # The given variables can not be unset or empty.
-  for i in "hv_type" \
-           "hv_host" \
+  for i in "hv_host" \
            "vm_id" \
            "vm_name" \
            "pve_id" \
            "pve_format" \
+           "hv_type" \
+           "port" \
            "hv_storage" \
            "pve_storage" \
            "pve_lvm" \
-           "local_storage" \
-           "port" ; do
+           "local_storage" ; do
 
     _i="" ; eval _i='$'$i
 
