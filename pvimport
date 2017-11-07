@@ -752,10 +752,10 @@ function __main__() {
   # Generate random value.
   _random=$(date +"%s")
 
-  # Checking variable values (if they are unset or empty).
-  # The variables from the additional configuration file
-  # (example: src/configs/template.cfg) are also checked.
-  # The given variables can not be unset or empty.
+  # Checking the value of the variables (if they are unset or empty):
+  #   - variables for call parameters
+  #   - variables from the additional configuration files
+  #     (eg. src/configs/template.cfg)
   for i in "hv_host" \
            "vm_id" \
            "vm_name" \
@@ -802,9 +802,7 @@ function __main__() {
   # Full path to the local virtual machine directory (proxmox directory).
   pv_path="${pve_storage}/${pve_id}"
 
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-  #                             Init environment.                              #
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
+  # Initialization of the environment for other functions.
   InitEnv
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
