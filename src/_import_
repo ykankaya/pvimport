@@ -131,6 +131,28 @@ function CheckingVariables() {
 
       ;;
 
+      port)
+
+        if [[ "$port" =~ $_num ]] ; then
+
+          _sprintf "stop" "port: vm id has no numeric value"
+
+          _logger "stop" \
+            "${_FUNCTION_ID}()" \
+            "port: vm id has no numeric value"
+
+        elif [[ ! "$port" -ge 1 ]] || [[ ! "$port" -le 65535 ]] ; then
+
+          _sprintf "stop" "port: value out of range"
+
+          _logger "stop" \
+            "${_FUNCTION_ID}()" \
+            "port: value out of range"
+
+        fi
+
+      ;;
+
       pv_import)
 
         # We start the import when calling the --import option.
