@@ -163,13 +163,13 @@ function CheckVar() {
 
     port)
 
-      if [[ "$port" =~ $_num ]] ; then
+      if [[ ! "$port" =~ $_num ]] ; then
 
-        _sprintf "stop" "port: vm id has no numeric value"
+        _sprintf "stop" "port: has no numeric value"
 
         _logger "stop" \
           "${_FUNCTION_ID}()" \
-          "port: vm id has no numeric value"
+          "port: has no numeric value"
 
       elif [[ ! "$port" -ge 1 ]] || [[ ! "$port" -le 65535 ]] ; then
 
