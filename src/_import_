@@ -229,7 +229,7 @@ function CheckVar() {
 
         _logger "info" \
           "${_FUNCTION_ID}()" \
-          "lo_path: creating a local directory: '$lo_path'"
+          "creating a local directory: '$lo_path'"
 
         mkdir -p "$lo_path"
 
