@@ -89,6 +89,7 @@ function CheckVar() {
   # Filtering the length of variable values.
   if [[ "${#_i}" -gt 128 ]] ; then
 
+    # shellcheck disable=SC2154
     _sprintf "stop" "$i: too long value"
 
     _logger "stop" \
@@ -431,6 +432,7 @@ function VmImport() {
 
     fi
 
+    # shellcheck disable=SC2154
     if [[ "$remove_unused" == "yes" ]] ; then
 
       _msg_args+=(\
@@ -443,6 +445,7 @@ function VmImport() {
 
   elif [[ "$pve_format" == "qcow2" ]] ; then
 
+    # shellcheck disable=SC2154
     local _vm_pv_local="${pv_path}/vm-${pve_id}-disk-${_x}.qcow2"
 
     if [[ "$pve_host" == "local" ]] ; then
