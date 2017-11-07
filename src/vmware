@@ -51,9 +51,14 @@ function VmwareInit() {
     "${_FUNCTION_ID}()" \
     "init configuration of remote environment"
 
+  _init "VmwareVmStorageInit ${vm_id}"
+  _init "GetRemoteFiles ${_pv_vmware_storage}"
+
+  _vm_storage=$(cat "$_pv_vmware_storage")
+  re_path="${hv_storage}/${_vm_storage}"
+
   _init "VmwareInitCfg ${_pv_vmware_config} *.vmx"
   _init "VmwareInitCfg ${_pv_vmware_disks} *.vmdk"
-  _init "VmwareVmStorageInit ${vm_id}"
 
   _sprintf "head" "dump configuration of remote environment"
 
@@ -64,11 +69,11 @@ function VmwareInit() {
   _init "GetRemoteFiles ${_pv_vmware_config}"
   _init "GetRemoteFiles ${_pv_vmware_disks}"
 
-  _sprintf "head" "copying a virtual machine disks"
+  _sprintf "head" "import a virtual machine disks"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "copying a virtual machine disks"
+    "import a virtual machine disks"
 
   # Issue to solve:
   # shellcheck disable=SC2013
@@ -155,7 +160,7 @@ function VmwareVmStorageInit() {
   "vm id: '${_vmid}'")
 
   _cmd_args+=(\
-  "ssh ${ssh_opt} ${hv_host} -p ${port} vim-cmd vmsvc/getallvms | grep ${_vmid} | awk '{print \$4}' >>${_pv_vmware_config}")
+  "ssh ${ssh_opt} ${hv_host} -p ${port} vim-cmd vmsvc/getallvms | grep ${_vmid} | awk '{print \$4}' >>${_pv_vmware_storage}")
 
   return $_STATE
 

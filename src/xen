@@ -52,11 +52,11 @@ function XenInit() {
 
   _init "GetRemoteFiles ${_pv_xen_vars}"
 
-  _sprintf "head" "exporting virtual machine"
+  _sprintf "head" "export virtual machine"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "exporting virtual machine"
+    "export virtual machine"
 
   _init "XenVmExport ${vm_id}"
 
