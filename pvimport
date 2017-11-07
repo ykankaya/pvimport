@@ -803,11 +803,11 @@ function __main__() {
   pv_path="${pve_storage}/${pve_id}"
 
   # Checking the value of the variables (if they are incorrect values).
-  _sprintf "head" "checking configuration of local environment"
+  _sprintf "head" "check configuration of local environment"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "checking configuration of local environment"
+    "check configuration of local environment"
 
   for i in "hv_host" \
            "vm_id" \
@@ -835,14 +835,22 @@ function __main__() {
   # Initialization of the environment for other functions.
   InitEnv
 
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-  #                  Init checking connection to remote hosts.                 #
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-  _sprintf "head" "checking connection to remote host(s)"
+  # Set working directory.
+  _sprintf "head" "set working directory"
+
+  _sprintf "info" "path: '$lo_path'"
+
+  cd "$lo_path" || \
+  _logger "stop" \
+    "${_FUNCTION_ID}()" \
+    "directory change error: '$lo_path'"
+
+  # Validates the connection to the remote server.
+  _sprintf "head" "check connection to remote host(s)"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "checking connection to remote host(s)"
+    "check connection to remote host(s)"
     
   _init "CheckConn ${hv_host} ${port}"
 
@@ -853,15 +861,6 @@ function __main__() {
   fi
 
   if [[ "$hv_type" == "vmware" ]] ; then
-
-    _sprintf "head" "set working directory"
-
-    _sprintf "info" "path: '$lo_path'"
-
-    cd "$lo_path" || \
-    _logger "stop" \
-      "${_FUNCTION_ID}()" \
-      "directory change error: '$lo_path'"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #              Preparing configuration of remote environment.              #
@@ -941,15 +940,6 @@ function __main__() {
 
   # shellcheck disable=SC2154
   elif [[ "$hv_type" == "xen" ]] ; then
-
-    _sprintf "head" "set working directory"
-
-    _sprintf "info" "path: '$lo_path'"
-
-    cd "$lo_path" || \
-    _logger "stop" \
-      "${_FUNCTION_ID}()" \
-      "directory change error: '$lo_path'"
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
     #              Preparing configuration of remote environment.              #
