@@ -860,11 +860,11 @@ function __main__() {
 
   fi
 
-  _sprintf "head" "init tasks for $hv_type"
+  _sprintf "head" "init tasks for $hv_type hypervisor"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "init tasks for $hv_type"
+    "init tasks for $hv_type hypervisor"
 
   # Section related to VMware ESXi.
   if [[ "$hv_type" == "vmware" ]] ; then
@@ -882,11 +882,11 @@ function __main__() {
   # We start the import when calling the --import option.
   if [[ "$pve_import" == "true" ]] ; then
 
-    _sprintf "head" "importing a virtual machine disks"
+    _sprintf "head" "import a virtual machine disks"
 
     _logger "head" \
       "${_FUNCTION_ID}()" \
-      "importing a virtual machine disks"
+      "import a virtual machine disks"
 
     _x=1
 
