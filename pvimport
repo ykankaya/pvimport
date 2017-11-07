@@ -811,7 +811,7 @@ function __main__() {
            "hv_storage" \
            "pve_storage" \
            "pve_lvm" \
-           "local_storage"
+           "local_storage" \
            "pve_import" \
            "pve_host" \
            "re_path" \
