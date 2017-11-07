@@ -82,7 +82,7 @@ function CheckVar() {
 
   local _varg="$1"
 
-  _i="" ; eval _i='$'$_varg
+  _i="" ; eval _i='$'"$_varg"
 
   local _num='^[0-9]+$'
 
