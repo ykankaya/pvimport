@@ -256,7 +256,7 @@ function CheckVar() {
 # Function name: CheckConn()
 #
 # Description:
-#   Validates the connection to the remote server.
+#   Check connection to remote host.
 #
 # Usage:
 #   CheckConn host port
@@ -290,7 +290,7 @@ function CheckConn() {
 # Function name: FlushRemoteFiles()
 #
 # Description:
-#   Flush remote config files.
+#   Flush configuration of remote environment.
 #
 # Usage:
 #   FlushRemoteFiles /path/to/file

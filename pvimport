@@ -835,7 +835,6 @@ function __main__() {
   # Initialization of the environment for other functions.
   InitEnv
 
-  # Set working directory.
   _sprintf "head" "set working directory"
 
   _sprintf "info" "path: '$lo_path'"
@@ -845,7 +844,6 @@ function __main__() {
     "${_FUNCTION_ID}()" \
     "directory change error: '$lo_path'"
 
-  # Validates the connection to the remote server.
   _sprintf "head" "check connection to remote host(s)"
 
   _logger "head" \
