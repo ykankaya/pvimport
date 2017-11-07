@@ -101,11 +101,7 @@ function CheckVar() {
   # shellcheck disable=SC2154
   case $i in
 
-    hv_host|vm_id|hv_storage|re_path|pv_path|ssh_opt|dd_opt)
-
-        true
-
-    ;;
+    # hv_host|vm_id|hv_storage|re_path|pv_path|ssh_opt|dd_opt)
 
     pve_id)
 

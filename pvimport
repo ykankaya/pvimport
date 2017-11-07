@@ -835,9 +835,6 @@ function __main__() {
 
   done
 
-  # Initialization of the environment for other functions.
-  InitEnv
-
   _sprintf "head" "set working directory"
 
   _sprintf "info" "path: '$lo_path'"
