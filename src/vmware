@@ -27,18 +27,15 @@ function VmwareInit() {
   local _FUNCTION_ID="VmwareInit"
   local _STATE=0
 
-  # Prepare configuration of remote environment.
-  _sprintf "head" "prepare configuration of remote environment"
+  _sprintf "head" "flush configuration of remote environment"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "prepare configuration of remote environment"
+    "flush configuration of remote environment"
 
-  # Clean temporary files on remote hypervisor.
   _init "FlushRemoteFiles ${_pv_vmware_config}"
   _init "FlushRemoteFiles ${_pv_vmware_disks}"
 
-  # Check configuration of remote environment.
   _sprintf "head" "check configuration of remote environment"
 
   _logger "head" \
@@ -48,24 +45,25 @@ function VmwareInit() {
   _init "CheckRemoteStorage ${hv_storage}"
   _init "VmwareVmCheck ${vm_id}"
 
-  _init "VmwareGet ${_pv_vmware_config} *.vmx"
-  _init "VmwareGet ${_pv_vmware_disks} *.vmdk"
-
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-  #             Downloading configuration of remote environment.             #
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-  _sprintf "head" "downloading configuration of remote environment"
+  _sprintf "head" "init configuration of remote environment"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "downloading configuration of remote environment"
+    "init configuration of remote environment"
+
+  _init "VmwareInitCfg ${_pv_vmware_config} *.vmx"
+  _init "VmwareInitCfg ${_pv_vmware_disks} *.vmdk"
+  _init "VmwareVmStorageInit ${vm_id}"
+
+  _sprintf "head" "dump configuration of remote environment"
+
+  _logger "head" \
+    "${_FUNCTION_ID}()" \
+    "dump configuration of remote environment"
 
   _init "GetRemoteFiles ${_pv_vmware_config}"
   _init "GetRemoteFiles ${_pv_vmware_disks}"
 
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-  #                     Copying a virtual machine disks.                     #
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   _sprintf "head" "copying a virtual machine disks"
 
   _logger "head" \
@@ -77,13 +75,10 @@ function VmwareInit() {
   _fname=""
   for _fname in $(grep ".vmdk" "$_pv_vmware_disks" | cut -d "/" -f2) ; do
 
-    _init "VmwareGetRemoteVmDisks ${_fname}"
+    _init "VmwareInitCfgRemoteVmDisks ${_fname}"
 
   done
 
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-  #                 Converting disks to $pve_format format.                  #
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   _sprintf "head" "converting disks to $pve_format format"
 
   _logger "head" \
@@ -100,37 +95,6 @@ function VmwareInit() {
     _init "VmwareVmConvertDisks ${_fname}"
 
   done
-
-  return $_STATE
-
-}
-
-# ``````````````````````````````````````````````````````````````````````````````
-# Function name: VmwareGet()
-#
-# Description:
-#   Get the VMware ESXi virtual machine and config.
-#
-# Usage:
-#   VmwareGet /path/to/config/file filter
-#
-# Examples:
-#   VmwareGet /tmp/.vmware.vars *.vmx
-#
-
-function VmwareGet() {
-
-  local _FUNCTION_ID="VmwareGet"
-  local _STATE=0
-
-  local _file="$1"
-  local _larg="$2"
-
-  _msg_args+=(\
-  "src: '${_file}")
-
-  _cmd_args+=(\
-  "ssh ${ssh_opt} ${hv_host} -p ${port} cd \"${re_path}\" && find . -name \"${_larg}\" >>${_file}")
 
   return $_STATE
 
@@ -168,21 +132,82 @@ function VmwareVmCheck() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: VmwareGetRemoteVmDisks()
+# Function name: VmwareVmStorageInit()
+#
+# Description:
+#   Checks of the VMware ESXi remote vm storage.
+#
+# Usage:
+#   VmwareVmStorageInit vm_id
+#
+# Examples:
+#   VmwareVmStorageInit PROD-web01
+#
+
+function VmwareVmStorageInit() {
+
+  local _FUNCTION_ID="VmwareVmStorageInit"
+  local _STATE=0
+
+  local _vmid="$1"
+
+  _msg_args+=(\
+  "vm id: '${_vmid}'")
+
+  _cmd_args+=(\
+  "ssh ${ssh_opt} ${hv_host} -p ${port} vim-cmd vmsvc/getallvms | grep ${_vmid} | awk '{print \$4}' >>${_pv_vmware_config}")
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: VmwareInitCfg()
+#
+# Description:
+#   Init configuration of remote environment.
+#
+# Usage:
+#   VmwareInitCfg /path/to/config/file filter
+#
+# Examples:
+#   VmwareInitCfg /tmp/.vmware.vars *.vmx
+#
+
+function VmwareInitCfg() {
+
+  local _FUNCTION_ID="VmwareInitCfg"
+  local _STATE=0
+
+  local _file="$1"
+  local _larg="$2"
+
+  _msg_args+=(\
+  "src: '${_file}")
+
+  _cmd_args+=(\
+  "ssh ${ssh_opt} ${hv_host} -p ${port} cd \"${re_path}\" && find . -name \"${_larg}\" >>${_file}")
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: VmwareInitCfgRemoteVmDisks()
 #
 # Description:
 #   Copies the VMware ESXi virtual machine from remote host to local.
 #
 # Usage:
-#   VmwareGetRemoteVmDisks /path/to/remote/vmdk/disk
+#   VmwareInitCfgRemoteVmDisks /path/to/remote/vmdk/disk
 #
 # Examples:
-#   VmwareGetRemoteVmDisks /vmfs/volume/datastore/PROD-web01/PROD-web01.vmdk
+#   VmwareInitCfgRemoteVmDisks /vmfs/volume/datastore/PROD-web01/PROD-web01.vmdk
 #
 
-function VmwareGetRemoteVmDisks() {
+function VmwareInitCfgRemoteVmDisks() {
 
-  local _FUNCTION_ID="VmwareGetRemoteVmDisks"
+  local _FUNCTION_ID="VmwareInitCfgRemoteVmDisks"
   local _STATE=0
 
   local _fda="$1"
