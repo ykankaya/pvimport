@@ -85,9 +85,9 @@ function VmwareInit() {
     "${_FUNCTION_ID}()" \
     "copy a virtual machine disks"
 
-  # Issue to solve:
   # shellcheck disable=SC2013
   _fname=""
+  # shellcheck disable=SC2013
   for _fname in $(grep ".vmdk" "$_pv_vmware_disks" | cut -d "/" -f2) ; do
 
     # shellcheck disable=SC2154
@@ -104,9 +104,9 @@ function VmwareInit() {
 
   _x=1
 
-  # Issue to solve:
   # shellcheck disable=SC2013
   _fname=""
+  # shellcheck disable=SC2013
   for _fname in $(grep ".vmdk" "$_pv_vmware_disks" | cut -d "/" -f2) ; do
 
     # shellcheck disable=SC2154
