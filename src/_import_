@@ -253,28 +253,6 @@ function CheckVar() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: InitEnv()
-#
-# Description:
-#   Initialization of the environment for other functions.
-#
-# Usage:
-#   InitEnv
-#
-# Examples:
-#   InitEnv
-#
-
-function InitEnv() {
-
-  local _FUNCTION_ID="InitEnv"
-  local _STATE=0
-
-  return $_STATE
-
-}
-
-# ``````````````````````````````````````````````````````````````````````````````
 # Function name: CheckConn()
 #
 # Description:
