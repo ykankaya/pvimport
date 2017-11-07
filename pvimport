@@ -477,19 +477,19 @@ function _load() {
 
   elif [ -z "$_filename" ] ; then
 
-    _sprintf "stop" "incorrectly loaded $_filename file (incorrect filename)"
+    _sprintf "stop" "incorrectly loaded '$_filename' file (incorrect filename)"
 
     _logger "stop" \
       "${_FUNCTION_ID}()" \
-      "incorrectly loaded $_filename file (incorrect filename)"
+      "incorrectly loaded '$_filename' file (incorrect filename)"
 
   else
 
-    _sprintf "stop" "incorrectly loaded $_filename file (does not exist?)"
+    _sprintf "stop" "incorrectly loaded '$_filename' file (does not exist?)"
 
     _logger "stop" \
       "${_FUNCTION_ID}()" \
-      "incorrectly loaded $_filename file (does not exist?)"
+      "incorrectly loaded '$_filename' file (does not exist?)"
 
   fi
 
