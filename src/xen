@@ -60,27 +60,27 @@ function XenInit() {
 
   _init "XenVmExport ${vm_id}"
 
-  _sprintf "head" "copying a virtual machine disks"
+  _sprintf "head" "copy a virtual machine disks"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "copying a virtual machine disks"
+    "copy a virtual machine disks"
 
   _init "XenVmCopy ${vm_id}"
 
-  _sprintf "head" "extracting ova files"
+  _sprintf "head" "extract ova files"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "extracting ova files"
+    "extract ova files"
 
   _init "XenVmExtract ${vm_id}"
 
-  _sprintf "head" "converting disks to $pve_format format"
+  _sprintf "head" "convert disks to $pve_format format"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "converting disks to $pve_format format"
+    "convert disks to $pve_format format"
 
   _x=1
 
@@ -89,7 +89,7 @@ function XenInit() {
   _fname=""
   for _fname in $(find ./* -type d -name "Ref:*" | cut -d "/" -f2 | sort -V) ; do
 
-    _init "XenVmConvert ${_fname}"
+    _init "XenVmConvertDisks ${_fname}"
 
   done
 
@@ -237,21 +237,21 @@ function XenVmExtract() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: XenVmConvert()
+# Function name: XenVmConvertDisks()
 #
 # Description:
 #   Converts the Xen virtual machine disks.
 #
 # Usage:
-#   XenVmConvert /path/to/local/xen/disk
+#   XenVmConvertDisks /path/to/local/xen/disk
 #
 # Examples:
-#   XenVmConvert /xfs900/datastore/xen/PROD-web01.{img,qcow2}
+#   XenVmConvertDisks /xfs900/datastore/xen/PROD-web01.{img,qcow2}
 #
 
-function XenVmConvert() {
+function XenVmConvertDisks() {
 
-  local _FUNCTION_ID="XenVmConvert"
+  local _FUNCTION_ID="XenVmConvertDisks"
   local _STATE=0
 
   local _fdx="$1"

@@ -69,26 +69,26 @@ function VmwareInit() {
   _init "GetRemoteFiles ${_pv_vmware_config}"
   _init "GetRemoteFiles ${_pv_vmware_disks}"
 
-  _sprintf "head" "import a virtual machine disks"
+  _sprintf "head" "copy a virtual machine disks"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "import a virtual machine disks"
+    "copy a virtual machine disks"
 
   # Issue to solve:
   # shellcheck disable=SC2013
   _fname=""
   for _fname in $(grep ".vmdk" "$_pv_vmware_disks" | cut -d "/" -f2) ; do
 
-    _init "VmwareInitCfgRemoteVmDisks ${_fname}"
+    _init "VmwareVmCopy ${_fname}"
 
   done
 
-  _sprintf "head" "converting disks to $pve_format format"
+  _sprintf "head" "convert disks to $pve_format format"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "converting disks to $pve_format format"
+    "convert disks to $pve_format format"
 
   _x=1
 
@@ -198,21 +198,21 @@ function VmwareInitCfg() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: VmwareInitCfgRemoteVmDisks()
+# Function name: VmwareVmCopy()
 #
 # Description:
 #   Copies the VMware ESXi virtual machine from remote host to local.
 #
 # Usage:
-#   VmwareInitCfgRemoteVmDisks /path/to/remote/vmdk/disk
+#   VmwareVmCopy /path/to/remote/vmdk/disk
 #
 # Examples:
-#   VmwareInitCfgRemoteVmDisks /vmfs/volume/datastore/PROD-web01/PROD-web01.vmdk
+#   VmwareVmCopy /vmfs/volume/datastore/PROD-web01/PROD-web01.vmdk
 #
 
-function VmwareInitCfgRemoteVmDisks() {
+function VmwareVmCopy() {
 
-  local _FUNCTION_ID="VmwareInitCfgRemoteVmDisks"
+  local _FUNCTION_ID="VmwareVmCopy"
   local _STATE=0
 
   local _fda="$1"
