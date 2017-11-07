@@ -630,9 +630,6 @@ function __main__() {
     "__init_params[] = (${__init_params[*]})," \
     "__script_params[] = (${__script_params[*]})"
 
-  # Include src/_import_ file.
-  _load "null" "$_import_"
-
   # Specifies the call parameters of the script, the exact description
   # can be found in _help_ and file README.md.
   local _short_opt="c:h:i:n:p:f:"
@@ -641,7 +638,13 @@ function __main__() {
   _GETOPT_PARAMS=$(getopt -o "${_short_opt}" --long "${_long_opt}" \
                    -n "${_init_name}" -- "${__script_params[@]}")
 
-  if [[ "${#__script_params[@]}" -eq 0 ]] ; then _exit_ 0 ; fi
+  # Ends an error if the parameter or its argument is not valid.
+  if [ $? != 0 ] ; then
+    _exit_ 1
+  # Ends if no parameter is specified.
+  elif [[ "${#__script_params[@]}" -eq 0 ]] ; then
+    _exit_ 0
+  fi
 
   eval set -- "$_GETOPT_PARAMS"
   while true ; do
@@ -712,6 +715,9 @@ function __main__() {
     esac
 
   done
+
+  # Include src/_import_ file.
+  _load "null" "$_import_"
 
   # Running tasks before start user functions.
   _before_init
