@@ -30,8 +30,8 @@ The tool provides the following options:
     pvimport <option|long-option>
 
   Examples:
-    pvimport -c vmware.cfg -h pv01 -i gitlab_01 -n gitlab_01 -p 300 -f img --verbose
-    pvimport -c xen.cfg -h 172.20.50.31 -i ac06d737 -n VM_PROD -p 200 -f qcow2 --pve-import local
+    pvimport -c vmware.cfg -h pv01 -i gitlab_01 -p 300 -f img --verbose
+    pvimport -c xen.cfg -h 172.20.50.31 -i ac06d737 -p 200 -f qcow2 --pve-import local
 
   Options:
         --help                      show this message
@@ -40,8 +40,6 @@ The tool provides the following options:
     -c, --config <file>             attach an external config file to the script
     -h, --host <host>               sets the ip address or hostname of the remote hypervisor
     -i, --id <vm_id|vm_name>        sets the remote id (Xen) or name (VMware ESXi) of the imported vm
-    -n, --name <vm_name>            sets the name for the new files/directories
-                                    and remote vm directory in datastore (VMware ESXi)
     -p, --pve-id <num>              sets the vm id created in proxmox
     -f, --pve-format <img|qcow2>    sets the disk output format
         --pve-import <local|host>   import disks into any proxmox node (optional)
@@ -132,10 +130,6 @@ Specify hostname (in this example xen hypervisor):
 Specify the registered virtual machine name - **uuid** parameter after issuing the `xe vm-list` command:
 
 - `-i web01`
-
-In the next step, we specify the name of the directory created in the local resource where the virtual machine will be visible (for xen, the value of `-i|--id` is the most important). For consistency, the value of this parameter may be the same as above:
-
-- `-n web01`
 
 This parameter specifies the identifier under which the virtual machine will be visible from proxmox (it is recommended to create a virtual machine first). This parameter is also very important from the standpoint of the `--sync` option, which syncs prepared disks with existing ones (after creating vm from proxmox):
 

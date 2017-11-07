@@ -521,8 +521,8 @@ function _help_() {
     $_init_name <option|long-option>
 
   Examples:
-    $_init_name -c vmware.cfg -h pv01 -i gitlab_01 -n gitlab_01 -p 300 -f img --verbose
-    $_init_name -c xen.cfg -h 172.20.50.31 -i ac06d737 -n VM_PROD -p 200 -f qcow2 --pve-import local
+    $_init_name -c vmware.cfg -h pv01 -i gitlab_01 -p 300 -f img --verbose
+    $_init_name -c xen.cfg -h 172.20.50.31 -i ac06d737 -p 200 -f qcow2 --pve-import local
 
   Options:
         --help                      show this message
@@ -531,8 +531,6 @@ function _help_() {
     -c, --config <file>             attach an external config file to the script
     -h, --host <host>               sets the ip address or hostname of the remote hypervisor
     -i, --id <vm_id|vm_name>        sets the remote id (Xen) or name (VMware ESXi) of the imported vm
-    -n, --name <vm_name>            sets the name for the new files/directories
-                                    and remote vm directory in datastore (VMware ESXi)
     -p, --pve-id <num>              sets the vm id created in proxmox
     -f, --pve-format <img|qcow2>    sets the disk output format
         --pve-import <local|host>   import disks into any proxmox node (optional)
@@ -692,12 +690,6 @@ function __main__() {
 
         shift 2 ;;
 
-      -n|--name)
-
-        export vm_name=${2}
-
-        shift 2 ;;
-
       -p|--pve-id)
 
         export pve_id=${2}
@@ -758,7 +750,6 @@ function __main__() {
   #     (eg. src/configs/template.cfg)
   for i in "hv_host" \
            "vm_id" \
-           "vm_name" \
            "pve_id" \
            "pve_format" \
            "hv_type" \
@@ -794,11 +785,11 @@ function __main__() {
 
   # shellcheck disable=SC2154
   # Full path to the remote virtual machine directory.
-  re_path="${hv_storage}/${vm_name}"
+  re_path="${hv_storage}/${vm_id}"
 
   # shellcheck disable=SC2154
   # Full path to the local virtual machine directory (working directory).
-  lo_path="${local_storage}/${hv_host}/${vm_name}"
+  lo_path="${local_storage}/${hv_host}/${vm_id}"
 
   # shellcheck disable=SC2154
   # Full path to the local or remote virtual machine directory (proxmox directory).
@@ -813,7 +804,6 @@ function __main__() {
 
   for i in "hv_host" \
            "vm_id" \
-           "vm_name" \
            "pve_id" \
            "pve_format" \
            "hv_type" \
