@@ -64,9 +64,9 @@ function VmwareInit() {
   re_path="${hv_storage}/${_vm_storage}"
 
   # shellcheck disable=SC2154
-  _init "VmwareInitCfg ${_pv_vmware_config} *.vmx"
+  _init "VmwareVmCfgInit ${_pv_vmware_config} *.vmx"
   # shellcheck disable=SC2154
-  _init "VmwareInitCfg ${_pv_vmware_disks} *.vmdk"
+  _init "VmwareVmCfgInit ${_pv_vmware_disks} *.vmdk"
 
   _sprintf "head" "dump configuration of remote environment"
 
@@ -180,21 +180,21 @@ function VmwareVmStorageInit() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: VmwareInitCfg()
+# Function name: VmwareVmCfgInit()
 #
 # Description:
 #   Init configuration of remote environment.
 #
 # Usage:
-#   VmwareInitCfg /path/to/config/file filter
+#   VmwareVmCfgInit /path/to/config/file filter
 #
 # Examples:
-#   VmwareInitCfg /tmp/.vmware.vars *.vmx
+#   VmwareVmCfgInit /tmp/.vmware.vars *.vmx
 #
 
-function VmwareInitCfg() {
+function VmwareVmCfgInit() {
 
-  local _FUNCTION_ID="VmwareInitCfg"
+  local _FUNCTION_ID="VmwareVmCfgInit"
   local _STATE=0
 
   local _file="$1"
