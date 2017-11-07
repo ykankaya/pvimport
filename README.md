@@ -39,7 +39,7 @@ The tool provides the following options:
         --verbose                   display 'info' messages on the screen (verbose mode)
     -c, --config <file>             attach an external config file to the script
     -h, --host <host>               sets the ip address or hostname of the remote hypervisor
-    -i, --id <vm_id|vm_name>        sets the remote id (Xen) or name (VMware ESXi) of the imported vm
+    -i, --id <vm_id|vm_name>        sets the remote id (Xen) or name (Xen/VMware ESXi) of the imported vm
     -p, --pve-id <num>              sets the vm id created in proxmox
     -f, --pve-format <img|qcow2>    sets the disk output format
         --pve-import <local|host>   import disks into any proxmox node (optional)
