@@ -13,7 +13,7 @@
 # Function name: XenInit()
 #
 # Description:
-#   Initialization of the remote Xen environment.
+#   Initialization of tasks for Xen.
 #
 # Usage:
 #   XenInit
@@ -27,25 +27,22 @@ function XenInit() {
   local _FUNCTION_ID="XenInit"
   local _STATE=0
 
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-  #              Preparing configuration of remote environment.              #
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-  _sprintf "head" "preparing configuration of remote environment"
+  # Prepare configuration of remote environment.
+  _sprintf "head" "prepare configuration of remote environment"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "preparing configuration of remote environment"
+    "prepare configuration of remote environment"
 
   _init "FlushRemoteFiles ${_pv_xen_vars}"
 
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-  #              Checking configuration of remote environment.               #
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-  _sprintf "head" "checking configuration of remote environment"
+  # Check configuration of remote environment.
+  _sprintf "head" "check configuration of remote environment"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "checking configuration of remote environment"
+    "check configuration of remote environment"
+
 
   _init "CheckRemoteStorage ${hv_storage}"
   _init "XenVmCheck ${vm_id}"

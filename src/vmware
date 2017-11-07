@@ -13,7 +13,7 @@
 # Function name: VmwareInit()
 #
 # Description:
-#   Initialization of the remote VMware ESXi environment.
+#   Initialization of tasks for VMware ESXi.
 #
 # Usage:
 #   VmwareInit
@@ -27,7 +27,7 @@ function VmwareInit() {
   local _FUNCTION_ID="VmwareInit"
   local _STATE=0
 
-  # Preparing configuration of remote environment.
+  # Prepare configuration of remote environment.
   _sprintf "head" "prepare configuration of remote environment"
 
   _logger "head" \
@@ -38,20 +38,18 @@ function VmwareInit() {
   _init "FlushRemoteFiles ${_pv_vmware_config}"
   _init "FlushRemoteFiles ${_pv_vmware_disks}"
 
-  _init "VmwareGet ${_pv_vmware_config} *.vmx"
-  _init "VmwareGet ${_pv_vmware_disks} *.vmdk"
-
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-  #              Checking configuration of remote environment.               #
-  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
-  _sprintf "head" "checking configuration of remote environment"
+  # Check configuration of remote environment.
+  _sprintf "head" "check configuration of remote environment"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "checking configuration of remote environment"
+    "check configuration of remote environment"
 
   _init "CheckRemoteStorage ${hv_storage}"
   _init "VmwareVmCheck ${vm_id}"
+
+  _init "VmwareGet ${_pv_vmware_config} *.vmx"
+  _init "VmwareGet ${_pv_vmware_disks} *.vmdk"
 
   # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ #
   #             Downloading configuration of remote environment.             #
