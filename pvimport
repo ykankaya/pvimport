@@ -625,7 +625,7 @@ function _after_init() {
 
     # Print header.
     printf '\e[m'$_sp'\e[1;39mTOTAL TIME: %dh:%dm:%ds\e[m\n' \
-           $(($_tottime/3600)) $(($_tottime%3600/60)) $(($_tottime%60))
+           "$(($_tottime/3600)) $(($_tottime%3600/60)) $(($_tottime%60))"
 
   fi
 
