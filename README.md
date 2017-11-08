@@ -111,7 +111,7 @@ readonly remove_unused="no"
 > Before you start, create a virtual machine in the proxmox web panel. The most important thing is to add the same number of disks of the same size as the current hypervisor.
 
 ``````
-pvimport -c src/configs/xen.cfg -h xen01.domain.com -i web01 -p 205 -f img --verbose
+pvimport -c src/configs/xen.cfg -h xen01 -i web01 -p 205 -f img --verbose
 ``````
 
 In the first place we define the configuration (which should be prepared in advance):
@@ -120,7 +120,7 @@ In the first place we define the configuration (which should be prepared in adva
 
 Specify hostname (in this example xen hypervisor):
 
-- `-h xen01.domain.com`
+- `-h xen01`
 
 Specify the registered virtual machine name - **uuid** parameter after issuing the `xe vm-list` command:
 
