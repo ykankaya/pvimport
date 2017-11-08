@@ -96,9 +96,6 @@ load_state=0
 stdout_mode=""
 printf_mode=""
 
-# Separator.
-_sp="------------"
-
 
 ################################################################################
 ############################## External commands ###############################
@@ -586,8 +583,7 @@ function _before_init() {
   if [[ "$help_mode" -ne 1 ]] ; then
 
     # Print header.
-    printf '\e[1;36m[ \e[m'$_sp'\e[1;39m START: %s \e[m'$_sp' \e[1;36m]\e[m\n' \
-           "$(date +%Y/%m/%d-%T)"
+    printf '\e[m'$_sp'\e[1;39mSTART: %s\e[m\n' "$(date +%Y/%m/%d-%T)"
 
   fi
 
@@ -625,8 +621,7 @@ function _after_init() {
   if [[ "$help_mode" -ne 1 ]] ; then
 
     # Print header.
-    printf '\e[1;36m[ \e[m'$_sp'\e[1;39m STOP: %s \e[m'$_sp' \e[1;36m]\e[m\n' \
-           "$(date +%Y/%m/%d-%T)"
+    printf '\e[m'$_sp'\e[1;39mSTOP: %s\e[m\n' "$(date +%Y/%m/%d-%T)"
 
   fi
 
