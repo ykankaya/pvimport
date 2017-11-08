@@ -87,6 +87,11 @@ function VmwareInit() {
     "${_FUNCTION_ID}()" \
     "copy a virtual machine disks"
 
+  _sprintf "info" "re_path (new): ${re_path}"
+
+  # shellcheck disable=SC2154
+  _init "CheckRemoteStorage ${re_path}"
+
   # shellcheck disable=SC2013
   _fname=""
   # shellcheck disable=SC2013
