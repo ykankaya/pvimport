@@ -459,12 +459,12 @@ function _load() {
     # the value is 'null', otherwise:
     if [[ "$_type" == "head" ]] ; then
 
-      _sprintf "head" "loading configuration"
+      _sprintf "head" "load configuration"
       _sprintf "info" "file: '$_filename'"
 
     elif [[ "$_type" == "info" ]] ; then
 
-      _sprintf "info" "loading configuration: '$_filename'"
+      _sprintf "info" "load configuration: '$_filename'"
 
     fi
 
@@ -824,10 +824,6 @@ function __main__() {
   # shellcheck disable=SC2034
   local _pv_vmware_storage="/tmp/.vmware.storage"
 
-  # shellcheck disable=SC2034,SC2154
-  # Full path to the remote virtual machine directory.
-  re_path="${hv_storage}/${vm_id}"
-
   # shellcheck disable=SC2154
   # Full path to the local virtual machine directory (working directory).
   lo_path="${local_storage}/${hv_host}/${vm_id}"
@@ -835,6 +831,11 @@ function __main__() {
   # shellcheck disable=SC2034,SC2154
   # Full path to the local or remote virtual machine directory (proxmox directory).
   pv_path="${pve_storage}/${pve_id}"
+
+  # shellcheck disable=SC2034,SC2154
+  # Full path to the remote virtual machine directory.
+  # re_path="${hv_storage}/${vm_id}"
+  re_path=""
 
   # Checking the value of the variables (if they are incorrect values).
   _sprintf "head" "check configuration of local environment"
@@ -855,7 +856,6 @@ function __main__() {
            "local_storage" \
            "pve_import" \
            "pve_host" \
-           "re_path" \
            "lo_path" \
            "pv_path" \
            "ssh_opt" \

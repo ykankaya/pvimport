@@ -71,6 +71,17 @@ function XenInit() {
     "${_FUNCTION_ID}()" \
     "copy a virtual machine disks"
 
+  re_path="${hv_storage}/${vm_id}"
+
+  _sprintf "info" "set re_path: ${re_path}"
+
+  _logger "head" \
+    "${_FUNCTION_ID}()" \
+    "set re_path: ${re_path}"
+
+  # shellcheck disable=SC2154
+  _init_function "CheckRemoteStorage ${re_path}"
+
   # shellcheck disable=SC2154
   _init_function "XenVmCopy ${vm_id}"
 
@@ -84,11 +95,11 @@ function XenInit() {
   _init_function "XenVmExtract ${vm_id}"
 
   # shellcheck disable=SC2154
-  _sprintf "head" "convert disks to $pve_format format"
+  _sprintf "head" "convert disks to '$pve_format' format"
 
   _logger "head" \
     "${_FUNCTION_ID}()" \
-    "convert disks to $pve_format format"
+    "convert disks to '$pve_format' format"
 
   _x=1
 
