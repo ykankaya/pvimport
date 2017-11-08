@@ -37,6 +37,8 @@ function VmwareInit() {
   _init "FlushRemoteFiles ${_pv_vmware_config}"
   # shellcheck disable=SC2154
   _init "FlushRemoteFiles ${_pv_vmware_disks}"
+  # shellcheck disable=SC2154
+  _init "FlushRemoteFiles ${_pv_vmware_storage}"
 
   _sprintf "head" "check configuration of remote environment"
 
