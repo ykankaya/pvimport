@@ -586,7 +586,7 @@ function _before_init() {
   if [[ "$help_mode" -ne 1 ]] ; then
 
     # Print header.
-    printf '\e[1;36m[ \e[m'$_sp'\e[1;39m STOP: %s \e[m'$_sp' \e[1;36m]\e[m\n' \
+    printf '\e[1;36m[ \e[m'$_sp'\e[1;39m START: %s \e[m'$_sp' \e[1;36m]\e[m\n' \
            "$(date +%Y/%m/%d-%T)"
 
   fi
@@ -625,7 +625,7 @@ function _after_init() {
   if [[ "$help_mode" -ne 1 ]] ; then
 
     # Print header.
-    printf '\e[1;36m[ \e[m'$_sp'\e[1;39m START: %s \e[m'$_sp' \e[1;36m]\e[m\n' \
+    printf '\e[1;36m[ \e[m'$_sp'\e[1;39m STOP: %s \e[m'$_sp' \e[1;36m]\e[m\n' \
            "$(date +%Y/%m/%d-%T)"
 
   fi
