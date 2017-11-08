@@ -618,9 +618,13 @@ function _after_init() {
   local _FUNCTION_ID="_after_init"
   local _STATE=0
 
-  # Print header.
-  printf '\e[1;36m[ \e[m'$_sp'\e[1;39m STOP: %s \e[m'$_sp' \e[1;36m]\e[m\n' \
-         $(date +%Y/%m/%d-%T)
+  if [[ "$help_mode" -ne 1 ]] ; then
+
+    # Print header.
+    printf '\e[1;36m[ \e[m'$_sp'\e[1;39m STOP: %s \e[m'$_sp' \e[1;36m]\e[m\n' \
+           $(date +%Y/%m/%d-%T)
+
+  fi
 
   cd "$_init_directory" || \
   _logger "stop" \
@@ -669,6 +673,8 @@ function __main__() {
     case $1 in
 
       --help)
+
+        help_mode=1
 
         _help_
 
