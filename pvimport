@@ -96,6 +96,9 @@ load_state=0
 stdout_mode=""
 printf_mode=""
 
+# Separator.
+_sp="--------------------"
+
 
 ################################################################################
 ############################## External commands ###############################
@@ -741,6 +744,10 @@ function __main__() {
   # Put here all your variable declarations, function calls
   # and all the other code blocks.
 
+  # Print header.
+  printf '\e[1;36m[ \e[m'$_sp'\e[1;39m START: %s \e[m'$_sp' \e[1;36m]\e[m\n' \
+         $(date +%Y/%m/%d-%T)
+
   # In this section we add external file (for -c|--config script param).
   if [[ "$load_state" -eq 1 ]] ; then _load "head" "$config" ; fi
 
@@ -906,6 +913,10 @@ function __main__() {
   fi
 
   # ````````````````````````````````````````````````````````````````````````````
+
+  # Print header.
+  printf '\e[1;36m[ \e[m'$_sp'\e[1;39m STOP: %s \e[m'$_sp' \e[1;36m]\e[m\n' \
+         $(date +%Y/%m/%d-%T)
 
   return $_STATE
 
