@@ -216,7 +216,6 @@ function CheckVar() {
       # We start the import when calling the --import option.
       if [[ "$pve_import" != "true" ]] ; then
 
-        pve_import="false"
         pve_host="local"
 
       fi
