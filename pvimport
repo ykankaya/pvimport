@@ -583,9 +583,13 @@ function _before_init() {
   local _FUNCTION_ID="_before_init"
   local _STATE=0
 
-  # Print header.
-  printf '\e[1;36m[ \e[m'$_sp'\e[1;39m START: %s \e[m'$_sp' \e[1;36m]\e[m\n' \
-         "$(date +%Y/%m/%d-%T)"
+  if [[ "$help_mode" -ne 1 ]] ; then
+
+    # Print header.
+    printf '\e[1;36m[ \e[m'$_sp'\e[1;39m STOP: %s \e[m'$_sp' \e[1;36m]\e[m\n' \
+           "$(date +%Y/%m/%d-%T)"
+
+  fi
 
   cd "$_init_directory" || \
   _logger "stop" \
@@ -622,7 +626,7 @@ function _after_init() {
 
     # Print header.
     printf '\e[1;36m[ \e[m'$_sp'\e[1;39m STOP: %s \e[m'$_sp' \e[1;36m]\e[m\n' \
-           $(date +%Y/%m/%d-%T)
+           "$(date +%Y/%m/%d-%T)"
 
   fi
 
