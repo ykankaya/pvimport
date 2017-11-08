@@ -534,6 +534,7 @@ function _help_() {
         --help                      show this message
         --debug                     display information on the screen (debug mode)
         --verbose                   display 'info' messages on the screen (verbose mode)
+        --time                      displays the total execution time of the script
     -c, --config <file>             attach an external config file to the script
     -h, --host <host>               sets the ip address or hostname of the remote hypervisor
     -i, --id <vm_id|vm_name>        sets the remote id (Xen) or name (Xen/VMware ESXi) of the imported vm
@@ -580,10 +581,9 @@ function _before_init() {
   local _FUNCTION_ID="_before_init"
   local _STATE=0
 
-  if [[ "$help_mode" -ne 1 ]] ; then
+  if [[ "$time_mode" -ne 1 ]] ; then
 
-    # Print header.
-    printf '\e[m'$_sp'\e[1;39mSTART: %s\e[m\n' "$(date +%Y/%m/%d-%T)"
+    _begtime=$(date +%s)
 
   fi
 
@@ -618,10 +618,14 @@ function _after_init() {
   local _FUNCTION_ID="_after_init"
   local _STATE=0
 
-  if [[ "$help_mode" -ne 1 ]] ; then
+  if [[ "$time_mode" -ne 1 ]] ; then
+
+    _endtime=$(date +%s)
+    _tottime=$(expr $_endtime - $_begtime)
 
     # Print header.
-    printf '\e[m'$_sp'\e[1;39mSTOP: %s\e[m\n' "$(date +%Y/%m/%d-%T)"
+    printf '\e[m'$_sp'\e[1;39mTOTAL TIME: %dh:%dm:%ds\e[m\n' \
+           $(($_tottime/3600)) $(($_tottime%3600/60)) $(($_tottime%60))
 
   fi
 
@@ -653,7 +657,7 @@ function __main__() {
   # Specifies the call parameters of the script, the exact description
   # can be found in _help_ and file README.md.
   local _short_opt="c:h:i:n:p:f:"
-  local _long_opt="help,debug,verbose,config:,host:,id:,name:,pve-id:,pve-format:,pve-import:"
+  local _long_opt="help,debug,verbose,time,config:,host:,id:,name:,pve-id:,pve-format:,pve-import:"
 
   _GETOPT_PARAMS=$(getopt -o "${_short_opt}" --long "${_long_opt}" \
                    -n "${_init_name}" -- "${__script_params[@]}")
@@ -674,8 +678,6 @@ function __main__() {
 
       --help)
 
-        help_mode=1
-
         _help_
 
         shift ; _exit_ 0 ;;
@@ -689,6 +691,12 @@ function __main__() {
       --verbose)
 
         printf_mode="verbose"
+
+        shift ;;
+
+      --time)
+
+        time_mode=1
 
         shift ;;
 
