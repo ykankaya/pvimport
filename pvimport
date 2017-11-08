@@ -664,7 +664,8 @@ function __main__() {
                    -n "${_init_name}" -- "${__script_params[@]}")
 
   # Ends an error if the parameter or its argument is not valid.
-  if [ $? != 0 ] ; then
+  _getopt_state="$?"
+  if [ $_getopt_state != 0 ] ; then
     _exit_ 1
   # Ends if no parameter is specified.
   elif [[ "${#__script_params[@]}" -eq 0 ]] ; then
