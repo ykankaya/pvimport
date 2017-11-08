@@ -36,7 +36,7 @@ The tool provides the following options:
         --time                      displays the total execution time of the script
     -c, --config <file>             attach an external config file to the script
     -h, --host <host>               sets the ip address or hostname of the remote hypervisor
-    -i, --id <vm_id|vm_name>        sets the remote id (Xen) or name (Xen/VMware ESXi) of the imported vm
+    -i, --id <vm_id|vm_name>        sets the remote vm id (Xen) or vm name (Xen/VMware ESXi)
     -p, --pve-id <num>              sets the vm id created in proxmox
     -f, --pve-format <img|qcow2>    sets the disk output format
         --pve-import <local|host>   import disks into any proxmox node (optional)
@@ -89,7 +89,6 @@ readonly local_storage="/path/to/local/vm/dump"
 # Specifies whether to delete unneeded files/directories (only local).
 #   Example: remove_unused="yes"
 readonly remove_unused="no"
-
 ``````
 
 ## Before importing
