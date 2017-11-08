@@ -2,7 +2,7 @@
 
 ## Version
 
-Stable release: **v1.3.0**  
+Stable release: **v1.3.1**  
 Testing release: **testing**
 
 ## Description
@@ -11,14 +11,10 @@ Allows you to automate all the work involved in importing virtual machine disks 
 
 Performs:
 
-- execute a snapshot of the virtual machine and export it to an ova file - **Xen**
-
-- copying the virtual machine from the source (remote hypervisor) to the destination (local resource) - **Xen/VMware**
-
-- extraction of disks with extension ova (resulting directories: Ref:\*) - **Xen**
-
+- execute a snapshot of the virtual machine and export it to an \*.ova file - **Xen**
+- extraction of disks with extension \*.ova (resulting directories: Ref:\*) - **Xen**
+- copying the virtual machine disks from the source (remote hypervisor) to the destination (local resource, working directory) - **Xen/VMware**
 - convert to the selected format (img/qcow2) - **Xen/VMware**
-
 - converted img/qcow2 files imports into place created when creating the virtual machine (directory/lvm) also on the selected proxmox node - **Xen/VMware**
 
 ## Parameters
@@ -51,8 +47,6 @@ The tool provides the following options:
 The configuration file (appended with the `-c|--config` parameter) has the following structure:
 
 ``````
-# shellcheck shell=bash
-
 # Specifies the type of hypervisor (VMware ESXi or Xen).
 readonly hv_type="type"
 
@@ -95,6 +89,7 @@ readonly local_storage="/path/to/local/vm/dump"
 # Specifies whether to delete unneeded files/directories (only local).
 #   Example: remove_unused="yes"
 readonly remove_unused="no"
+
 ``````
 
 ## Before importing
@@ -117,7 +112,7 @@ readonly remove_unused="no"
 > Before you start, create a virtual machine in the proxmox web panel. The most important thing is to add the same number of disks of the same size as the current hypervisor.
 
 ``````
-pvimport -c src/configs/xen.cfg -h xen01.domain.com -i web01 -n web01 -p 205 -f img --verbose
+pvimport -c src/configs/xen.cfg -h xen01.domain.com -i web01 -p 205 -f img --verbose
 ``````
 
 In the first place we define the configuration (which should be prepared in advance):
@@ -166,6 +161,8 @@ Verbose mode - displays more detailed information on the screen:
     |-- .gitkeep                # track empty directory
     |-- src                     # includes external project files
         |-- _import_            # external variables and functions
+        |-- vmware              # external configuration for VMware ESXI
+        |-- xen                 # external configuration for Xen
         |-- configs             # directory with configurations
             |-- template.cfg    # template configuration
     |-- doc                     # includes documentation, images and manuals
