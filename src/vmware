@@ -34,11 +34,11 @@ function VmwareInit() {
     "flush configuration of remote environment"
 
   # shellcheck disable=SC2154
-  _init "FlushRemoteFiles ${_pv_vmware_config}"
+  _init_function "FlushRemoteFiles ${_pv_vmware_config}"
   # shellcheck disable=SC2154
-  _init "FlushRemoteFiles ${_pv_vmware_disks}"
+  _init_function "FlushRemoteFiles ${_pv_vmware_disks}"
   # shellcheck disable=SC2154
-  _init "FlushRemoteFiles ${_pv_vmware_storage}"
+  _init_function "FlushRemoteFiles ${_pv_vmware_storage}"
 
   _sprintf "head" "check configuration of remote environment"
 
@@ -47,9 +47,9 @@ function VmwareInit() {
     "check configuration of remote environment"
 
   # shellcheck disable=SC2154
-  _init "CheckRemoteStorage ${hv_storage}"
+  _init_function "CheckRemoteStorage ${hv_storage}"
   # shellcheck disable=SC2154
-  _init "VmwareVmCheck ${vm_id}"
+  _init_function "VmwareVmCheck ${vm_id}"
 
   _sprintf "head" "init configuration of remote environment"
 
@@ -58,17 +58,17 @@ function VmwareInit() {
     "init configuration of remote environment"
 
   # shellcheck disable=SC2154
-  _init "VmwareVmStorageInit ${vm_id}"
+  _init_function "VmwareVmStorageInit ${vm_id}"
   # shellcheck disable=SC2154
-  _init "GetRemoteFiles ${_pv_vmware_storage}"
+  _init_function "GetRemoteFiles ${_pv_vmware_storage}"
 
   _vm_storage=$(cat "$_pv_vmware_storage" | cut -d "/" -f1)
   re_path="${hv_storage}/${_vm_storage}"
 
   # shellcheck disable=SC2154
-  _init "VmwareVmCfgInit ${_pv_vmware_config} *.vmx"
+  _init_function "VmwareVmCfgInit ${_pv_vmware_config} *.vmx"
   # shellcheck disable=SC2154
-  _init "VmwareVmCfgInit ${_pv_vmware_disks} *.vmdk"
+  _init_function "VmwareVmCfgInit ${_pv_vmware_disks} *.vmdk"
 
   _sprintf "head" "dump configuration of remote environment"
 
@@ -77,9 +77,9 @@ function VmwareInit() {
     "dump configuration of remote environment"
 
   # shellcheck disable=SC2154
-  _init "GetRemoteFiles ${_pv_vmware_config}"
+  _init_function "GetRemoteFiles ${_pv_vmware_config}"
   # shellcheck disable=SC2154
-  _init "GetRemoteFiles ${_pv_vmware_disks}"
+  _init_function "GetRemoteFiles ${_pv_vmware_disks}"
 
   _sprintf "head" "copy a virtual machine disks"
 
@@ -90,7 +90,7 @@ function VmwareInit() {
   _sprintf "info" "re_path (new): ${re_path}"
 
   # shellcheck disable=SC2154
-  _init "CheckRemoteStorage ${re_path}"
+  _init_function "CheckRemoteStorage ${re_path}"
 
   # shellcheck disable=SC2013
   _fname=""
@@ -98,7 +98,7 @@ function VmwareInit() {
   for _fname in $(grep ".vmdk" "$_pv_vmware_disks" | cut -d "/" -f2) ; do
 
     # shellcheck disable=SC2154
-    _init "VmwareVmCopy ${_fname}"
+    _init_function "VmwareVmCopy ${_fname}"
 
   done
 
@@ -117,7 +117,7 @@ function VmwareInit() {
   for _fname in $(grep ".vmdk" "$_pv_vmware_disks" | cut -d "/" -f2) ; do
 
     # shellcheck disable=SC2154
-    _init "VmwareVmConvertDisks ${_fname}"
+    _init_function "VmwareVmConvertDisks ${_fname}"
 
   done
 

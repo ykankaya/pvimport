@@ -537,7 +537,7 @@ function _help_() {
         --time                      displays the total execution time of the script
     -c, --config <file>             attach an external config file to the script
     -h, --host <host>               sets the ip address or hostname of the remote hypervisor
-    -i, --id <vm_id|vm_name>        sets the remote id (Xen) or name (Xen/VMware ESXi) of the imported vm
+    -i, --id <vm_id|vm_name>        sets the remote vm id (Xen) or vm name (Xen/VMware ESXi)
     -p, --pve-id <num>              sets the vm id created in proxmox
     -f, --pve-format <img|qcow2>    sets the disk output format
         --pve-import <local|host>   import disks into any proxmox node (optional)
@@ -881,23 +881,23 @@ function __main__() {
     "check connection to remote host(s)"
 
   # shellcheck disable=SC2154
-  _init "CheckConn ${hv_host} ${port}"
+  _init_function "CheckConn ${hv_host} ${port}"
 
   if [[ "$pve_import" == "true" ]] && [[ "$pve_host" != "local" ]] ; then
 
-    _init "CheckConn ${pve_host} ${port}"
+    _init_function "CheckConn ${pve_host} ${port}"
 
   fi
 
   # Section related to VMware ESXi.
   if [[ "$hv_type" == "vmware" ]] ; then
 
-    VmwareInit
+    _init_function "VmwareInit"
 
   # Section related to Xen.
   elif [[ "$hv_type" == "xen" ]] ; then
 
-    XenInit
+    _init_function "XenInit"
 
   fi
 
@@ -917,7 +917,7 @@ function __main__() {
     _fname=""
     for _fname in $(find ./* -type f -name "*.$pve_format" | cut -d "/" -f2 | sort -V) ; do
 
-      _init "VmImport ${_fname}"
+      _init_function "VmImport ${_fname}"
 
     done
 

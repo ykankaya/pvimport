@@ -10,7 +10,7 @@
 ################################################################################
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: _init()
+# Function name: _init_function()
 #
 # Description:
 #   It deals with launching functions:
@@ -18,15 +18,15 @@
 #     - operates on message to display and command to execute
 #
 # Usage:
-#   _init function_name params
+#   _init_function function_name params
 #
 # Examples:
-#   _init "CheckConn 172.20.20.50 22"
+#   _init_function "CheckConn 172.20.20.50 22"
 #
 
-function _init() {
+function _init_function() {
 
-  local _FUNCTION_ID="_init"
+  local _FUNCTION_ID="_init_function"
   local _STATE=0
 
   local _args=("$@")

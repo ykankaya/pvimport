@@ -34,7 +34,7 @@ function XenInit() {
     "flush configuration of remote environment"
 
   # shellcheck disable=SC2154
-  _init "FlushRemoteFiles ${_pv_xen_vars}"
+  _init_function "FlushRemoteFiles ${_pv_xen_vars}"
 
   _sprintf "head" "check configuration of remote environment"
 
@@ -43,9 +43,9 @@ function XenInit() {
     "check configuration of remote environment"
 
   # shellcheck disable=SC2154
-  _init "CheckRemoteStorage ${hv_storage}"
+  _init_function "CheckRemoteStorage ${hv_storage}"
   # shellcheck disable=SC2154
-  _init "XenVmCheck ${vm_id}"
+  _init_function "XenVmCheck ${vm_id}"
 
   _sprintf "head" "dump configuration of remote environment"
 
@@ -54,7 +54,7 @@ function XenInit() {
     "dump configuration of remote environment"
 
   # shellcheck disable=SC2154
-  _init "GetRemoteFiles ${_pv_xen_vars}"
+  _init_function "GetRemoteFiles ${_pv_xen_vars}"
 
   _sprintf "head" "export virtual machine"
 
@@ -63,7 +63,7 @@ function XenInit() {
     "export virtual machine"
 
   # shellcheck disable=SC2154
-  _init "XenVmExport ${vm_id}"
+  _init_function "XenVmExport ${vm_id}"
 
   _sprintf "head" "copy a virtual machine disks"
 
@@ -72,7 +72,7 @@ function XenInit() {
     "copy a virtual machine disks"
 
   # shellcheck disable=SC2154
-  _init "XenVmCopy ${vm_id}"
+  _init_function "XenVmCopy ${vm_id}"
 
   _sprintf "head" "extract ova files"
 
@@ -81,7 +81,7 @@ function XenInit() {
     "extract ova files"
 
   # shellcheck disable=SC2154
-  _init "XenVmExtract ${vm_id}"
+  _init_function "XenVmExtract ${vm_id}"
 
   # shellcheck disable=SC2154
   _sprintf "head" "convert disks to $pve_format format"
@@ -97,7 +97,7 @@ function XenInit() {
   for _fname in $(find ./* -type d -name "Ref:*" | cut -d "/" -f2 | sort -V) ; do
 
     # shellcheck disable=SC2154
-    _init "XenVmConvertDisks ${_fname}"
+    _init_function "XenVmConvertDisks ${_fname}"
 
   done
 
