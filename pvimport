@@ -621,10 +621,10 @@ function _after_init() {
   if [[ "$time_mode" -eq 1 ]] ; then
 
     _endtime=$(date +%s)
-    _tottime=$((_endtime - _begtime))
+    _tt=$((_endtime - _begtime))
 
     # Print header.
-    printf '\e[m\e[1;39mTOTAL TIME: %dh:%dm:%ds\e[m\n' $((_tottime/3600)) $((_tottime%3600/60)) $((_tottime%60))
+    printf '\e[m\e[1;39mTOTAL TIME: %dh:%dm:%ds\e[m\n' $((_tt/3600)) $((_tt%3600/60)) $((_tt%60))
 
   fi
 
@@ -805,12 +805,12 @@ function __main__() {
   if [[ "$hv_type" == "vmware" ]] ; then
 
     # Include src/vmware file which contains functions for vmware.
-    _load "head" "${_src_directory}/vmware"
+    _load "info" "${_src_directory}/vmware"
 
   elif [[ "$hv_type" == "xen" ]] ; then
 
     # Include src/xen file which contains functions for xen.
-    _load "head" "${_src_directory}/xen"
+    _load "info" "${_src_directory}/xen"
 
   fi
 
