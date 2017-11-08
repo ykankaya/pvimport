@@ -585,7 +585,7 @@ function _before_init() {
 
   # Print header.
   printf '\e[1;36m[ \e[m'$_sp'\e[1;39m START: %s \e[m'$_sp' \e[1;36m]\e[m\n' \
-         $(date +%Y/%m/%d-%T)
+         "$(date +%Y/%m/%d-%T)"
 
   cd "$_init_directory" || \
   _logger "stop" \
