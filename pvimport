@@ -889,12 +889,6 @@ function __main__() {
 
   fi
 
-  _sprintf "head" "init tasks for $hv_type hypervisor"
-
-  _logger "head" \
-    "${_FUNCTION_ID}()" \
-    "init tasks for $hv_type hypervisor"
-
   # Section related to VMware ESXi.
   if [[ "$hv_type" == "vmware" ]] ; then
 
