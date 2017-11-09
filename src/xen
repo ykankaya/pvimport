@@ -291,6 +291,7 @@ function XenVmConvertDisks() {
   local _FUNCTION_ID="XenVmConvertDisks"
   local _STATE=0
 
+  # shellcheck disable=SC2034
   _cmdtime_state=1
 
   local _fdx="$1"
