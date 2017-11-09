@@ -362,8 +362,7 @@ function GetRemoteFiles() {
 # Function name: CheckRemoteStorage()
 #
 # Description:
-#   Checks of the remote environment:
-#     - remote storage
+#   Checks of the remote storage.
 #
 # Usage:
 #   CheckRemoteStorage /path/to/directory
