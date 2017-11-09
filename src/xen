@@ -172,7 +172,7 @@ function XenVmExport() {
   local _FUNCTION_ID="XenVmExport"
   local _STATE=0
 
-  _gen_time_state=1
+  _cmdtime_state=1
 
   local _vmid="$1"
 
@@ -206,7 +206,7 @@ function XenVmCopy() {
   local _FUNCTION_ID="XenVmCopy"
   local _STATE=0
 
-  _gen_time_state=1
+  _cmdtime_state=1
 
   local _vmid="$1"
 
@@ -240,7 +240,7 @@ function XenVmExtract() {
   local _FUNCTION_ID="XenVmExtract"
   local _STATE=0
 
-  _gen_time_state=1
+  _cmdtime_state=1
 
   local _vmid="$1"
 
@@ -285,7 +285,7 @@ function XenVmConvertDisks() {
   local _FUNCTION_ID="XenVmConvertDisks"
   local _STATE=0
 
-  _gen_time_state=1
+  _cmdtime_state=1
 
   local _fdx="$1"
 

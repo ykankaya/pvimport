@@ -534,7 +534,7 @@ function _help_() {
         --help                      show this message
         --debug                     display information on the screen (debug mode)
         --verbose                   display 'info' messages on the screen (verbose mode)
-        --time                      display the total execution time of copy, convert and import commands
+        --time                      display the total execution time (copy, convert, export, extract, import)
     -c, --config <file>             attach an external config file to the script
     -h, --host <host>               sets the ip address or hostname of the remote hypervisor
     -i, --id <vm_id|vm_name>        sets the remote vm id (Xen) or vm name (Xen/VMware ESXi)
@@ -636,6 +636,8 @@ function __main__() {
   _logger "info" \
     "__init_params[] = (${__init_params[*]})," \
     "__script_params[] = (${__script_params[*]})"
+
+  _begtime=$(date +%s)
 
   # Specifies the call parameters of the script, the exact description
   # can be found in _help_ and file README.md.
@@ -748,8 +750,6 @@ function __main__() {
   # ````````````````````````````````````````````````````````````````````````````
   # Put here all your variable declarations, function calls
   # and all the other code blocks.
-
-  _begtime=$(date +%s)
 
   # In this section we add external file (for -c|--config script param).
   if [[ "$load_state" -eq 1 ]] ; then _load "head" "$config" ; fi
@@ -910,14 +910,15 @@ function __main__() {
 
   fi
 
+  # ````````````````````````````````````````````````````````````````````````````
+
+  # Counting the execution time.
   _endtime=$(date +%s)
   _totaltime=$((_endtime - _begtime))
 
   # Print time header.
   printf '\e[m\e[1;39mTOTAL TIME: %dh:%dm:%ds\e[m\n' \
          $((_totaltime/3600)) $((_totaltime%3600/60)) $((_totaltime%60))
-
-  # ````````````````````````````````````````````````````````````````````````````
 
   return $_STATE
 

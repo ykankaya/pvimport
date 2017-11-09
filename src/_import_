@@ -33,9 +33,9 @@ function _init_function() {
 
   local _args=("$@")
 
-  local _beg_cmdtime=0
-  local _end_cmdtime=0
-  local _totaltime_gen=0
+  local _cmd_begtime=0
+  local _cmd_endtime=0
+  local _cmd_totaltime=0
 
   _logger "info" \
     "${_FUNCTION_ID}()" \
@@ -60,24 +60,24 @@ function _init_function() {
       "${_FUNCTION_ID}()" \
       "$_msg"
 
-    _beg_cmdtime=$(date +%s)
+    _cmd_begtime=$(date +%s)
 
     _init_cmd "$_full_command" ; if [ ! $? ] ; then _exit_ 255 ; fi
 
-    _end_cmdtime=$(date +%s)
+    _cmd_endtime=$(date +%s)
 
     if [[ "$time_mode" -eq 1 ]] && [[ "$_cmdtime_state" -eq 1 ]] ; then
 
-      _totaltime_gen=$((_end_cmdtime - _beg_cmdtime))
+      _cmd_totaltime=$((_cmd_endtime - _cmd_begtime))
 
-      _totaltime_cmd_out=$(printf '%dh:%dm:%ds' \
-      $((_totaltime_gen/3600)) $((_totaltime_gen%3600/60)) $((_totaltime_gen%60)))
+      _cmd_totaltime_out=$(printf '%dh:%dm:%ds' \
+      $((_cmd_totaltime/3600)) $((_cmd_totaltime%3600/60)) $((_cmd_totaltime%60)))
 
-      _sprintf "info" "time: $_totaltime_cmd_out"
+      _sprintf "info" "time: $_cmd_totaltime_out"
 
       _logger "info" \
         "${_FUNCTION_ID}()" \
-        "time: $_totaltime_cmd_out"
+        "time: $_cmd_totaltime_out"
 
     fi
 
