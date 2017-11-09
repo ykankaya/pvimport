@@ -68,8 +68,9 @@ readonly ssh_opt=""
 #   Example: dd_opt="bs=16M"
 readonly dd_opt="bs=16M"
 
-# Specifies the remote path (remember to create it) on the remote machine
-# where files (such as snapshots) will be placed (only for Xen).
+# Specifies the remote path on the remote machine where
+# vm files will be placed. In this place will be created
+# directory for Xen snapshots.
 #   Example: hv_storage="/vmfs/volumes/datastore1"
 readonly hv_storage="/path/to/remote/vm/dump"
 
