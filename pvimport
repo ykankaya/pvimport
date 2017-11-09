@@ -697,8 +697,8 @@ function __main__() {
 
         time_mode=1
 
-        export _beg_gen_time
-        export _end_gen_time
+        export _beg_gentime
+        export _end_gentime
 
         shift ;;
 
