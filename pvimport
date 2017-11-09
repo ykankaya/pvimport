@@ -889,15 +889,16 @@ function __main__() {
 
   fi
 
+  # It calls other functions - we do not run from _init_function.
   # Section related to VMware ESXi.
   if [[ "$hv_type" == "vmware" ]] ; then
 
-    _init_function "VmwareInit"
+    VmwareInit
 
   # Section related to Xen.
   elif [[ "$hv_type" == "xen" ]] ; then
 
-    _init_function "XenInit"
+    XenInit
 
   fi
 
