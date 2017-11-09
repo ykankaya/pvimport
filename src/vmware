@@ -323,8 +323,8 @@ function VmwareVmConvertDisks() {
       if [[ -e "${_fda}-flat.vmdk" ]] ; then
 
         _msg_args+=(\
-        "remove: '${_fda}-flat.vmdk")
-         _cmd_args+=(\
+        "remove: '${_fda}-flat.vmdk'")
+        _cmd_args+=(\
         "rm -fr ${_fda}-flat.vmdk")
 
       fi
