@@ -4,9 +4,6 @@
 ######################## Definitions of user variables #########################
 ################################################################################
 
-_beg_gen_time=$(date +%s)
-_end_gen_time=0
-
 
 ################################################################################
 ######################## Definitions of user functions #########################
@@ -34,6 +31,10 @@ function _init_function() {
 
   local _args=("$@")
 
+  local _beg_gentime=0
+  local _end_gentime=0
+  local _total_gentime=0
+
   _logger "info" \
     "${_FUNCTION_ID}()" \
     "init function: '${_args[*]}'"
@@ -57,7 +58,23 @@ function _init_function() {
       "${_FUNCTION_ID}()" \
       "$_msg"
 
+    _beg_gentime=$(date +%s)
+
     _init_cmd "$_full_command" ; if [ ! $? ] ; then _exit_ 255 ; fi
+
+    _end_gentime=$(date +%s)
+
+    if [[ "$time_mode" -eq 1 ]] ; then
+
+      _total_gentime=$((_end_gentime - _beg_gentime))
+
+      _sprintf "info" "time: $_total_gentime"
+
+      _logger "info" \
+        "${_FUNCTION_ID}()" \
+        "time: $_total_gentime"
+
+    fi
 
   done
 
