@@ -66,6 +66,7 @@ function _init_function() {
 
     _cmd_endtime=$(date +%s)
 
+    # shellcheck disable=SC2154
     if [[ "$time_mode" -eq 1 ]] && [[ "$_cmdtime_state" -eq 1 ]] ; then
 
       _cmd_totaltime=$((_cmd_endtime - _cmd_begtime))
