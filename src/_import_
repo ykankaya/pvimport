@@ -4,7 +4,7 @@
 ######################## Definitions of user variables #########################
 ################################################################################
 
-export _gen_time_state=0
+export _cmdtime_state=0
 
 
 ################################################################################
@@ -33,9 +33,9 @@ function _init_function() {
 
   local _args=("$@")
 
-  local _beg_gentime=0
-  local _end_gentime=0
-  local _tt_gen=0
+  local _beg_cmdtime=0
+  local _end_cmdtime=0
+  local _totaltime_gen=0
 
   _logger "info" \
     "${_FUNCTION_ID}()" \
@@ -60,28 +60,30 @@ function _init_function() {
       "${_FUNCTION_ID}()" \
       "$_msg"
 
-    _beg_gentime=$(date +%s)
+    _beg_cmdtime=$(date +%s)
 
     _init_cmd "$_full_command" ; if [ ! $? ] ; then _exit_ 255 ; fi
 
-    _end_gentime=$(date +%s)
+    _end_cmdtime=$(date +%s)
 
-    if [[ "$time_mode" -eq 1 ]] && [[ "$_gen_time_state" -eq 1 ]] ; then
+    if [[ "$time_mode" -eq 1 ]] && [[ "$_cmdtime_state" -eq 1 ]] ; then
 
-      _tt_gen=$((_end_gentime - _beg_gentime))
-      _tt_gen_output=$(printf '%dh:%dm:%ds' $((_tt_gen/3600)) $((_tt_gen%3600/60)) $((_tt_gen%60)))
+      _totaltime_gen=$((_end_cmdtime - _beg_cmdtime))
 
-      _sprintf "info" "time: $_tt_gen_output"
+      _totaltime_cmd_out=$(printf '%dh:%dm:%ds' \
+      $((_totaltime_gen/3600)) $((_totaltime_gen%3600/60)) $((_totaltime_gen%60)))
+
+      _sprintf "info" "time: $_totaltime_cmd_out"
 
       _logger "info" \
         "${_FUNCTION_ID}()" \
-        "time: $_tt_gen_output"
+        "time: $_totaltime_cmd_out"
 
     fi
 
   done
 
-  _gen_time_state=0
+  _cmdtime_state=0
 
   return $_STATE
 
@@ -405,7 +407,7 @@ function VmImport() {
   local _FUNCTION_ID="VmImport"
   local _STATE=0
 
-  _gen_time_state=1
+  _cmdtime_state=1
 
   local _fda="$1"
 

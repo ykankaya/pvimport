@@ -581,8 +581,6 @@ function _before_init() {
   local _FUNCTION_ID="_before_init"
   local _STATE=0
 
-  _begtime=$(date +%s)
-
   cd "$_init_directory" || \
   _logger "stop" \
     "${_FUNCTION_ID}()" \
@@ -613,12 +611,6 @@ function _after_init() {
 
   local _FUNCTION_ID="_after_init"
   local _STATE=0
-
-  _endtime=$(date +%s)
-  _tt=$((_endtime - _begtime))
-
-  # Print header.
-  printf '\e[m\e[1;39mTOTAL TIME: %dh:%dm:%ds\e[m\n' $((_tt/3600)) $((_tt%3600/60)) $((_tt%60))
 
   cd "$_init_directory" || \
   _logger "stop" \
@@ -756,6 +748,8 @@ function __main__() {
   # ````````````````````````````````````````````````````````````````````````````
   # Put here all your variable declarations, function calls
   # and all the other code blocks.
+
+  _begtime=$(date +%s)
 
   # In this section we add external file (for -c|--config script param).
   if [[ "$load_state" -eq 1 ]] ; then _load "head" "$config" ; fi
@@ -915,6 +909,13 @@ function __main__() {
     done
 
   fi
+
+  _endtime=$(date +%s)
+  _totaltime=$((_endtime - _begtime))
+
+  # Print time header.
+  printf '\e[m\e[1;39mTOTAL TIME: %dh:%dm:%ds\e[m\n' \
+         $((_totaltime/3600)) $((_totaltime%3600/60)) $((_totaltime%60))
 
   # ````````````````````````````````````````````````````````````````````````````
 
