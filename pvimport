@@ -902,8 +902,11 @@ function __main__() {
     # shellcheck disable=SC2034
     _x=1
 
+    if [[ "$pve_format" == "raw" ]] ; then _fd_ext="img"
+    elif [[ "$pve_format" == "qcow2" ]] ; then _fd_ext="qcow2" ; fi
+
     _fname=""
-    for _fname in $(find ./* -type f -name "*.$pve_format" | cut -d "/" -f2 | sort -V) ; do
+    for _fname in $(find ./* -type f -name "*.$_fd_ext" | cut -d "/" -f2 | sort -V) ; do
 
       _init_function "VmImport ${_fname}"
 
