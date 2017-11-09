@@ -4,6 +4,8 @@
 ######################## Definitions of user variables #########################
 ################################################################################
 
+export _gen_time_state=0
+
 
 ################################################################################
 ######################## Definitions of user functions #########################
@@ -64,7 +66,7 @@ function _init_function() {
 
     _end_gentime=$(date +%s)
 
-    if [[ "$time_mode" -eq 1 ]] ; then
+    if [[ "$time_mode" -eq 1 ]] && [[ "$_gen_time_state" -eq 1 ]] ; then
 
       _tt_gen=$((_end_gentime - _beg_gentime))
       _tt_gen_output=$(printf '%dh:%dm:%ds' $((_tt_gen/3600)) $((_tt_gen%3600/60)) $((_tt_gen%60)))
@@ -78,6 +80,8 @@ function _init_function() {
     fi
 
   done
+
+  _gen_time_state=0
 
   return $_STATE
 
@@ -400,6 +404,8 @@ function VmImport() {
 
   local _FUNCTION_ID="VmImport"
   local _STATE=0
+
+  _gen_time_state=1
 
   local _fda="$1"
 

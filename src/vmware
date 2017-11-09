@@ -240,6 +240,8 @@ function VmwareVmCopy() {
   local _FUNCTION_ID="VmwareVmCopy"
   local _STATE=0
 
+  _gen_time_state=1
+
   local _fda="$1"
 
   _msg_args+=(\
@@ -271,6 +273,8 @@ function VmwareVmConvertDisks() {
 
   local _FUNCTION_ID="VmwareVmConvertDisks"
   local _STATE=0
+
+  _gen_time_state=1
 
   local _fdx="$1"
 
