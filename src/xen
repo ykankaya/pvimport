@@ -61,6 +61,9 @@ function XenInit() {
     "${_FUNCTION_ID}()" \
     "set re_path: ${re_path}"
 
+  # shellcheck disable=SC2154
+  _init_function "CreateRemoteStorage ${re_path}"
+
   _sprintf "head" "dump configuration of remote environment"
 
   _logger "head" \
@@ -75,6 +78,9 @@ function XenInit() {
   _logger "head" \
     "${_FUNCTION_ID}()" \
     "export virtual machine"
+
+  # shellcheck disable=SC2154
+  _init_function "CheckRemoteStorage ${re_path}"
 
   # shellcheck disable=SC2154
   _init_function "XenVmExport ${vm_id}"
