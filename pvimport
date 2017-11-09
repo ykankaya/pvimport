@@ -697,9 +697,6 @@ function __main__() {
 
         time_mode=1
 
-        export _beg_gentime
-        export _end_gentime
-
         shift ;;
 
       -c|--config)
