@@ -47,6 +47,20 @@ function XenInit() {
   # shellcheck disable=SC2154
   _init_function "XenVmCheck ${vm_id}"
 
+  _sprintf "head" "init configuration of remote environment"
+
+  _logger "head" \
+    "${_FUNCTION_ID}()" \
+    "init configuration of remote environment"
+
+  re_path="${hv_storage}/${vm_id}"
+
+  _sprintf "info" "set re_path: ${re_path}"
+
+  _logger "head" \
+    "${_FUNCTION_ID}()" \
+    "set re_path: ${re_path}"
+
   _sprintf "head" "dump configuration of remote environment"
 
   _logger "head" \
@@ -70,14 +84,6 @@ function XenInit() {
   _logger "head" \
     "${_FUNCTION_ID}()" \
     "copy a virtual machine disks"
-
-  re_path="${hv_storage}/${vm_id}"
-
-  _sprintf "info" "set re_path: ${re_path}"
-
-  _logger "head" \
-    "${_FUNCTION_ID}()" \
-    "set re_path: ${re_path}"
 
   # shellcheck disable=SC2154
   _init_function "CheckRemoteStorage ${re_path}"
