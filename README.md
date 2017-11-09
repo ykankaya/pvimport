@@ -33,7 +33,7 @@ The tool provides the following options:
         --help                      show this message
         --debug                     display information on the screen (debug mode)
         --verbose                   display 'info' messages on the screen (verbose mode)
-        --time                      display the total execution time of copy, convert and import commands
+        --time                      display the total execution time (copy, convert, export, extract, import)
     -c, --config <file>             attach an external config file to the script
     -h, --host <host>               sets the ip address or hostname of the remote hypervisor
     -i, --id <vm_id|vm_name>        sets the remote vm id (Xen) or vm name (Xen/VMware ESXi)
