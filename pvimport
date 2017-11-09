@@ -96,6 +96,9 @@ load_state=0
 stdout_mode=""
 printf_mode=""
 
+# Declaration of total execution time.
+time_mode=0
+
 
 ################################################################################
 ############################## External commands ###############################
@@ -667,27 +670,27 @@ function __main__() {
 
       --debug)
 
-        stdout_mode="debug"
+        export stdout_mode="debug"
 
         shift ;;
 
       --verbose)
 
-        printf_mode="verbose"
+        export printf_mode="verbose"
 
         shift ;;
 
       --time)
 
-        time_mode=1
+        export time_mode=1
 
         shift ;;
 
       -c|--config)
 
-        load_state=1
+        export load_state=1
 
-        config=${2:-"$config"}
+        export config=${2:-"$config"}
 
         shift 2 ;;
 
