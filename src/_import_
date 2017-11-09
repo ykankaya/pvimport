@@ -392,6 +392,7 @@ function VmImport() {
 
     local _vm_pv_local="${pve_lvm}/vm-${pve_id}-disk-${_x}"
 
+    # shellcheck disable=SC2154
     if [[ "$pve_host" == "local" ]] ; then
 
       _msg_args+=(\
