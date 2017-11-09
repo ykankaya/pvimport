@@ -543,8 +543,6 @@ function _help_() {
         --pve-import <local|host>   import disks into any Proxmox VE node (optional)
 
 
-  pvimport, Copyright (C) 2017  Michał Żurawski <contact@nslab.at>
-
   This program comes with ABSOLUTELY NO WARRANTY.
   This is free software, and you are welcome to redistribute it
   under certain conditions; for more details please see

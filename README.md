@@ -40,7 +40,6 @@ The tool provides the following options:
     -p, --pve-id <num>              sets the vm id created in Proxmox VE
     -f, --pve-format <img|qcow2>    sets the disk output format
         --pve-import <local|host>   import disks into any Proxmox VE node (optional)
-
 ``````
 
 ## Configuration file
