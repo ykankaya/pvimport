@@ -33,7 +33,7 @@ function _init_function() {
 
   local _beg_gentime=0
   local _end_gentime=0
-  local _total_gentime=0
+  local _tt_gen=0
 
   _logger "info" \
     "${_FUNCTION_ID}()" \
@@ -66,13 +66,14 @@ function _init_function() {
 
     if [[ "$time_mode" -eq 1 ]] ; then
 
-      _total_gentime=$((_end_gentime - _beg_gentime))
+      _tt_gen=$((_end_gentime - _beg_gentime))
+      _tt_gen_output=$(printf '%dh:%dm:%ds' $((_tt_gen/3600)) $((_tt_gen%3600/60)) $((_tt_gen%60)))
 
-      _sprintf "info" "time: $_total_gentime"
+      _sprintf "info" "time: $_tt_gen_output"
 
       _logger "info" \
         "${_FUNCTION_ID}()" \
-        "time: $_total_gentime"
+        "time: $_tt_gen_output"
 
     fi
 
