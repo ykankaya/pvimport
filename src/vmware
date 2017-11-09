@@ -62,7 +62,7 @@ function VmwareInit() {
   # shellcheck disable=SC2154
   _init_function "GetRemoteFiles ${_pv_vmware_storage}"
 
-  _vm_storage=$(cat "$_pv_vmware_storage" | cut -d "/" -f1)
+  _vm_storage=$(< "$_pv_vmware_storage" cut -d "/" -f1)
 
   re_path="${hv_storage}/${_vm_storage}"
 
