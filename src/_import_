@@ -110,7 +110,7 @@ function CheckVar() {
 
         # shellcheck disable=SC2143
         # If the value is a number then we check whether the virtual machine
-        # with that identifier exists in the proxmox cluster.
+        # with that identifier exists in the Proxmox VE cluster.
         if [[ ! $(grep "qemu" /etc/pve/.vmlist | cut -d ":" -f1 | grep "$pve_id") ]] ; then
 
           _sprintf "stop" "pve_id: vm with this id does not exist"
@@ -366,7 +366,7 @@ function CheckRemoteStorage() {
 # Function name: VmImport()
 #
 # Description:
-#   Imports the virtual machine disks to any Proxmox node.
+#   Imports the virtual machine disks to any Proxmox VE node.
 #
 # Usage:
 #   VmImport /path/to/local/disk

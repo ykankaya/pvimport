@@ -538,9 +538,9 @@ function _help_() {
     -c, --config <file>             attach an external config file to the script
     -h, --host <host>               sets the ip address or hostname of the remote hypervisor
     -i, --id <vm_id|vm_name>        sets the remote vm id (Xen) or vm name (Xen/VMware ESXi)
-    -p, --pve-id <num>              sets the vm id created in proxmox
+    -p, --pve-id <num>              sets the vm id created in Proxmox VE
     -f, --pve-format <img|qcow2>    sets the disk output format
-        --pve-import <local|host>   import disks into any proxmox node (optional)
+        --pve-import <local|host>   import disks into any Proxmox VE node (optional)
 
 
   pvimport, Copyright (C) 2017  Michał Żurawski <contact@nslab.at>
@@ -829,7 +829,7 @@ function __main__() {
   lo_path="${local_storage}/${hv_host}/${vm_id}"
 
   # shellcheck disable=SC2034,SC2154
-  # Full path to the local or remote virtual machine directory (proxmox directory).
+  # Full path to the local or remote virtual machine directory (Proxmox VE directory).
   pv_path="${pve_storage}/${pve_id}"
 
   # shellcheck disable=SC2034,SC2154

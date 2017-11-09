@@ -15,7 +15,7 @@ Performs:
 - extraction of disks with extension \*.ova (resulting directories: Ref:\*) - **Xen**
 - copying the virtual machine disks from the source (remote hypervisor) to the destination (local resource, working directory) - **Xen/VMware**
 - convert to the selected format (img/qcow2) - **Xen/VMware**
-- converted img/qcow2 files imports into place created when creating the virtual machine (directory/lvm) also on the selected proxmox node - **Xen/VMware**
+- converted img/qcow2 files imports into place created when creating the virtual machine (directory/lvm) also on the selected **Proxmox VE** node - **Xen/VMware**
 
 ## Parameters
 
@@ -37,9 +37,9 @@ The tool provides the following options:
     -c, --config <file>             attach an external config file to the script
     -h, --host <host>               sets the ip address or hostname of the remote hypervisor
     -i, --id <vm_id|vm_name>        sets the remote vm id (Xen) or vm name (Xen/VMware ESXi)
-    -p, --pve-id <num>              sets the vm id created in proxmox
+    -p, --pve-id <num>              sets the vm id created in Proxmox VE
     -f, --pve-format <img|qcow2>    sets the disk output format
-        --pve-import <local|host>   import disks into any proxmox node (optional)
+        --pve-import <local|host>   import disks into any Proxmox VE node (optional)
 ``````
 
 ## Configuration file
@@ -81,7 +81,7 @@ readonly pve_storage="/path/to/proxmox/images"
 #   Example: pve_lvm="/dev/pve"
 readonly pve_lvm="/path/to/lvm/vg"
 
-# Specifies the local path (remember to create it) on the proxmox machine
+# Specifies the local path (remember to create it) on the Proxmox VE machine
 # where the virtual machine files from the remote host will be copied.
 #   Example: local_storage="/xfs900/vmware"
 readonly local_storage="/path/to/local/vm/dump"
@@ -108,7 +108,7 @@ readonly remove_unused="no"
 
 ## Use example
 
-> Before you start, create a virtual machine in the proxmox web panel. The most important thing is to add the same number of disks of the same size as the current hypervisor.
+> Before you start, create a virtual machine in the **Proxmox VE** web panel. The most important thing is to add the same number of disks of the same size as the current hypervisor.
 
 ``````
 pvimport -c src/configs/xen.cfg -h xen01 -i web01 -p 205 -f img --verbose
@@ -126,11 +126,11 @@ Specify the registered virtual machine name - **uuid** parameter after issuing t
 
 - `-i web01`
 
-This parameter specifies the identifier under which the virtual machine will be visible from proxmox (it is recommended to create a virtual machine first). This parameter is also very important from the standpoint of the `--sync` option, which syncs prepared disks with existing ones (after creating vm from proxmox):
+This parameter specifies the identifier under which the virtual machine will be visible from **Proxmox VE** (it is recommended to create a virtual machine first). This parameter is also very important from the standpoint of the `--sync` option, which syncs prepared disks with existing ones (after creating vm from **Proxmox VE**):
 
 - `-p 205`
 
-Specifies the resulting format of the created files, available values are **img** (raw) or **qcow2**:
+Specifies the resulting format of the created files - available values are **img** (raw) or **qcow2**:
 
 - `-f img`
 
@@ -142,12 +142,12 @@ Verbose mode - displays more detailed information on the screen:
 
 - exporting a virtual machine running under **Xen** takes place by taking a **snapshot**, which allows the virtual machine to run continuously (until the final import) - the disadvantage of this solution may be the current content of the disk
 - before exporting the virtual machine running under **VMware**, you must **remove all snapshots** - **<u>pvimport</u>** recognizes only the appropriate virtual machine (including flat) disks, further shortening the migration time
-- **<u>pvimport</u>** can be run on **any proxmox node**. Remember **to have enough space** for the output files in the **img/qcow2** format (which when selected `--import <local|host>` will be deleted)
+- **<u>pvimport</u>** can be run on **any Proxmox VE node**. Remember **to have enough space** for the output files in the **img/qcow2** format (which when selected `--import <local|host>` will be deleted)
 - the `--import <local|host>` parameter allows you to **import virtual machine files to any node** (not necessarily from which **<u>pvimport</u>** was started).
 
 ## Limitations
 
-- does not create a virtual machine from proxmox (cli/web) - you have to do it yourself
+- does not create a virtual machine from **Proxmox VE** (cli/web) - you have to do it yourself
 - requires a disk space of the same size as the imported virtual machine - to store all files (disks)
 - hardware and network resources are the major constraints that affect the time of importing disks
 
