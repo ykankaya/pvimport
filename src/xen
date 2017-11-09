@@ -296,7 +296,7 @@ function XenVmConvertDisks() {
   # Store new directory/file name (eg. Ref_20).
   _fda=$(echo "$_fdx" | tr ":" "_")
 
-  # Store new 'img' file (eg. 1-Ref_20.img).
+  # Store new 'raw' file (eg. 1-Ref_20.img).
   _fdb="${_x}-${_fda}.img"
 
   _msg_args+=(\

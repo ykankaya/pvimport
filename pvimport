@@ -527,7 +527,7 @@ function _help_() {
     $_init_name <option|long-option>
 
   Examples:
-    $_init_name -c vmware.cfg -h pv01 -i gitlab_01 -p 300 -f img --verbose
+    $_init_name -c vmware.cfg -h pv01 -i gitlab_01 -p 300 -f raw --verbose
     $_init_name -c xen.cfg -h 172.20.50.31 -i ac06d737 -p 200 -f qcow2 --pve-import local
 
   Options:
@@ -539,7 +539,7 @@ function _help_() {
     -h, --host <host>               sets the ip address or hostname of the remote hypervisor
     -i, --id <vm_id|vm_name>        sets the remote vm id (Xen) or vm name (Xen/VMware ESXi)
     -p, --pve-id <num>              sets the vm id created in Proxmox VE
-    -f, --pve-format <img|qcow2>    sets the disk output format
+    -f, --pve-format <raw|qcow2>    sets the disk output format
         --pve-import <local|host>   import disks into any Proxmox VE node (optional)
 
 

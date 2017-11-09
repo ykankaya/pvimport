@@ -162,13 +162,13 @@ function CheckVar() {
 
     pve_format)
 
-      if [[ "$pve_format" != "img" ]] && [[ "$pve_format" != "qcow2" ]] ; then
+      if [[ "$pve_format" != "raw" ]] && [[ "$pve_format" != "qcow2" ]] ; then
 
-        _sprintf "stop" "pve_format: incorrectly set format type (properly: 'img' or 'qcow2')"
+        _sprintf "stop" "pve_format: incorrectly set format type (properly: 'raw' or 'qcow2')"
 
         _logger "stop" \
           "${_FUNCTION_ID}()" \
-          "pve_format: incorrectly set format type (properly: img or qcow2)"
+          "pve_format: incorrectly set format type (properly: raw or qcow2)"
 
       fi
 
@@ -417,7 +417,7 @@ function VmImport() {
   _cmd_args+=(\
   "eval if [[ ! -e ${_fda} ]] ; then exit 1 ; fi")
 
-  if [[ "$pve_format" == "img" ]] ; then
+  if [[ "$pve_format" == "raw" ]] ; then
 
     local _vm_pv_local="${pve_lvm}/vm-${pve_id}-disk-${_x}"
 

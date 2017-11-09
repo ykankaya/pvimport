@@ -14,8 +14,8 @@ Performs:
 - execute a snapshot of the virtual machine and export it to an \*.ova file - **Xen**
 - extraction of disks with extension \*.ova (resulting directories: Ref:\*) - **Xen**
 - copying the virtual machine disks from the source (remote hypervisor) to the destination (local resource, working directory) - **Xen/VMware**
-- convert to the selected format (img/qcow2) - **Xen/VMware**
-- converted img/qcow2 files imports into place created when creating the virtual machine (directory/lvm) also on the selected **Proxmox VE** node - **Xen/VMware**
+- convert to the selected format (raw/qcow2) - **Xen/VMware**
+- converted raw/qcow2 files imports into place created when creating the virtual machine (directory/lvm) also on the selected **Proxmox VE** node - **Xen/VMware**
 
 ## Parameters
 
@@ -26,7 +26,7 @@ The tool provides the following options:
     pvimport <option|long-option>
 
   Examples:
-    pvimport -c vmware.cfg -h pv01 -i gitlab_01 -p 300 -f img --verbose
+    pvimport -c vmware.cfg -h pv01 -i gitlab_01 -p 300 -f raw --verbose
     pvimport -c xen.cfg -h 172.20.50.31 -i ac06d737 -p 200 -f qcow2 --pve-import local
 
   Options:
@@ -38,7 +38,7 @@ The tool provides the following options:
     -h, --host <host>               sets the ip address or hostname of the remote hypervisor
     -i, --id <vm_id|vm_name>        sets the remote vm id (Xen) or vm name (Xen/VMware ESXi)
     -p, --pve-id <num>              sets the vm id created in Proxmox VE
-    -f, --pve-format <img|qcow2>    sets the disk output format
+    -f, --pve-format <raw|qcow2>    sets the disk output format
         --pve-import <local|host>   import disks into any Proxmox VE node (optional)
 ``````
 
@@ -47,6 +47,8 @@ The tool provides the following options:
 The configuration file (appended with the `-c|--config` parameter) has the following structure:
 
 ``````
+# shellcheck shell=bash
+
 # Specifies the type of hypervisor (VMware ESXi or Xen).
 readonly hv_type="type"
 
@@ -111,7 +113,7 @@ readonly remove_unused="no"
 > Before you start, create a virtual machine in the **Proxmox VE** web panel. The most important thing is to add the same number of disks of the same size as the current hypervisor.
 
 ``````
-pvimport -c src/configs/xen.cfg -h xen01 -i web01 -p 205 -f img --verbose
+pvimport -c src/configs/xen.cfg -h xen01 -i web01 -p 205 -f raw --verbose
 ``````
 
 In the first place we define the configuration (which should be prepared in advance):
@@ -130,9 +132,9 @@ This parameter specifies the identifier under which the virtual machine will be 
 
 - `-p 205`
 
-Specifies the resulting format of the created files - available values are **img** (raw) or **qcow2**:
+Specifies the resulting format of the created files - available values are **raw** or **qcow2**:
 
-- `-f img`
+- `-f raw`
 
 Verbose mode - displays more detailed information on the screen:
 
@@ -142,7 +144,7 @@ Verbose mode - displays more detailed information on the screen:
 
 - exporting a virtual machine running under **Xen** takes place by taking a **snapshot**, which allows the virtual machine to run continuously (until the final import) - the disadvantage of this solution may be the current content of the disk
 - before exporting the virtual machine running under **VMware**, you must **remove all snapshots** - **<u>pvimport</u>** recognizes only the appropriate virtual machine (including flat) disks, further shortening the migration time
-- **<u>pvimport</u>** can be run on **any Proxmox VE node**. Remember **to have enough space** for the output files in the **img/qcow2** format (which when selected `--import <local|host>` will be deleted)
+- **<u>pvimport</u>** can be run on **any Proxmox VE node**. Remember **to have enough space** for the output files in the **raw/qcow2** format (which when selected `--import <local|host>` will be deleted)
 - the `--import <local|host>` parameter allows you to **import virtual machine files to any node** (not necessarily from which **<u>pvimport</u>** was started).
 
 ## Limitations

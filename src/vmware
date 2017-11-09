@@ -301,9 +301,9 @@ function VmwareVmConvertDisks() {
       "eval if [[ ! -e ${_fdx} ]] ; then exit 1 ; fi" \
       "qemu-img convert -f vmdk -O qcow2 ${_fdx} ${_fdb}")
 
-    elif [[ "$pve_format" == "img" ]] ; then
+    elif [[ "$pve_format" == "raw" ]] ; then
 
-      # Store 'img' file name (eg. 1-vm.img).
+      # Store 'raw' file name (eg. 1-vm.img).
       _fdb="${_x}-${_fda}.img"
 
       _msg_args+=(\
