@@ -188,7 +188,7 @@ function XenVmExport() {
 
   _cmd_args+=(\
   "ssh ${ssh_opt} ${hv_host} -p ${port} _id=\$(xe vm-snapshot vm=${_vmid} new-name-label=${_vmid}-${_random}) ; echo \$_id >>${_pv_xen_vars}" \
-  "ssh ${ssh_opt} ${hv_host} -p ${port} _id=\$(cat ${_pv_xen_vars}) ; xe vm-export vm=\${_id} filename=${hv_storage}/${_vmid}.ova")
+  "ssh ${ssh_opt} ${hv_host} -p ${port} _id=\$(cat ${_pv_xen_vars}) ; xe vm-export vm=\${_id} filename=${re_path}/${_vmid}.ova")
 
   return $_STATE
 
@@ -221,8 +221,8 @@ function XenVmCopy() {
   "get src: '${_vmid}.ova'")
 
   _cmd_args+=(\
-  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -e \"${hv_storage}/${_vmid}.ova\" ]] ; then exit 1 ; fi" \
-  "scp ${ssh_opt} -P ${port} ${hv_host}:${hv_storage}/${_vmid}.ova ${lo_path}")
+  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -e \"${re_path}/${_vmid}.ova\" ]] ; then exit 1 ; fi" \
+  "scp ${ssh_opt} -P ${port} ${hv_host}:${re_path}/${_vmid}.ova ${lo_path}")
 
   return $_STATE
 
