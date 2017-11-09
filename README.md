@@ -31,15 +31,16 @@ The tool provides the following options:
 
   Options:
         --help                      show this message
-        --debug                     display information on the screen (debug mode)
-        --verbose                   display 'info' messages on the screen (verbose mode)
-        --time                      display the total execution time (copy, convert, export, extract, import)
+        --debug                     displays information on the screen (debug mode)
+        --verbose                   displays 'info' messages on the screen (verbose mode)
+        --time                      displays the total execution time (convert, copy, export, extract, import)
     -c, --config <file>             attach an external config file to the script
     -h, --host <host>               sets the ip address or hostname of the remote hypervisor
     -i, --id <vm_id|vm_name>        sets the remote vm id (Xen) or vm name (Xen/VMware ESXi)
     -p, --pve-id <num>              sets the vm id created in Proxmox VE
     -f, --pve-format <img|qcow2>    sets the disk output format
         --pve-import <local|host>   import disks into any Proxmox VE node (optional)
+
 ``````
 
 ## Configuration file
