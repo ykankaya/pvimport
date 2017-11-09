@@ -2,7 +2,7 @@
 
 ## Version
 
-Stable release: **v1.3.1**  
+Stable release: **v1.3.2**  
 Testing release: **testing**
 
 ## Description
@@ -145,14 +145,15 @@ Verbose mode - displays more detailed information on the screen:
 
 - exporting a virtual machine running under **Xen** takes place by taking a **snapshot**, which allows the virtual machine to run continuously (until the final import) - the disadvantage of this solution may be the current content of the disk
 - before exporting the virtual machine running under **VMware**, you must **remove all snapshots** - **<u>pvimport</u>** recognizes only the appropriate virtual machine (including flat) disks, further shortening the migration time
-- **<u>pvimport</u>** can be run on **any Proxmox VE node**. Remember **to have enough space** for the output files in the **raw/qcow2** format (which when selected `--import <local|host>` will be deleted)
-- the `--import <local|host>` parameter allows you to **import virtual machine files to any node** (not necessarily from which **<u>pvimport</u>** was started).
+- **<u>pvimport</u>** can be run on **any Proxmox VE node**. Remember to **have enough space** for the output files in the **raw/qcow2** format (which when selected `--pve-import <local|host>` will be deleted)
+- the `--pve-import <local|host>` parameter allows you to **import virtual machine files to any node** (not necessarily from which **<u>pvimport</u>** was started).
 
 ## Limitations
 
 - does not create a virtual machine from **Proxmox VE** (cli/web) - you have to do it yourself
 - requires a disk space of the same size as the imported virtual machine - to store all files (disks)
 - hardware and network resources are the major constraints that affect the time of importing disks
+- at the moment, it does not support vmdk drives as target drives (only in raw/qcow2 format) - in the next version it will be fixed
 
 ## Project architecture
 
