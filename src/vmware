@@ -61,7 +61,7 @@ function VmwareInit() {
   _init_function "GetRemoteFiles ${_pv_vmware_vars} ${_pv_vmware_vars}"
 
   # Stores the virtual machine directory. It may differ from the machine name.
-  _vm_storage=$(< "$_pv_vmware_vars" | cut -d "/" -f1)
+  _vm_storage=$(< "$_pv_vmware_vars" cut -d "/" -f1)
 
   re_path="${hv_storage}/${_vm_storage}"
 
@@ -78,7 +78,7 @@ function VmwareInit() {
     "dump configuration of remote environment"
 
   # Stores the virtual machine config file (with *.vmx extension).
-  _vm_config=$(< "$_pv_vmware_vars" | cut -d "/" -f2)
+  _vm_config=$(< "$_pv_vmware_vars" cut -d "/" -f2)
 
   # shellcheck disable=SC2154
   _init_function "GetRemoteFiles ${re_path}/${_vm_config} ${_pv_vmware_config}"
@@ -184,37 +184,6 @@ function VmwareVmConfigInit() {
 
   _cmd_args+=(\
   "ssh ${ssh_opt} ${hv_host} -p ${port} vim-cmd vmsvc/getallvms | grep ${_vmid} | awk '{print \$4}' >>${_pv_vmware_vars}")
-
-  return $_STATE
-
-}
-
-# ``````````````````````````````````````````````````````````````````````````````
-# Function name: VmwareVmCfgInit()
-#
-# Description:
-#   Init configuration of remote environment.
-#
-# Usage:
-#   VmwareVmCfgInit /path/to/config/file filter
-#
-# Examples:
-#   VmwareVmCfgInit /tmp/.vmware.vars *.vmx
-#
-
-function VmwareVmCfgInit() {
-
-  local _FUNCTION_ID="VmwareVmCfgInit"
-  local _STATE=0
-
-  local _file="$1"
-  local _larg="$2"
-
-  _msg_args+=(\
-  "src: '${_file}")
-
-  _cmd_args+=(\
-  "ssh ${ssh_opt} ${hv_host} -p ${port} cd \"${re_path}\" && find ./* -type f -name \"${_larg}\" >>${_file}")
 
   return $_STATE
 
