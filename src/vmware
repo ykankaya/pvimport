@@ -34,11 +34,9 @@ function VmwareInit() {
     "flush configuration of remote environment"
 
   # shellcheck disable=SC2154
+  _init_function "FlushRemoteFiles ${_pv_vmware_vars}"
+  # shellcheck disable=SC2154
   _init_function "FlushRemoteFiles ${_pv_vmware_config}"
-  # shellcheck disable=SC2154
-  _init_function "FlushRemoteFiles ${_pv_vmware_disks}"
-  # shellcheck disable=SC2154
-  _init_function "FlushRemoteFiles ${_pv_vmware_storage}"
 
   _sprintf "head" "check configuration of remote environment"
 
@@ -58,24 +56,20 @@ function VmwareInit() {
     "init configuration of remote environment"
 
   # shellcheck disable=SC2154
-  _init_function "VmwareVmStorageInit ${vm_id}"
+  _init_function "VmwareVmConfigInit ${vm_id}"
   # shellcheck disable=SC2154
-  _init_function "GetRemoteFiles ${_pv_vmware_storage}"
+  _init_function "GetRemoteFiles ${_pv_vmware_vars} ${_pv_vmware_vars}"
 
-  _vm_storage=$(< "$_pv_vmware_storage" cut -d "/" -f1)
+  # Stores the virtual machine directory. It may differ from the machine name.
+  _vm_storage=$(< "$_pv_vmware_vars" | cut -d "/" -f1)
 
   re_path="${hv_storage}/${_vm_storage}"
 
   _sprintf "info" "set re_path: ${re_path}"
 
-  _logger "head" \
+  _logger "info" \
     "${_FUNCTION_ID}()" \
     "set re_path: ${re_path}"
-
-  # shellcheck disable=SC2154
-  _init_function "VmwareVmCfgInit ${_pv_vmware_config} *.vmx"
-  # shellcheck disable=SC2154
-  _init_function "VmwareVmCfgInit ${_pv_vmware_disks} *.vmdk"
 
   _sprintf "head" "dump configuration of remote environment"
 
@@ -83,10 +77,11 @@ function VmwareInit() {
     "${_FUNCTION_ID}()" \
     "dump configuration of remote environment"
 
+  # Stores the virtual machine config file (with *.vmx extension).
+  _vm_config=$(< "$_pv_vmware_vars" | cut -d "/" -f2)
+
   # shellcheck disable=SC2154
-  _init_function "GetRemoteFiles ${_pv_vmware_config}"
-  # shellcheck disable=SC2154
-  _init_function "GetRemoteFiles ${_pv_vmware_disks}"
+  _init_function "GetRemoteFiles ${re_path}/${_vm_config} ${_pv_vmware_config}"
 
   _sprintf "head" "copy a virtual machine disks"
 
@@ -100,10 +95,13 @@ function VmwareInit() {
   # shellcheck disable=SC2013
   _fname=""
   # shellcheck disable=SC2013
-  for _fname in $(grep ".vmdk" "$_pv_vmware_disks" | cut -d "/" -f2) ; do
+  for _fname in $(grep ".vmdk" "$_pv_vmware_config" | cut -d "\"" -f2) ; do
 
+    _fname_flat="${_fname%.*}-flat.vmdk"
     # shellcheck disable=SC2154
     _init_function "VmwareVmCopy ${_fname}"
+    # shellcheck disable=SC2154
+    _init_function "VmwareVmCopy ${_fname_flat}"
 
   done
 
@@ -119,7 +117,7 @@ function VmwareInit() {
   # shellcheck disable=SC2013
   _fname=""
   # shellcheck disable=SC2013
-  for _fname in $(grep ".vmdk" "$_pv_vmware_disks" | cut -d "/" -f2) ; do
+  for _fname in $(grep ".vmdk" "$_pv_vmware_config" | cut -d "\"" -f2) ; do
 
     # shellcheck disable=SC2154
     _init_function "VmwareVmConvertDisks ${_fname}"
@@ -162,21 +160,21 @@ function VmwareVmCheck() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: VmwareVmStorageInit()
+# Function name: VmwareVmConfigInit()
 #
 # Description:
 #   Checks of the VMware ESXi remote vm storage.
 #
 # Usage:
-#   VmwareVmStorageInit vm_id
+#   VmwareVmConfigInit vm_id
 #
 # Examples:
-#   VmwareVmStorageInit PROD-web01
+#   VmwareVmConfigInit PROD-web01
 #
 
-function VmwareVmStorageInit() {
+function VmwareVmConfigInit() {
 
-  local _FUNCTION_ID="VmwareVmStorageInit"
+  local _FUNCTION_ID="VmwareVmConfigInit"
   local _STATE=0
 
   local _vmid="$1"
@@ -185,7 +183,7 @@ function VmwareVmStorageInit() {
   "vm id: '${_vmid}'")
 
   _cmd_args+=(\
-  "ssh ${ssh_opt} ${hv_host} -p ${port} vim-cmd vmsvc/getallvms | grep ${_vmid} | awk '{print \$4}' >>${_pv_vmware_storage}")
+  "ssh ${ssh_opt} ${hv_host} -p ${port} vim-cmd vmsvc/getallvms | grep ${_vmid} | awk '{print \$4}' >>${_pv_vmware_vars}")
 
   return $_STATE
 
@@ -216,7 +214,7 @@ function VmwareVmCfgInit() {
   "src: '${_file}")
 
   _cmd_args+=(\
-  "ssh ${ssh_opt} ${hv_host} -p ${port} cd \"${re_path}\" && find . -name \"${_larg}\" >>${_file}")
+  "ssh ${ssh_opt} ${hv_host} -p ${port} cd \"${re_path}\" && find ./* -type f -name \"${_larg}\" >>${_file}")
 
   return $_STATE
 
