@@ -730,7 +730,7 @@ function __main__() {
       --pve-type)
 
         export pve_type="true"
-        export pve_type_out=${2}
+        export pve_dst=${2}
 
         shift 2 ;;
 
@@ -893,7 +893,6 @@ function __main__() {
            "vm_id" \
            "pve_id" \
            "pve_format" \
-           "pve_type" \
            "hv_type" \
            "port" \
            "hv_storage" \
@@ -902,6 +901,8 @@ function __main__() {
            "local_storage" \
            "pve_import" \
            "pve_host" \
+           "pve_type" \
+           "pve_dst" \
            "lo_path" \
            "pv_path" \
            "ssh_opt" \
