@@ -173,6 +173,16 @@ function CheckVar() {
 
       fi
 
+      if [[ "$pve_format" == "qcow2" ]] && [[ "$pve_dst" == "lvm" ]] ; then
+
+        _sprintf "stop" "'qcow2' can not use with 'lvm'"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "'qcow2' can not use with 'lvm'"
+
+      fi
+
     ;;
 
     pve_dst)
@@ -450,28 +460,66 @@ function VmImport() {
 
   if [[ "$pve_format" == "raw" ]] ; then
 
-    local _vm_pv_local="${pve_lvm}/vm-${pve_id}-disk-${_x}"
+    if [[ "$pve_dst" == "dir" ]] ; then
+
+      # shellcheck disable=SC2154
+      local _vm_pv_local="${pv_path}/vm-${pve_id}-disk-${_x}.img"
+
+    elif [[ "$pve_dst" == "lvm" ]] ; then
+
+      # shellcheck disable=SC2154
+      local _vm_pv_local="${pve_lvm}/vm-${pve_id}-disk-${_x}"
+
+    fi
 
     # shellcheck disable=SC2154
     if [[ "$pve_host" == "local" ]] ; then
 
-      _msg_args+=(\
-      "checking: '${_vm_pv_local}'" \
-      "src: '${_fda}', dst path: '${_vm_pv_local}'")
+      if [[ "$pve_dst" == "dir" ]] ; then
 
-      _cmd_args+=(\
-      "eval if [[ ! -e ${_vm_pv_local} ]] ; then exit 1 ; fi" \
-      "dd if=${_fda} of=${_vm_pv_local} ${dd_opt}")
+        _msg_args+=(\
+        "checking: '${_vm_pv_local}'" \
+        "src: '${_fda}', dst path: '${_vm_pv_local}'")
+
+        _cmd_args+=(\
+        "eval if [[ ! -e ${_vm_pv_local} ]] ; then exit 1 ; fi" \
+        "cp ${_fda} ${_vm_pv_local}")
+
+      elif [[ "$pve_dst" == "lvm" ]] ; then
+
+        _msg_args+=(\
+        "checking: '${_vm_pv_local}'" \
+        "src: '${_fda}', dst path: '${_vm_pv_local}'")
+
+        _cmd_args+=(\
+        "eval if [[ ! -e ${_vm_pv_local} ]] ; then exit 1 ; fi" \
+        "dd if=${_fda} of=${_vm_pv_local} ${dd_opt}")
+
+      fi
 
     elif [[ "$pve_host" != "local" ]] ; then
 
-      _msg_args+=(\
-      "checking: '${pve_host}:${_vm_pv_local}'" \
-      "src: '${_fda}', dst path: '${pve_host}:${_vm_pv_local}'")
+      if [[ "$pve_dst" == "dir" ]] ; then
 
-      _cmd_args+=(\
-      "ssh ${ssh_opt} ${pve_host} -p ${port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
-      "eval dd if=${_fda} ${dd_opt} | ssh ${ssh_opt} ${pve_host} -p ${port} dd of=${_vm_pv_local} ${dd_opt}")
+        _msg_args+=(\
+        "checking: '${pve_host}:${_vm_pv_local}'" \
+        "src: '${_fda}'")
+
+        _cmd_args+=(\
+        "ssh ${ssh_opt} ${pve_host} -p ${port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
+        "scp ${ssh_opt} ${_fda} -P ${port} ${pve_host}:${_vm_pv_local}")
+
+      elif [[ "$pve_dst" == "lvm" ]] ; then
+
+        _msg_args+=(\
+        "checking: '${pve_host}:${_vm_pv_local}'" \
+        "src: '${_fda}', dst path: '${pve_host}:${_vm_pv_local}'")
+
+        _cmd_args+=(\
+        "ssh ${ssh_opt} ${pve_host} -p ${port} if [[ ! -e \"${_vm_pv_local}\" ]] ; then exit 1 ; fi" \
+        "eval dd if=${_fda} ${dd_opt} | ssh ${ssh_opt} ${pve_host} -p ${port} dd of=${_vm_pv_local} ${dd_opt}")
+
+      fi
 
     fi
 
@@ -488,8 +536,20 @@ function VmImport() {
 
   elif [[ "$pve_format" == "qcow2" ]] ; then
 
-    # shellcheck disable=SC2154
-    local _vm_pv_local="${pv_path}/vm-${pve_id}-disk-${_x}.qcow2"
+    if [[ "$pve_dst" == "dir" ]] ; then
+
+      # shellcheck disable=SC2154
+      local _vm_pv_local="${pv_path}/vm-${pve_id}-disk-${_x}.qcow2"
+
+    elif [[ "$pve_dst" == "lvm" ]] ; then
+
+      _sprintf "stop" "'qcow2' can not use with 'lvm'"
+
+      _logger "stop" \
+        "${_FUNCTION_ID}()" \
+        "'qcow2' can not use with 'lvm'"
+
+    fi
 
     if [[ "$pve_host" == "local" ]] ; then
 
