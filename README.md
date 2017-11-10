@@ -27,7 +27,7 @@ The tool provides the following options:
 
   Examples:
     pvimport -c vmware.cfg -h pv01 -i gitlab_01 -p 300 -f raw --verbose
-    pvimport -c xen.cfg -h 172.20.50.31 -i ac06d737 -p 200 -f qcow2 --pve-import local
+    pvimport -c xen.cfg -h 172.20.50.31 -i ac06d737 -p 200 -f qcow2 --pve-import local --pve-type dir
 
   Options:
         --help                      show this message
@@ -146,7 +146,6 @@ Verbose mode - displays more detailed information on the screen:
 ## Important
 
 - exporting a virtual machine running under **Xen** takes place by taking a **snapshot**, which allows the virtual machine to run continuously (until the final import) - the disadvantage of this solution may be the current content of the disk
-- before exporting the virtual machine running under **VMware**, you must **remove all snapshots** - **<u>pvimport</u>** recognizes only the appropriate virtual machine (including flat) disks, further shortening the migration time
 - **<u>pvimport</u>** can be run on **any Proxmox VE node**. Remember to **have enough space** for the output files in the **raw/qcow2** format (which when selected `--pve-import <local|host>` will be deleted)
 - the `--pve-import <local|host>` parameter allows you to **import virtual machine files to any node** (not necessarily from which **<u>pvimport</u>** was started).
 

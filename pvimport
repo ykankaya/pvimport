@@ -531,7 +531,7 @@ function _help_() {
 
   Examples:
     $_init_name -c vmware.cfg -h pv01 -i gitlab_01 -p 300 -f raw --verbose
-    $_init_name -c xen.cfg -h 172.20.50.31 -i ac06d737 -p 200 -f qcow2 --pve-import local
+    $_init_name -c xen.cfg -h 172.20.50.31 -i ac06d737 -p 200 -f qcow2 --pve-import local --pve-type dir
 
   Options:
         --help                      show this message
