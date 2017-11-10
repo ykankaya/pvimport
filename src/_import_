@@ -175,15 +175,15 @@ function CheckVar() {
 
     ;;
 
-    pve_type)
+    pve_dst)
 
-      if [[ "$pve_type" != "dir" ]] && [[ "$pve_type" != "lvm" ]] ; then
+      if [[ "$pve_dst" != "dir" ]] && [[ "$pve_dst" != "lvm" ]] ; then
 
-        _sprintf "stop" "pve_type: incorrectly set output type (properly: 'dir' or 'lvm')"
+        _sprintf "stop" "pve_dst: incorrectly set output type (properly: 'dir' or 'lvm')"
 
         _logger "stop" \
           "${_FUNCTION_ID}()" \
-          "pve_type: incorrectly set output type (properly: 'dir' or 'lvm')"
+          "pve_dst: incorrectly set output type (properly: 'dir' or 'lvm')"
 
       fi
 
