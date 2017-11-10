@@ -729,7 +729,8 @@ function __main__() {
 
       --pve-type)
 
-        export pve_type=${2}
+        export pve_type="true"
+        export pve_type_out=${2}
 
         shift 2 ;;
 
@@ -831,6 +832,30 @@ function __main__() {
       _logger "stop" \
         "${_FUNCTION_ID}()" \
         "debug mode can not occur together with '--verbose' and '--time'"
+
+    fi
+
+  elif [[ "$pve_import" == "true" ]] ; then
+
+    if [[ "$pve_type" != "true" ]] ; then
+
+      _sprintf "stop" "missing argument: '--pve-import' requires '--pve-type'"
+
+      _logger "stop" \
+        "${_FUNCTION_ID}()" \
+        "missing argument: '--pve-import' requires '--pve-type'"
+
+    fi
+
+  elif [[ "$pve_type" == "true" ]] ; then
+
+    if [[ "$pve_import" != "true" ]] ; then
+
+      _sprintf "stop" "missing argument: '--pve-type' requires '--pve-import'"
+
+      _logger "stop" \
+        "${_FUNCTION_ID}()" \
+        "missing argument: '--pve-type' requires '--pve-import'"
 
     fi
 
