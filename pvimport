@@ -825,7 +825,7 @@ function __main__() {
 
   elif [[ "$stdout_mode" == "debug" ]] ; then
 
-    if [[ "$printf_mode" == "verbose"]] || [[ "$time_mode" -eq 1 ]] ; then
+    if [[ "$printf_mode" == "verbose" ]] || [[ "$time_mode" -eq 1 ]] ; then
 
       _sprintf "stop" "debug mode can not occur together with '--verbose' and '--time'"
 
