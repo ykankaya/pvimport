@@ -345,15 +345,16 @@ function GetRemoteFiles() {
   local _FUNCTION_ID="GetRemoteFiles"
   local _STATE=0
 
-  local _file="$1"
+  local _file_src="$1"
+  local _file_dst="$2"
 
   _msg_args+=(\
-  "checking: '$_file'" \
-  "get src: '$_file'")
+  "checking: '$_file_src'" \
+  "get src: '$_file_src'")
 
   _cmd_args+=(\
-  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -e \"${_file}\" ]] ; then exit 1 ; fi" \
-  "scp ${ssh_opt} -P ${port} ${hv_host}:${_file} ${_file}")
+  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -e \"${_file_src}\" ]] ; then exit 1 ; fi" \
+  "scp ${ssh_opt} -P ${port} ${hv_host}:${_file_src} ${_file_dst}")
 
   return $_STATE
 
