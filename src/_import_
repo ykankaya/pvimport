@@ -361,36 +361,6 @@ function GetRemoteFiles() {
 }
 
 # ``````````````````````````````````````````````````````````````````````````````
-# Function name: CreateRemoteStorage()
-#
-# Description:
-#   Create of the remote storage.
-#
-# Usage:
-#   CreateRemoteStorage /path/to/directory
-#
-# Examples:
-#   CreateRemoteStorage /var/log
-#
-
-function CreateRemoteStorage() {
-
-  local _FUNCTION_ID="CreateRemoteStorage"
-  local _STATE=0
-
-  local _storage="$1"
-
-  _msg_args+=(\
-  "create: '${_storage}'")
-
-  _cmd_args+=(\
-  "ssh ${ssh_opt} ${hv_host} -p ${port} mkdir \"${_storage}\" || exit 1")
-
-  return $_STATE
-
-}
-
-# ``````````````````````````````````````````````````````````````````````````````
 # Function name: CheckRemoteStorage()
 #
 # Description:
@@ -415,6 +385,36 @@ function CheckRemoteStorage() {
 
   _cmd_args+=(\
   "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -d \"${_storage}\" ]] ; then exit 1 ; fi")
+
+  return $_STATE
+
+}
+
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: CreateRemoteStorage()
+#
+# Description:
+#   Create of the remote storage.
+#
+# Usage:
+#   CreateRemoteStorage /path/to/directory
+#
+# Examples:
+#   CreateRemoteStorage /var/log
+#
+
+function CreateRemoteStorage() {
+
+  local _FUNCTION_ID="CreateRemoteStorage"
+  local _STATE=0
+
+  local _storage="$1"
+
+  _msg_args+=(\
+  "create: '${_storage}'")
+
+  _cmd_args+=(\
+  "ssh ${ssh_opt} ${hv_host} -p ${port} mkdir \"${_storage}\" || exit 1")
 
   return $_STATE
 
