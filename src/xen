@@ -71,7 +71,7 @@ function XenInit() {
     "dump configuration of remote environment"
 
   # shellcheck disable=SC2154
-  _init_function "GetRemoteFiles ${_pv_xen_vars}"
+  _init_function "GetRemoteFiles ${_pv_xen_vars} ${_pv_xen_vars}"
 
   _sprintf "head" "export virtual machine"
 
