@@ -545,6 +545,7 @@ function _help_() {
     -p, --pve-id <num>              sets the vm id created in Proxmox VE
     -f, --pve-format <raw|qcow2>    sets the disk output format
         --pve-import <local|host>   import disks into any Proxmox VE node (optional)
+        --pve-type <dir|lvm>        sets the target asset to which the disks will be imported
 
 
   This program comes with ABSOLUTELY NO WARRANTY.
@@ -644,7 +645,7 @@ function __main__() {
   # Specifies the call parameters of the script, the exact description
   # can be found in _help_ and file README.md.
   local _short_opt="c:h:i:n:p:f:"
-  local _long_opt="help,debug,verbose,time,config:,host:,id:,name:,pve-id:,pve-format:,pve-import:"
+  local _long_opt="help,debug,verbose,time,config:,host:,id:,name:,pve-id:,pve-format:,pve-import:,pve-type:"
 
   _GETOPT_PARAMS=$(getopt -o "${_short_opt}" --long "${_long_opt}" \
                    -n "${_init_name}" -- "${__script_params[@]}")
@@ -723,6 +724,12 @@ function __main__() {
 
         export pve_import="true"
         export pve_host=${2}
+
+        shift 2 ;;
+
+      --pve-type)
+
+        export pve_type=${2}
 
         shift 2 ;;
 
@@ -861,6 +868,7 @@ function __main__() {
            "vm_id" \
            "pve_id" \
            "pve_format" \
+           "pve_type" \
            "hv_type" \
            "port" \
            "hv_storage" \

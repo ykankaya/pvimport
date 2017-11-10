@@ -175,6 +175,20 @@ function CheckVar() {
 
     ;;
 
+    pve_type)
+
+      if [[ "$pve_type" != "dir" ]] && [[ "$pve_type" != "lvm" ]] ; then
+
+        _sprintf "stop" "pve_type: incorrectly set output type (properly: 'dir' or 'lvm')"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "pve_type: incorrectly set output type (properly: 'dir' or 'lvm')"
+
+      fi
+
+    ;;
+
     hv_type)
 
       if [[ "$hv_type" != "vmware" ]] && [[ "$hv_type" != "xen" ]] ; then
@@ -211,7 +225,7 @@ function CheckVar() {
 
     ;;
 
-    pve_storage|local_storage)
+    local_storage)
 
       if [[ ! -d "$_i" ]] ; then
 
@@ -220,20 +234,6 @@ function CheckVar() {
         _logger "stop" \
           "${_FUNCTION_ID}()" \
           "$i: incorrectly set storage (does not exist?)"
-
-      fi
-
-    ;;
-
-    pve_lvm)
-
-      if [[ ! -e "$pve_lvm" ]] ; then
-
-        _sprintf "stop" "pve_lvm: incorrectly set lvm (does not exist?)"
-
-        _logger "stop" \
-          "${_FUNCTION_ID}()" \
-          "pve_lvm: incorrectly set lvm (does not exist?)"
 
       fi
 
