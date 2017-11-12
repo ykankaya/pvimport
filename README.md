@@ -130,7 +130,7 @@ Specify the registered virtual machine name - **uuid** parameter after issuing t
 
 - `-i web01`
 
-This parameter specifies the identifier under which the virtual machine will be visible from **Proxmox VE** (it is recommended to create a virtual machine first). This parameter is also very important from the standpoint of the `--sync` option, which syncs prepared disks with existing ones (after creating vm from **Proxmox VE**):
+This parameter specifies the identifier under which the virtual machine will be visible from **Proxmox VE** (it is recommended to create a virtual machine first):
 
 - `-p 205`
 
