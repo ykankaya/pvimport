@@ -26,7 +26,7 @@ The tool provides the following options:
     pvimport <option|long-option>
 
   Examples:
-    pvimport -c vmware.cfg -h pv01 -i gitlab_01 -p 300 -f raw --verbose
+    pvimport -c vmware.cfg -h esxi01 -i gitlab_01 -p 300 -f raw --verbose
     pvimport -c xen.cfg -h 172.20.50.31 -i ac06d737 -p 200 -f qcow2 --pve-import local --pve-type dir
 
   Options:
