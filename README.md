@@ -12,10 +12,10 @@ Allows you to automate all the work involved in importing virtual machine disks 
 Performs:
 
 - execute a snapshot of the virtual machine and export it to an \*.ova file - **Xen**
-- copying the virtual machine disks from the source (remote hypervisor) to the destination (local resource) - **Xen/VMware**
+- copying the virtual machine disks from the source (remote hypervisor) to the destination (local resource) - **Xen/VMware ESXi**
 - extraction of disks with extension \*.ova (resulting directories: Ref:\*) - **Xen**
-- convert to the selected format (**raw**/**qcow2**) - **Xen/VMware**
-- converted **raw**/**qcow2** files imports into place created when creating the virtual machine (**directory**/**lvm**) also on the selected **Proxmox VE** node - **Xen/VMware**
+- convert all disks to the selected format (**raw**/**qcow2**) - **Xen/VMware ESXi**
+- converted **raw**/**qcow2** files imports into place created when creating the virtual machine (**directory**/**lvm**) - also on the selected **Proxmox VE** node - **Xen/VMware ESXi**
 
 ## Parameters
 
@@ -26,7 +26,7 @@ Provides the following options:
     pvimport <option|long-option>
 
   Examples:
-    pvimport -c vmware.cfg -h esxi01 -i gitlab_01 -p 300 -f raw --verbose
+    pvimport -c vmware.cfg -h pv01 -i gitlab_01 -p 300 -f raw --verbose
     pvimport -c xen.cfg -h 172.20.50.31 -i ac06d737 -p 200 -f qcow2 --pve-import local --pve-type dir
 
   Options:
@@ -39,9 +39,14 @@ Provides the following options:
     -i, --id <vm_id|vm_name>        sets the remote vm id (Xen) or vm name (Xen/VMware ESXi)
     -p, --pve-id <num>              sets the vm id created in Proxmox VE
     -f, --pve-format <raw|qcow2>    sets the disk output format
-        --pve-import <local|host>   import disks into any Proxmox VE node (optional)
+        --pve-import <local|host>   import disks into any Proxmox VE node
         --pve-type <dir|lvm>        sets the target asset to which the disks will be imported
 ``````
+
+If you want only converted files do not use the options below - they are optional:
+
+- `--pve-import`
+- `--pve-type`
 
 ## Configuration file
 
@@ -97,7 +102,7 @@ readonly remove_unused="no"
 
 ## Before importing
 
-- set the **key authorization** (**<u>pvimport</u>** uses ssh protocol for communication):
+- set the **key authorization** (**pvimport** uses ssh protocol for communication):
   - **Xen** (for root user): */root/.ssh/authorized_keys*
   - **VMware** (for root user): */etc/ssh/keys-root/authorized_keys*
 - prepare the **correct configuration file** (*src/configs/template.cfg*)
@@ -141,7 +146,7 @@ Specifies the resulting format of the created files - available values are **raw
 
 - `-f raw`
 
-Specifies the import target **Proxmox VE** node. It is a local node (from which we init **<u>pvimport</u>**) or remote node:
+Specifies the import target **Proxmox VE** node. It is a local node (from which we init **pvimport**) or remote node:
 
 - `--pve-import local`
 
@@ -160,15 +165,15 @@ Verbose mode - displays more detailed information on the screen:
 ## Important
 
 - exporting a virtual machine running under **Xen** takes place by taking a **snapshot** which allows the virtual machine to run continuously (until the final import) - the disadvantage of this solution may be the current content of the disk
-- **<u>pvimport</u>** can be run on **any Proxmox VE node**. Remember to **have enough space** for the output files in the **raw/qcow2** format (which when selected `--pve-import <local|host>` will be deleted)
-- the `--pve-import <local|host>` parameter allows you to **import virtual machine files to any node** (not necessarily from which **<u>pvimport</u>** was started)
+- **pvimport** can be run on **any Proxmox VE node**. Remember to **have enough space** for the output files in the **vmdk** and **raw/qcow2** format
+- the `--pve-import <local|host>` parameter allows you to **import virtual machine files to any node** (not necessarily from which **pvimport** was started)
 
 ## Limitations
 
 - does not create a virtual machine from **Proxmox VE** (cli/web) - you have to do it yourself
 - requires a disk space of the same size as the imported virtual machine - to store all files (disks)
 - hardware and network resources are the major constraints that affect the time of importing disks
-- at the moment, it does not support **vmdk** drives as target drives (only in **raw**/**qcow2** format)
+- at the moment it does not support **vmdk** drives as target drives (only in **raw**/**qcow2** format)
 
 ## Project architecture
 
