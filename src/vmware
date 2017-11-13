@@ -153,7 +153,7 @@ function VmwareVmCheck() {
   "vm id: '${_vmid}'")
 
   _cmd_args+=(\
-  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! \$(vim-cmd vmsvc/getallvms | grep ${_vmid}) ]] ; then exit 1 ; fi")
+  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! \$(vim-cmd vmsvc/getallvms | awk '{print \$2}' | grep \"${_vmid}\") ]] ; then exit 1 ; fi")
 
   return $_STATE
 
@@ -183,7 +183,7 @@ function VmwareVmConfigInit() {
   "vm id: '${_vmid}'")
 
   _cmd_args+=(\
-  "ssh ${ssh_opt} ${hv_host} -p ${port} vim-cmd vmsvc/getallvms | grep ${_vmid} | awk '{print \$4}' >>${_pv_vmware_vars}")
+  "ssh ${ssh_opt} ${hv_host} -p ${port} vim-cmd vmsvc/getallvms | awk '{if (\$2 == \"${_vmid}\") print \$0;}' | awk '{print \$4}' >>${_pv_vmware_vars}")
 
   return $_STATE
 
