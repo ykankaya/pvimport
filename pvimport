@@ -284,6 +284,7 @@ function _sprintf() {
 
   local _s_type="$1"
   local _s_info="$2"
+  local _s_color="true"
 
   # Determine the type of character and color for each type
   # of output information.
@@ -345,17 +346,57 @@ function _sprintf() {
       # - spinner has not been called
       # - spinner completed
 
-      # If verbose mode is enabled, display each information.
-      if [[ "$printf_mode" == "verbose" ]] ; then
+      # If verbose mode is enabled, display info message.
+      if [[ "$printf_mode" == "verbose" ]] && [[ "$_s_type" == "info" ]] ; then
 
         printf '[\e['${s_trgb}'m%s\e[m] %s\n' "$s_char" "$_s_info"
 
       else
 
-        # If not, just display only the "head" string.
-        if [[ "$_s_type" == "head" ]] || \
-           [[ "$_s_type" == "warn" ]] || \
-           [[ "$_s_type" == "stop" ]] ; then
+        # If not, just display only the head, warn or stop string.
+        if [[ "$_s_type" == "head" ]] ; then
+
+          if [[ "$_s_color" == "true" ]] ; then
+
+            c_trgb="1;39"
+
+            printf '[\e['${s_trgb}'m%s\e[m] \e['${c_trgb}'m%s\e[m\n' "$s_char" "$_s_info"
+
+          else
+
+            printf '[\e['${s_trgb}'m%s\e[m] %s\n' "$s_char" "$_s_info"
+
+          fi
+
+        elif [[ "$_s_type" == "warn" ]] ; then
+
+          if [[ "$_s_color" == "true" ]] ; then
+
+            c_trgb="1;43"
+
+            printf '[\e['${s_trgb}'m%s\e[m] \e['${c_trgb}'m%s\e[m\n' "$s_char" "$_s_info"
+
+          else
+
+            printf '[\e['${s_trgb}'m%s\e[m] %s\n' "$s_char" "$_s_info"
+
+          fi
+
+        elif [[ "$_s_type" == "stop" ]] ; then
+
+          if [[ "$_s_color" == "true" ]] ; then
+
+            c_trgb="1;41"
+
+            printf '[\e['${s_trgb}'m%s\e[m] \e['${c_trgb}'m%s\e[m\n' "$s_char" "$_s_info"
+
+          else
+
+            printf '[\e['${s_trgb}'m%s\e[m] %s\n' "$s_char" "$_s_info"
+
+          fi
+
+        else
 
           printf '[\e['${s_trgb}'m%s\e[m] %s\n' "$s_char" "$_s_info"
 
