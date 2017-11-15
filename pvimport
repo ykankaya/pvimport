@@ -95,9 +95,10 @@ load_state=0
 # Declaration of output variables (--debug and --verbose params).
 stdout_mode=""
 printf_mode=""
+s_color="true"
 
 # Declaration of total execution time.
-_time_tracking="true"
+time_tracking="true"
 time_mode=0
 
 
@@ -285,7 +286,6 @@ function _sprintf() {
 
   local _s_type="$1"
   local _s_info="$2"
-  local _s_color="true"
 
   # Determine the type of character and color for each type
   # of output information.
@@ -357,7 +357,7 @@ function _sprintf() {
         # If not, just display only the head, warn or stop string.
         if [[ "$_s_type" == "head" ]] ; then
 
-          if [[ "$_s_color" == "true" ]] ; then
+          if [[ "$s_color" == "true" ]] ; then
 
             c_trgb="1;39"
 
@@ -371,7 +371,7 @@ function _sprintf() {
 
         elif [[ "$_s_type" == "warn" ]] ; then
 
-          if [[ "$_s_color" == "true" ]] ; then
+          if [[ "$s_color" == "true" ]] ; then
 
             c_trgb="1;43"
 
@@ -385,7 +385,7 @@ function _sprintf() {
 
         elif [[ "$_s_type" == "stop" ]] ; then
 
-          if [[ "$_s_color" == "true" ]] ; then
+          if [[ "$s_color" == "true" ]] ; then
 
             c_trgb="1;41"
 
@@ -681,7 +681,7 @@ function __main__() {
     "__init_params[] = (${__init_params[*]})," \
     "__script_params[] = (${__script_params[*]})"
 
-  if [[ "$_time_tracking" == "true" ]] ; then
+  if [[ "$time_tracking" == "true" ]] ; then
     _begtime=$(date +%s) ; fi
 
   # Specifies the call parameters of the script, the exact description
@@ -1018,7 +1018,7 @@ function __main__() {
 
   # ````````````````````````````````````````````````````````````````````````````
 
-  if [[ "$_time_tracking" == "true" ]] ; then
+  if [[ "$time_tracking" == "true" ]] ; then
 
     # Counting the execution time.
     _endtime=$(date +%s)
