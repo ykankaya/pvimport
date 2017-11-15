@@ -97,6 +97,7 @@ stdout_mode=""
 printf_mode=""
 
 # Declaration of total execution time.
+_time_tracking="true"
 time_mode=0
 
 
@@ -680,7 +681,8 @@ function __main__() {
     "__init_params[] = (${__init_params[*]})," \
     "__script_params[] = (${__script_params[*]})"
 
-  _begtime=$(date +%s)
+  if [[ "$_time_tracking" == "true" ]] ; then
+    _begtime=$(date +%s) ; fi
 
   # Specifies the call parameters of the script, the exact description
   # can be found in _help_ and file README.md.
@@ -1016,13 +1018,17 @@ function __main__() {
 
   # ````````````````````````````````````````````````````````````````````````````
 
-  # Counting the execution time.
-  _endtime=$(date +%s)
-  _totaltime=$((_endtime - _begtime))
+  if [[ "$_time_tracking" == "true" ]] ; then
 
-  # Print time header.
-  printf '\e[m\e[1;39mTOTAL TIME: %dh:%dm:%ds\e[m\n' \
-         $((_totaltime/3600)) $((_totaltime%3600/60)) $((_totaltime%60))
+    # Counting the execution time.
+    _endtime=$(date +%s)
+    _totaltime=$((_endtime - _begtime))
+
+    # Print time header.
+    printf '\e[m\e[1;39mTOTAL TIME: %dh:%dm:%ds\e[m\n' \
+            $((_totaltime/3600)) $((_totaltime%3600/60)) $((_totaltime%60))
+
+  fi
 
   return $_STATE
 
