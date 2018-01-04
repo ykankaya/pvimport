@@ -5,7 +5,7 @@
 # Header:
 #
 #         fname : "pvimport"
-#         cdate : "30.12.2017"
+#         cdate : "04.01.2018"
 #        author : "Michał Żurawski <contact@nslab.at>"
 #      tab_size : "2"
 #     soft_tabs : "yes"
@@ -822,6 +822,10 @@ function __main__() {
            "local_storage" ; do
 
     _i="" ; eval _i='$'$i
+
+    _logger "info" \
+      "${_FUNCTION_ID}()" \
+      "$i: '$_i'"
 
     if [[ -z "$_i" ]] ; then
 
