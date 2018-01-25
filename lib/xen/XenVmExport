@@ -1,0 +1,35 @@
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: XenVmExport()
+#
+# Description:
+#   Exports the Xen virtual machine:
+#     - takes a virtual machine snapshot
+#     - exports snapshot to file with extension 'ova'
+#
+# Usage:
+#   XenVmExport vm_id
+#
+# Examples:
+#   XenVmExport PROD-web01
+#
+
+function XenVmExport() {
+
+  local _FUNCTION_ID="XenVmExport"
+  local _STATE=0
+
+  _cmdtime_state=1
+
+  local _vmid="$1"
+
+  _msg_args+=(\
+  "creating snapshot: '${_vmid}-${_random}'" \
+  "exporting snapshot: '${_vmid}.ova'")
+
+  _cmd_args+=(\
+  "ssh ${ssh_opt} ${hv_host} -p ${port} _id=\$(xe vm-snapshot vm=${_vmid} new-name-label=${_vmid}-${_random}) ; echo \$_id >>${_pv_xen_vars}" \
+  "ssh ${ssh_opt} ${hv_host} -p ${port} _id=\$(cat ${_pv_xen_vars}) ; xe vm-export vm=\${_id} filename=${re_path}/${_vmid}.ova")
+
+  return $_STATE
+
+}

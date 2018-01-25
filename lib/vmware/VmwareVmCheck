@@ -1,0 +1,30 @@
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: VmwareVmCheck()
+#
+# Description:
+#   Checks of the VMware ESXi remote vm:
+#     - virtual machine id/name
+#
+# Usage:
+#   VmwareVmCheck vm_id
+#
+# Examples:
+#   VmwareVmCheck PROD-web01
+#
+
+function VmwareVmCheck() {
+
+  local _FUNCTION_ID="VmwareVmCheck"
+  local _STATE=0
+
+  local _vmid="$1"
+
+  _msg_args+=(\
+  "vm id: '${_vmid}'")
+
+  _cmd_args+=(\
+  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! \$(vim-cmd vmsvc/getallvms | awk '{print \$2}' | grep \"${_vmid}\") ]] ; then exit 1 ; fi")
+
+  return $_STATE
+
+}

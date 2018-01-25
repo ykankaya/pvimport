@@ -1,0 +1,182 @@
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: CheckVar()
+#
+# Description:
+#   Checks the values of all supplied variables.
+#
+# Usage:
+#   CheckVar
+#
+# Examples:
+#   CheckVar
+#
+
+function CheckVar() {
+
+  local _FUNCTION_ID="CheckVar"
+  local _STATE=0
+
+  local _varg="$1"
+
+  _i="" ; eval _i='$'"$_varg"
+
+  local _num='^[0-9]+$'
+
+  # Filtering the length of variable values.
+  if [[ "${#_i}" -gt 512 ]] ; then
+
+    # shellcheck disable=SC2154
+    _sprintf "stop" "$i: too long value"
+
+    _logger "stop" \
+      "${_FUNCTION_ID}()" \
+      "$i: too long value"
+
+  fi
+
+  # shellcheck disable=SC2154
+  case $i in
+
+    # hv_host|vm_id|hv_storage|re_path|pv_path|ssh_opt|dd_opt)
+
+    pve_id)
+
+      # We check the virtual machine ID and its numeric value.
+      if [[ "$pve_id" =~ $_num ]] ; then
+
+        # shellcheck disable=SC2143
+        # If the value is a number then we check whether the virtual machine
+        # with that identifier exists in the Proxmox VE cluster.
+        if [[ ! $(grep "qemu" /etc/pve/.vmlist | cut -d ":" -f1 | grep "$pve_id") ]] ; then
+
+          _sprintf "stop" "pve_id: vm with this id does not exist"
+
+          _logger "stop" \
+            "${_FUNCTION_ID}()" \
+            "pve_id: vm with this id does not exist"
+
+        fi
+
+      else
+
+        _sprintf "stop" "pve_id: vm id has no numeric value"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "pve_id: vm id has no numeric value"
+
+      fi
+
+    ;;
+
+    pve_format)
+
+      if [[ "$pve_format" != "raw" ]] && [[ "$pve_format" != "qcow2" ]] ; then
+
+        _sprintf "stop" "pve_format: incorrectly set format type (properly: 'raw' or 'qcow2')"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "pve_format: incorrectly set format type (properly: raw or qcow2)"
+
+      fi
+
+      if [[ "$pve_format" == "qcow2" ]] && [[ "$pve_dst" == "lvm" ]] ; then
+
+        _sprintf "stop" "'qcow2' can not use with 'lvm'"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "'qcow2' can not use with 'lvm'"
+
+      fi
+
+    ;;
+
+    pve_dst)
+
+      if [[ "$pve_dst" != "dir" ]] && [[ "$pve_dst" != "lvm" ]] ; then
+
+        _sprintf "stop" "pve_dst: incorrectly set output type (properly: 'dir' or 'lvm')"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "pve_dst: incorrectly set output type (properly: 'dir' or 'lvm')"
+
+      fi
+
+    ;;
+
+    hv_type)
+
+      if [[ "$hv_type" != "vmware" ]] && [[ "$hv_type" != "xen" ]] ; then
+
+        _sprintf "stop" "hv_type: incorrectly set hypervisor type (properly: 'xen' or 'vmware')"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "hv_type: incorrectly set hypervisor type (properly: 'xen' or 'vmware')"
+
+      fi
+
+    ;;
+
+    port)
+
+      if [[ ! "$port" =~ $_num ]] ; then
+
+        _sprintf "stop" "port: has no numeric value"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "port: has no numeric value"
+
+      elif [[ ! "$port" -ge 1 ]] || [[ ! "$port" -le 65535 ]] ; then
+
+        _sprintf "stop" "port: value out of range"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "port: value out of range"
+
+      fi
+
+    ;;
+
+    local_storage)
+
+      if [[ ! -d "$_i" ]] ; then
+
+        _sprintf "stop" "$i: incorrectly set storage (does not exist?)"
+
+        _logger "stop" \
+          "${_FUNCTION_ID}()" \
+          "$i: incorrectly set storage (does not exist?)"
+
+      fi
+
+    ;;
+
+    lo_path)
+
+      if [[ ! -d "$lo_path" ]] ; then
+
+        _logger "info" \
+          "${_FUNCTION_ID}()" \
+          "creating a local directory: '$lo_path'"
+
+        mkdir -p "$lo_path"
+
+      fi
+
+    ;;
+
+  esac
+
+  _sprintf "info" "${i}: '$_i'"
+
+  _logger "info" \
+    "${_FUNCTION_ID}()" \
+    "${i}: '$_i'"
+
+}

@@ -1,0 +1,33 @@
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: XenVmCopy()
+#
+# Description:
+#   Copies the Xen virtual machine from remote host to local host.
+#
+# Usage:
+#   XenVmCopy vm_id
+#
+# Examples:
+#   XenVmCopy PROD-web01
+#
+
+function XenVmCopy() {
+
+  local _FUNCTION_ID="XenVmCopy"
+  local _STATE=0
+
+  _cmdtime_state=1
+
+  local _vmid="$1"
+
+  _msg_args+=(\
+  "checking: '${_vmid}.ova'" \
+  "get src: '${_vmid}.ova'")
+
+  _cmd_args+=(\
+  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -e \"${re_path}/${_vmid}.ova\" ]] ; then exit 1 ; fi" \
+  "scp ${ssh_opt} -P ${port} ${hv_host}:${re_path}/${_vmid}.ova ${lo_path}")
+
+  return $_STATE
+
+}

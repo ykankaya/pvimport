@@ -1,0 +1,87 @@
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: VmwareVmConvertDisks()
+#
+# Description:
+#   Converts the VMware ESXi virtual machine disks.
+#
+# Usage:
+#   VmwareVmConvertDisks /path/to/local/vmdk/disk
+#
+# Examples:
+#   VmwareVmConvertDisks /xfs900/datastore/vmware/PROD-web01.vmdk
+#
+
+function VmwareVmConvertDisks() {
+
+  local _FUNCTION_ID="VmwareVmConvertDisks"
+  local _STATE=0
+
+  # shellcheck disable=SC2034
+  _cmdtime_state=1
+
+  local _fdx="$1"
+
+  local _fda
+  local _fdb
+  # shellcheck disable=SC2034
+  local _fdc
+
+  # Store file name without extension (eg. vm).
+  _fda=${_fdx%.*}
+
+  if [[ "$_fdx" != *"flat"* ]] ; then
+
+    if [[ "$pve_format" == "qcow2" ]] ; then
+
+      # Store 'qcow2' file name (eg. 1-vm.qcow2).
+      _fdb="${_x}-${_fda}.qcow2"
+
+      _msg_args+=(\
+      "checking: '${_fdx}'" \
+      "src: '${_fdx}', dst: '${_fdb}'")
+
+      _cmd_args+=(\
+      "eval if [[ ! -e ${_fdx} ]] ; then exit 1 ; fi" \
+      "qemu-img convert -f vmdk -O qcow2 ${_fdx} ${_fdb}")
+
+    elif [[ "$pve_format" == "raw" ]] ; then
+
+      # Store 'raw' file name (eg. 1-vm.img).
+      _fdb="${_x}-${_fda}.img"
+
+      _msg_args+=(\
+      "checking: '${_fdx}'" \
+      "src: '${_fdx}', dst: '${_fdb}'")
+
+      _cmd_args+=(\
+      "eval if [[ ! -e ${_fdx} ]] ; then exit 1 ; fi" \
+      "qemu-img convert -f vmdk -O raw ${_fdx} ${_fdb}")
+
+    fi
+
+    # shellcheck disable=SC2154
+    if [[ "$remove_unused" == "yes" ]] ; then
+
+      _msg_args+=(\
+      "remove: '${_fdx}'")
+      _cmd_args+=(\
+      "rm -fr ${_fdx}")
+
+      if [[ -e "${_fda}-flat.vmdk" ]] ; then
+
+        _msg_args+=(\
+        "remove: '${_fda}-flat.vmdk'")
+        _cmd_args+=(\
+        "rm -fr ${_fda}-flat.vmdk")
+
+      fi
+
+    fi
+
+    _x=$((_x + 1))
+
+  fi
+
+  return $_STATE
+
+}

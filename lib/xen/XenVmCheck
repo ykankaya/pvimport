@@ -1,0 +1,29 @@
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: XenVmCheck()
+#
+# Description:
+#   Checks of the Xen remote virtual machine exist.
+#
+# Usage:
+#   XenVmCheck vm_id
+#
+# Examples:
+#   XenVmCheck PROD-web01
+#
+
+function XenVmCheck() {
+
+  local _FUNCTION_ID="XenVmCheck"
+  local _STATE=0
+
+  local _vmid="$1"
+
+  _msg_args+=(\
+  "vm id: '${_vmid}'")
+
+  _cmd_args+=(\
+  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! \$(xe vm-list | grep ${_vmid}) ]] ; then exit 1 ; fi")
+
+  return $_STATE
+
+}

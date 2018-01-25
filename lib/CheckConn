@@ -1,0 +1,33 @@
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: CheckConn()
+#
+# Description:
+#   Check connection to remote host.
+#
+# Usage:
+#   CheckConn host port
+#
+# Examples:
+#   CheckConn 172.20.20.50 22
+#
+
+function CheckConn() {
+
+  local _FUNCTION_ID="CheckConn"
+  local _STATE=0
+
+  local _host="$1"
+  local _port="$2"
+
+  # We test two types of connections that will be used.
+  _msg_args+=(\
+  "host (tcp): '${_host}'" \
+  "host (ssh): '${_host}'")
+
+  _cmd_args+=(\
+  "eval timeout 1 bash -c \"</dev/tcp/${_host}/${_port}\"" \
+  "ssh ${ssh_opt} ${_host} -p ${_port} exit 0")
+
+  return $_STATE
+
+}

@@ -1,0 +1,29 @@
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: CheckRemoteStorage()
+#
+# Description:
+#   Checks of the remote storage.
+#
+# Usage:
+#   CheckRemoteStorage /path/to/directory
+#
+# Examples:
+#   CheckRemoteStorage /var/log
+#
+
+function CheckRemoteStorage() {
+
+  local _FUNCTION_ID="CheckRemoteStorage"
+  local _STATE=0
+
+  local _storage="$1"
+
+  _msg_args+=(\
+  "directory: '${_storage}'")
+
+  _cmd_args+=(\
+  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -d \"${_storage}\" ]] ; then exit 1 ; fi")
+
+  return $_STATE
+
+}

@@ -1,0 +1,33 @@
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: VmwareVmCopy()
+#
+# Description:
+#   Copies the VMware ESXi virtual machine from remote host to local.
+#
+# Usage:
+#   VmwareVmCopy /path/to/remote/vmdk/disk
+#
+# Examples:
+#   VmwareVmCopy /vmfs/volume/datastore/PROD-web01/PROD-web01.vmdk
+#
+
+function VmwareVmCopy() {
+
+  local _FUNCTION_ID="VmwareVmCopy"
+  local _STATE=0
+
+  _cmdtime_state=1
+
+  local _fda="$1"
+
+  _msg_args+=(\
+  "checking: '${_fda}'" \
+  "get src: '${_fda}'")
+
+  _cmd_args+=(\
+  "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -e \"${re_path}/${_fda}\" ]] ; then exit 1 ; fi" \
+  "scp ${ssh_opt} -P ${port} ${hv_host}:${re_path}/${_fda} ${lo_path}")
+
+  return $_STATE
+
+}

@@ -1,0 +1,81 @@
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: XenVmConvertDisks()
+#
+# Description:
+#   Converts the Xen virtual machine disks.
+#
+# Usage:
+#   XenVmConvertDisks /path/to/local/xen/disk
+#
+# Examples:
+#   XenVmConvertDisks /xfs900/datastore/xen/PROD-web01.{img,qcow2}
+#
+
+function XenVmConvertDisks() {
+
+  local _FUNCTION_ID="XenVmConvertDisks"
+  local _STATE=0
+
+  # shellcheck disable=SC2034
+  _cmdtime_state=1
+
+  local _fdx="$1"
+
+  local _fda
+  local _fdb
+  local _fdc
+
+  # Store new directory/file name (eg. Ref_20).
+  _fda=$(echo "$_fdx" | tr ":" "_")
+
+  # Store new 'raw' file (eg. 1-Ref_20.img).
+  _fdb="${_x}-${_fda}.img"
+
+  _msg_args+=(\
+  "checking: '${_fdx}'" \
+  "src: '${_fdx}', dst: '${_fdb}'")
+
+  _cmd_args+=(\
+  "eval if [[ ! -d ${_fdx} ]] ; then exit 1 ; fi" \
+  "xenmigrate --convert=${_fdx} ${_fdb}")
+
+  if [[ "$remove_unused" == "yes" ]] ; then
+
+    _msg_args+=(\
+    "remove: '${_fdx}'")
+
+    _cmd_args+=(\
+    "rm -fr ${_fdx}")
+
+  fi
+
+  if [[ "$pve_format" == "qcow2" ]] ; then
+
+    # Store 'qcow2' file name (eg. 1-Ref_20.qcow2).
+    _fdc="${_fdb%.*}.qcow2"
+
+    _msg_args+=(\
+    "checking: '${_fdb}'" \
+    "src: '${_fdb}', dst: '${_fdc}'")
+
+    _cmd_args+=(\
+    "eval if [[ ! -e ${_fdb} ]] ; then exit 1 ; fi" \
+    "qemu-img convert -f raw -O qcow2 ${_fdb} ${_fdc}")
+
+    if [[ "$remove_unused" == "yes" ]] ; then
+
+      _msg_args+=(\
+      "remove: '${_fdb}'")
+
+      _cmd_args+=(\
+      "rm -fr ${_fdb}")
+
+    fi
+
+  fi
+
+  _x=$((_x + 1))
+
+  return $_STATE
+
+}

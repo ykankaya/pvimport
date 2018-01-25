@@ -1,0 +1,118 @@
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: VmwareInit()
+#
+# Description:
+#   Initialization of tasks for VMware ESXi.
+#
+# Usage:
+#   VmwareInit
+#
+# Examples:
+#   VmwareInit
+#
+
+function VmwareInit() {
+
+  local _FUNCTION_ID="VmwareInit"
+  local _STATE=0
+
+  _sprintf "head" "flush configuration of remote environment"
+
+  _logger "head" \
+    "${_FUNCTION_ID}()" \
+    "flush configuration of remote environment"
+
+  # shellcheck disable=SC2154
+  _init_function "FlushRemoteFiles ${_pv_vmware_vars}"
+  # shellcheck disable=SC2154
+  _init_function "FlushRemoteFiles ${_pv_vmware_config}"
+
+  _sprintf "head" "check configuration of remote environment"
+
+  _logger "head" \
+    "${_FUNCTION_ID}()" \
+    "check configuration of remote environment"
+
+  # shellcheck disable=SC2154
+  _init_function "CheckRemoteStorage ${hv_storage}"
+  # shellcheck disable=SC2154
+  _init_function "VmwareVmCheck ${vm_id}"
+
+  _sprintf "head" "init configuration of remote environment"
+
+  _logger "head" \
+    "${_FUNCTION_ID}()" \
+    "init configuration of remote environment"
+
+  # shellcheck disable=SC2154
+  _init_function "VmwareVmConfigInit ${vm_id}"
+  # shellcheck disable=SC2154
+  _init_function "GetRemoteFiles ${_pv_vmware_vars} ${_pv_vmware_vars}"
+
+  # Stores the virtual machine directory. It may differ from the machine name.
+  _vm_storage=$(< "$_pv_vmware_vars" cut -d "/" -f1)
+
+  re_path="${hv_storage}/${_vm_storage}"
+
+  _sprintf "info" "set re_path: ${re_path}"
+
+  _logger "info" \
+    "${_FUNCTION_ID}()" \
+    "set re_path: ${re_path}"
+
+  _sprintf "head" "dump configuration of remote environment"
+
+  _logger "head" \
+    "${_FUNCTION_ID}()" \
+    "dump configuration of remote environment"
+
+  # Stores the virtual machine config file (with *.vmx extension).
+  _vm_config=$(< "$_pv_vmware_vars" cut -d "/" -f2)
+
+  # shellcheck disable=SC2154
+  _init_function "GetRemoteFiles ${re_path}/${_vm_config} ${_pv_vmware_config}"
+
+  _sprintf "head" "copy a virtual machine disks"
+
+  _logger "head" \
+    "${_FUNCTION_ID}()" \
+    "copy a virtual machine disks"
+
+  # shellcheck disable=SC2154
+  _init_function "CheckRemoteStorage ${re_path}"
+
+  # shellcheck disable=SC2013
+  _fname=""
+  # shellcheck disable=SC2013
+  for _fname in $(grep ".vmdk" "$_pv_vmware_config" | cut -d "\"" -f2) ; do
+
+    _fname_flat="${_fname%.*}-flat.vmdk"
+    # shellcheck disable=SC2154
+    _init_function "VmwareVmCopy ${_fname}"
+    # shellcheck disable=SC2154
+    _init_function "VmwareVmCopy ${_fname_flat}"
+
+  done
+
+  # shellcheck disable=SC2154
+  _sprintf "head" "convert disks to '$pve_format' format"
+
+  _logger "head" \
+    "${_FUNCTION_ID}()" \
+    "convert disks to '$pve_format' format"
+
+  _x=1
+
+  # shellcheck disable=SC2013
+  _fname=""
+  # shellcheck disable=SC2013
+  for _fname in $(grep ".vmdk" "$_pv_vmware_config" | cut -d "\"" -f2) ; do
+
+    # shellcheck disable=SC2154
+    _init_function "VmwareVmConvertDisks ${_fname}"
+
+  done
+
+  return $_STATE
+
+}

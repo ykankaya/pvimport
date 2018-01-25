@@ -1,0 +1,44 @@
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: XenVmExtract()
+#
+# Description:
+#   Extracts the Xen virtual machine disks.
+#
+# Usage:
+#   XenVmExtract vm_id
+#
+# Examples:
+#   XenVmExtract PROD-web01
+#
+
+function XenVmExtract() {
+
+  local _FUNCTION_ID="XenVmExtract"
+  local _STATE=0
+
+  _cmdtime_state=1
+
+  local _vmid="$1"
+
+  _msg_args+=(\
+  "checking: '${_vmid}.ova'" \
+  "src: '${_vmid}.ova'")
+
+  _cmd_args+=(\
+  "eval if [[ ! -e ${_vmid}.ova ]] ; then exit 1 ; fi" \
+  "tar xf ${_vmid}.ova -C ${lo_path}")
+
+  # shellcheck disable=SC2154
+  if [[ "$remove_unused" == "yes" ]] ; then
+
+    _msg_args+=(\
+    "remove: '${_vmid}.ova'")
+
+    _cmd_args+=(\
+    "rm -fr ${_vmid}.ova")
+
+  fi
+
+  return $_STATE
+
+}

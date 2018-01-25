@@ -1,0 +1,29 @@
+# ``````````````````````````````````````````````````````````````````````````````
+# Function name: FlushRemoteFiles()
+#
+# Description:
+#   Flush configuration of remote environment.
+#
+# Usage:
+#   FlushRemoteFiles /path/to/file
+#
+# Examples:
+#   FlushRemoteFiles /tmp/.cache
+#
+
+function FlushRemoteFiles() {
+
+  local _FUNCTION_ID="FlushRemoteFiles"
+  local _STATE=0
+
+  local _file="$1"
+
+  _msg_args+=(\
+  "src: '${_file}")
+
+  _cmd_args+=(\
+  "ssh ${ssh_opt} ${hv_host} -p ${port} >${_file}")
+
+  return $_STATE
+
+}
