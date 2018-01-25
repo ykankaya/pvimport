@@ -30,4 +30,4 @@ before_install:
 
 script:
   - shellcheck --version
-  - shellcheck -s bash -e 1072,1094 -x src/* -x lib/* bin/git-template-full
+  - shellcheck -s bash -e 1072,1094 -x src/* -x lib/Check* -x lib/CreateRemoteStorage -x lib/FlushRemoteFiles -x lib/GetRemoteFiles -x lib/VmImport -x lib/vmware/* -x lib/xen/* bin/pvimport
