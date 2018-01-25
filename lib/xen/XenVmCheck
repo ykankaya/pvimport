@@ -13,6 +13,7 @@
 
 function XenVmCheck() {
 
+  # shellcheck disable=SC2034
   local _FUNCTION_ID="XenVmCheck"
   local _STATE=0
 

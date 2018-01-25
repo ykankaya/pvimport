@@ -101,6 +101,7 @@ function VmwareInit() {
     "${_FUNCTION_ID}()" \
     "convert disks to '$pve_format' format"
 
+  # shellcheck disable=SC2034
   _x=1
 
   # shellcheck disable=SC2013

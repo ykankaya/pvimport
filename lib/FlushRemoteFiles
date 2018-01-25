@@ -13,6 +13,7 @@
 
 function FlushRemoteFiles() {
 
+  # shellcheck disable=SC2034
   local _FUNCTION_ID="FlushRemoteFiles"
   local _STATE=0
 

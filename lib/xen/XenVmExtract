@@ -13,9 +13,11 @@
 
 function XenVmExtract() {
 
+  # shellcheck disable=SC2034
   local _FUNCTION_ID="XenVmExtract"
   local _STATE=0
 
+  # shellcheck disable=SC2034
   _cmdtime_state=1
 
   local _vmid="$1"

@@ -13,6 +13,7 @@
 
 function CreateRemoteStorage() {
 
+  # shellcheck disable=SC2034
   local _FUNCTION_ID="CreateRemoteStorage"
   local _STATE=0
 

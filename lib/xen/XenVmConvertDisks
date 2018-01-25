@@ -13,6 +13,7 @@
 
 function XenVmConvertDisks() {
 
+  # shellcheck disable=SC2034
   local _FUNCTION_ID="XenVmConvertDisks"
   local _STATE=0
 
@@ -39,6 +40,7 @@ function XenVmConvertDisks() {
   "eval if [[ ! -d ${_fdx} ]] ; then exit 1 ; fi" \
   "xenmigrate --convert=${_fdx} ${_fdb}")
 
+  # shellcheck disable=SC2154
   if [[ "$remove_unused" == "yes" ]] ; then
 
     _msg_args+=(\
@@ -49,6 +51,7 @@ function XenVmConvertDisks() {
 
   fi
 
+  # shellcheck disable=SC2154
   if [[ "$pve_format" == "qcow2" ]] ; then
 
     # Store 'qcow2' file name (eg. 1-Ref_20.qcow2).

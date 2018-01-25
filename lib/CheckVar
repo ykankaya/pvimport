@@ -14,6 +14,7 @@
 function CheckVar() {
 
   local _FUNCTION_ID="CheckVar"
+  # shellcheck disable=SC2034
   local _STATE=0
 
   local _varg="$1"

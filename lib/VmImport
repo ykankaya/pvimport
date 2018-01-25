@@ -16,6 +16,7 @@ function VmImport() {
   local _FUNCTION_ID="VmImport"
   local _STATE=0
 
+  # shellcheck disable=SC2034
   _cmdtime_state=1
 
   local _fda="$1"
@@ -26,8 +27,10 @@ function VmImport() {
   _cmd_args+=(\
   "eval if [[ ! -e ${_fda} ]] ; then exit 1 ; fi")
 
+  # shellcheck disable=SC2154
   if [[ "$pve_format" == "raw" ]] ; then
 
+    # shellcheck disable=SC2154
     if [[ "$pve_dst" == "dir" ]] ; then
 
       # shellcheck disable=SC2154
