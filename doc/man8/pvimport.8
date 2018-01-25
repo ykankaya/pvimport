@@ -1,12 +1,24 @@
 .\" Manpage for pvimport.
 .\" Contact contact@nslab.at.
-.TH man 8 "25.01.2018" "1.3.2" "pvimport man page"
+.TH man 8 "25.01.2018" "1.4.0" "pvimport man page"
 .SH NAME
-pvimport \- short script description
+pvimport \- allows you to automate all the work involved in importing virtual machine disks from the current hypervisor (VMware ESXi/Xen) to the Proxmox VE cluster.
 .SH SYNOPSIS
 pvimport <option|long-option>
 .SH DESCRIPTION
-pvimport short long description.
+pvimport allows you to automate all the work involved in importing virtual machine disks from the current hypervisor (VMware ESXi/Xen) to the Proxmox VE cluster.
+
+Performs:
+
+* execute a snapshot of the virtual machine and export it to an *.ova file - Xen
+
+* copying the virtual machine disks from the source (remote hypervisor) to the destination (local resource) - Xen/VMware ESXi
+
+* extraction of disks with extension *.ova (resulting directories: Ref:*) - Xen
+
+* convert all disks to the selected format (raw/qcow2) - Xen/VMware ESXi
+
+* converted raw/qcow2 files imports into place created when creating the virtual machine (directory/lvm) - also on the selected Proxmox VE node - Xen/VMware ESXi
 .SH OPTIONS
 --help
         show this message
@@ -22,6 +34,24 @@ pvimport short long description.
 
 -c, --config <file>
         attach an external config file to the script
+
+-h, --host <host>
+        sets the ip address or hostname of the remote hypervisor
+
+-i, --id <vm_id|vm_name>
+        sets the remote vm id (Xen) or vm name (Xen/VMware ESXi)
+
+-p, --pve-id <num>
+        sets the vm id created in Proxmox VE
+
+-f, --pve-format <raw|qcow2>
+        sets the disk output format
+
+--pve-import <local|host>
+        import disks into any Proxmox VE node
+
+--pve-type <dir|lvm>
+        sets the target asset to which the disks will be imported
 .SH SEE ALSO
 https://github.com/trimstray/pvimport
 .SH BUGS
