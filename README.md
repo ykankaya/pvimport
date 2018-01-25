@@ -1,9 +1,12 @@
 # pvimport
 
-## Version
+## Releases
 
-Stable release: **v1.3.2**  
-Testing release: **testing**
+|            **STABLE RELEASE**            |           **TESTING RELEASE**            |
+| :--------------------------------------: | :--------------------------------------: |
+| [![](https://img.shields.io/badge/Branch-master-green.svg)]() | [![](https://img.shields.io/badge/Branch-testing-orange.svg)]() |
+| [![](https://img.shields.io/badge/Version-v1.3.2-lightgrey.svg)]() | [![](https://img.shields.io/badge/Version-v1.4.0-lightgrey.svg)]() |
+| [![Build Status](https://travis-ci.org/trimstray/pvimport.svg?branch=master)](https://travis-ci.org/trimstray/pvimport) | [![Build Status](https://travis-ci.org/trimstray/pvimport.svg?branch=testing)](https://travis-ci.org/trimstray/pvimport) |
 
 ## Description
 
@@ -115,6 +118,23 @@ readonly remove_unused="no"
 - [qemu-img](https://en.wikibooks.org/wiki/QEMU/Installing_QEMU)
 - [xenmigrate](https://pve.proxmox.com/wiki/Xenmigrate) (only for **Xen**)
 
+## Install/uninstall
+
+It's simple - for install:
+
+```
+./setup.sh install
+```
+
+For remove:
+
+```
+./setup.sh uninstall
+```
+
+> - symlink to `bin/pvimport` is placed in `/usr/local/bin`
+> - man page is placed in `/usr/local/man/man8`
+
 ## Use example
 
 > - before you start, create a virtual machine in the **Proxmox VE** web panel. The most important thing is to add the same number of disks of the same size as the current hypervisor
@@ -162,6 +182,13 @@ Verbose mode - displays more detailed information on the screen:
 
 - `--verbose`
 
+## Logging
+
+After running the script, the `log/` directory is created and in it the following files with logs:
+
+- `<script_name>.<date>.log` - all `_logger()` function calls are saved in it
+- `stdout.log` - a standard output and errors from the `_init_cmd()` function are written in it. If you want to redirect the output from command, use the following structure: `your_command >>"$_log_stdout" 2>&1 &`
+
 ## Important
 
 - exporting a virtual machine running under **Xen** takes place by taking a **snapshot** which allows the virtual machine to run continuously (until the final import) - the disadvantage of this solution may be the current content of the disk
@@ -175,20 +202,34 @@ Verbose mode - displays more detailed information on the screen:
 - hardware and network resources are the major constraints that affect the time of importing disks
 - at the moment it does not support **vmdk** drives as target drives (only in **raw**/**qcow2** format)
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Project architecture
 
-    |-- pvimport                # main script (init)
-    |-- LICENSE.md              # GNU GENERAL PUBLIC LICENSE, Version 3, 29 June 2007
-    |-- README.md               # this simple documentation
-    |-- .gitignore              # ignore untracked files
-    |-- .gitkeep                # track empty directory
-    |-- src                     # includes external project files
-        |-- _import_            # external variables and functions
-        |-- vmware              # external configuration for VMware ESXI
-        |-- xen                 # external configuration for Xen
-        |-- configs             # directory with configurations
-            |-- template.cfg    # template configuration
-    |-- doc                     # includes documentation, images and manuals
+    |-- LICENSE.md                 # GNU GENERAL PUBLIC LICENSE, Version 3, 29 June 2007
+    |-- README.md                  # this simple documentation
+    |-- CONTRIBUTING.md            # principles of project support
+    |-- .gitignore                 # ignore untracked files
+    |-- .travis.yml                # continuous integration with Travis CI
+    |-- setup.sh                   # install pvimport on the system
+    |-- bin
+        |-- pvimport               # main script (init)
+    |-- doc                        # includes documentation, images and manuals
+        |-- man8
+            |-- pvimport.8         # man page for pvimport
+    |-- lib                        # libraries, external functions
+        |-- vmware                 # contains functions for Vmware
+        |-- xen                    # contains functions for Xen
+    |-- log                        # contains logs, created after init
+    |-- src                        # includes external project files
+        |-- helpers                # contains core functions
+        |-- import                 # appends the contents of the lib directory
+        |-- __init__               # contains the __main__ function
+        |-- settings               # contains pvimport settings
+    |-- templates                  # contains examples and template files
+        |-- template.cfg           # example of user config file
 
 ## License
 
