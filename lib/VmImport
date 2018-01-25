@@ -158,6 +158,6 @@ function VmImport() {
 
   _x=$((_x + 1))
 
-  return $_STATE
+  return "$_STATE"
 
 }

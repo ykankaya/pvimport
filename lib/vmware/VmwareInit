@@ -114,6 +114,6 @@ function VmwareInit() {
 
   done
 
-  return $_STATE
+  return "$_STATE"
 
 }

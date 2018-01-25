@@ -32,6 +32,6 @@ function XenVmExport() {
   "ssh ${ssh_opt} ${hv_host} -p ${port} _id=\$(xe vm-snapshot vm=${_vmid} new-name-label=${_vmid}-${_random}) ; echo \$_id >>${_pv_xen_vars}" \
   "ssh ${ssh_opt} ${hv_host} -p ${port} _id=\$(cat ${_pv_xen_vars}) ; xe vm-export vm=\${_id} filename=${re_path}/${_vmid}.ova")
 
-  return $_STATE
+  return "$_STATE"
 
 }

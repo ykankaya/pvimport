@@ -26,6 +26,6 @@ function VmwareVmCheck() {
   _cmd_args+=(\
   "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! \$(vim-cmd vmsvc/getallvms | awk '{print \$2}' | grep \"${_vmid}\") ]] ; then exit 1 ; fi")
 
-  return $_STATE
+  return "$_STATE"
 
 }

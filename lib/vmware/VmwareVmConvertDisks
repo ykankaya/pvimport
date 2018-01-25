@@ -28,7 +28,7 @@ function VmwareVmConvertDisks() {
   local _fdc
 
   # Store file name without extension (eg. vm).
-  _fda=${_fdx%.*}
+  _fda="${_fdx%.*}"
 
   if [[ "$_fdx" != *"flat"* ]] ; then
 
@@ -84,6 +84,6 @@ function VmwareVmConvertDisks() {
 
   fi
 
-  return $_STATE
+  return "$_STATE"
 
 }

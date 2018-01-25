@@ -41,6 +41,6 @@ function XenVmExtract() {
 
   fi
 
-  return $_STATE
+  return "$_STATE"
 
 }

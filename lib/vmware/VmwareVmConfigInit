@@ -25,6 +25,6 @@ function VmwareVmConfigInit() {
   _cmd_args+=(\
   "ssh ${ssh_opt} ${hv_host} -p ${port} vim-cmd vmsvc/getallvms | awk '{if (\$2 == \"${_vmid}\") print \$0;}' | awk '{print \$4}' >>${_pv_vmware_vars}")
 
-  return $_STATE
+  return "$_STATE"
 
 }

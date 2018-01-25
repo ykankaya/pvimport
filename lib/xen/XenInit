@@ -114,6 +114,6 @@ function XenInit() {
 
   done
 
-  return $_STATE
+  return "$_STATE"
 
 }

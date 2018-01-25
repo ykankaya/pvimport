@@ -25,6 +25,6 @@ function FlushRemoteFiles() {
   _cmd_args+=(\
   "ssh ${ssh_opt} ${hv_host} -p ${port} >${_file}")
 
-  return $_STATE
+  return "$_STATE"
 
 }

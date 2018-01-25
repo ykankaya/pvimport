@@ -30,6 +30,6 @@ function VmwareVmCopy() {
   "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -e \"${re_path}/${_fda}\" ]] ; then exit 1 ; fi" \
   "scp ${ssh_opt} -P ${port} ${hv_host}:${re_path}/${_fda} ${lo_path}")
 
-  return $_STATE
+  return "$_STATE"
 
 }

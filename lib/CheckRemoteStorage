@@ -25,6 +25,6 @@ function CheckRemoteStorage() {
   _cmd_args+=(\
   "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -d \"${_storage}\" ]] ; then exit 1 ; fi")
 
-  return $_STATE
+  return "$_STATE"
 
 }

@@ -43,7 +43,7 @@ function CheckVar() {
     pve_id)
 
       # We check the virtual machine ID and its numeric value.
-      if [[ "$pve_id" =~ $_num ]] ; then
+      if [[ "$pve_id" =~ "$_num" ]] ; then
 
         # shellcheck disable=SC2143
         # If the value is a number then we check whether the virtual machine
@@ -124,7 +124,7 @@ function CheckVar() {
 
     port)
 
-      if [[ ! "$port" =~ $_num ]] ; then
+      if [[ ! "$port" =~ "$_num" ]] ; then
 
         _sprintf "stop" "port: has no numeric value"
 
@@ -179,5 +179,7 @@ function CheckVar() {
   _logger "info" \
     "${_FUNCTION_ID}()" \
     "${i}: '$_i'"
+
+  return "$_STATE"
 
 }

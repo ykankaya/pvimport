@@ -28,6 +28,6 @@ function GetRemoteFiles() {
   "ssh ${ssh_opt} ${hv_host} -p ${port} if [[ ! -e \"${_file_src}\" ]] ; then exit 1 ; fi" \
   "scp ${ssh_opt} -P ${port} ${hv_host}:${_file_src} ${_file_dst}")
 
-  return $_STATE
+  return "$_STATE"
 
 }
