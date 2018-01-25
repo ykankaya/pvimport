@@ -13,7 +13,14 @@
 #   - _fd_stack=("kill_process") - says to include this file in the script
 readonly _fd_stack=("CheckConn" "CheckRemoteStorage" "CheckVar" \
                     "CreateRemoteStorage" "FlushRemoteFiles" "GetRemoteFiles" \
-                    "VmImport")
+                    "VmImport" \
+                    # from lib/vmware:
+                    "vmware/VmwareInit" "vmware/VmwareVmCheck" \
+                    "vmware/VmwareVmConfigInit" "vmware/VmwareVmConvertDisks" \
+                    "vmware/VmwareVmCopy" \
+                    # from lib/xen:
+                    "xen/XenInit" "xen/XenVmCheck" "xen/XenVmConvertDisks" \
+                    "xen/XenVmCopy" "xen/XenVmExport" "xen/XenVmExtract")
 
 if [[ "${#_fd_stack[@]}" -ne 0 ]] ; then
 
