@@ -2,7 +2,7 @@
 # Function name: FlushRemoteFiles()
 #
 # Description:
-#   Flush configuration of remote environment.
+#   Clears the configuration of the remote environment.
 #
 # Usage:
 #   FlushRemoteFiles /path/to/file

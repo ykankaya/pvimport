@@ -2,7 +2,7 @@
 # Function name: GetRemoteFiles()
 #
 # Description:
-#   Dump of the remote environment to local.
+#   Gets the configuration of the remote environment to the local one.
 #
 # Usage:
 #   GetRemoteFiles /path/to/file

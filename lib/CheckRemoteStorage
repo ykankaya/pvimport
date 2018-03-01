@@ -2,7 +2,7 @@
 # Function name: CheckRemoteStorage()
 #
 # Description:
-#   Checks of the remote storage.
+#   Checks the availability of the remote storage.
 #
 # Usage:
 #   CheckRemoteStorage /path/to/directory

@@ -2,7 +2,7 @@
 # Function name: CreateRemoteStorage()
 #
 # Description:
-#   Create of the remote storage.
+#   Creates of the remote storage.
 #
 # Usage:
 #   CreateRemoteStorage /path/to/directory

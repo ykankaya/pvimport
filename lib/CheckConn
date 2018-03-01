@@ -2,7 +2,7 @@
 # Function name: CheckConn()
 #
 # Description:
-#   Check connection to remote host.
+#   Checks the connection to the remote host.
 #
 # Usage:
 #   CheckConn host port
